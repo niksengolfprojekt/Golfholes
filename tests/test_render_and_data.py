@@ -78,3 +78,18 @@ def test_scope_ids_keeps_svgs_apart():
 
     out = scope_ids('<filter id="wc"/><path filter="url(#wc)"/>', "h")
     assert 'id="h-wc"' in out and "url(#h-wc)" in out
+
+
+def test_texture_styles_keep_exact_geometry():
+    """Texturbilden ska ha vatten exakt där hålfilen säger – och ingen annanstans i närheten."""
+    import numpy as np
+
+    from golfholes.render import texture as T
+
+    hole = Hole.from_yaml(EXAMPLE)
+    c = T.Canvas(hole, 300)
+    water = T._layers(c)["vatten"]
+    img = np.asarray(T.render_nordisk(hole, 300), np.float32)
+    blue = (img[..., 2] - img[..., 0]) > 25
+    inside = blue[water > 0.95].mean()
+    assert inside > 0.9

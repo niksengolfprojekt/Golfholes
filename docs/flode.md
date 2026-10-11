@@ -25,6 +25,9 @@
 - [ ] Testa på Glasriket hål 3 med riktigt ortofoto (väntar på Geotorget)
 - [ ] Höjddata i rapporten (uppför/nedför) – `Elevation` finns, kopplas in när vi har filerna
 - [ ] Signatur med riktigt ortofoto (koden är klar, väntar på Geotorget – visar platshållare tills dess)
+- [x] Texturrendering: Klassisk och Nordisk ritas med texturkit (gräs, vatten, lövverk, penseldrag) klippta efter exakta masker – demo-kit utklippt ur AI-skisserna
+- [ ] Högupplösta texturkit för tryck (genereras som rena texturer, inte hela hål) + kit för Arv och Signatur-ljussättning
+- [ ] Ritverktyget: fler lager som skisserna visar – gångvägar, broar, solitärträd, ruffkant
 - [ ] Malin granskar de fyra stilarna (typsnitt, färger, ornament) – akvarell och gravyr är kodritade och mindre måleriska än AI-skisserna
 - [ ] Webbsidorna i klubbens stil (använder ännu Nordisk)
 - [ ] Klubbmärke (SVG) från klubben till rubriken i stil 1

@@ -18,8 +18,10 @@ Grafiska hålpresentationer och hålsponsorskyltar för svenska golfklubbar. Äg
 - Skylt 70 × 100 cm, tre plattor: rubrik ("[Sponsor]-hålet"), hålguide (byts aldrig), sponsorplatta med logga i en färg + QR-kod. Tillverkas av Ecosign.
 - Pilotklubb: Glasrikets GK, hål 3.
 
+- Hålbilder i målad stil: exakta masker från hålfilen + texturkit i `assets/texturer/<stil>/` (`golfholes/render/texture.py`). AI/skisser får bara leverera texturer, aldrig former.
+
 ## Miljö
-- Molnmiljön saknar ofta paketindex: kärnkoden använder bara standardbiblioteket, PyYAML och Pillow. Tyngre bibliotek (rasterio, shapely, Blender) körs på ägarens Mac Pro.
+- Molnmiljön saknar ofta paketindex: kärnkoden använder bara standardbiblioteket, PyYAML och Pillow (+ numpy för texturrenderingen, med vektorstil som reserv). Tyngre bibliotek (rasterio, shapely, Blender) körs på ägarens Mac Pro.
 - Kör `python -m golfholes rapport <fil>` och testerna efter varje ändring.
 - I molnet saknas pytest: kör testfunktionerna direkt med python om pytest inte finns.
 - QR-koden är en tydlig platshållare om `segno` saknas – trycks aldrig så.

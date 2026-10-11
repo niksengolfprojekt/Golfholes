@@ -180,7 +180,8 @@ def _akvarell(hole: Hole, v: View, tee, zoom: bool) -> tuple[str, str]:
     out.append(f'<path d="{v.smooth(hole.green)}" fill="#e9ef9e" filter="url(#wc)"/>')
     for b in bunkers:
         out.append(f'<path d="{v.smooth(b.polygon)}" fill="#f4d7b0" filter="url(#wc)"/>')
-    out.append('<rect width="100%" height="100%" filter="url(#grain)"/>')
+    if not zoom:
+        out.append('<rect width="100%" height="100%" filter="url(#grain)"/>')
     return defs, "".join(out)
 
 
@@ -303,8 +304,20 @@ RENDERERS = {1: _foto, 2: _akvarell, 3: _gravyr, 4: _nordisk}
 
 
 def render_hole(hole: Hole, style: int, width_px: float = 600, tee_name: str | None = None,
-                fade: bool = True, fit: bool = True) -> str:
-    """Hålbild i stil 1–4 som SVG."""
+                fade: bool = True, fit: bool = True, texture: bool = True, texture_scale: float = 2.0) -> str:
+    """Hålbild i stil 1–4 som SVG.
+
+    Stil 2 och 4 ritas med texturkit (render/texture.py) när kitet och numpy finns –
+    annars med den enklare vektorvarianten nedan.
+    """
+    if texture and tee_name is None:
+        try:
+            from . import texture as T
+
+            if style in T.RENDERERS and (T.KITS / {2: "klassisk", 4: "nordisk"}[style]).exists():
+                return T.as_svg(T.RENDERERS[style](hole, int(width_px * texture_scale)))
+        except ImportError:
+            pass
     tee = hole.tee(tee_name)
     v = make_view(hole, tee, width_px)
     defs, body = RENDERERS[style](hole, v, tee, False)

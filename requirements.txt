@@ -1,5 +1,7 @@
 pyyaml>=6
 pillow>=10
+numpy>=1.26      # texturrendering av hålbilder (stil 2 och 4)
+scipy>=1.11      # verktyg/texturkit.py
 segno>=1.6        # QR-koder
 playwright>=1.40  # PNG/PDF via Chromium: kör också `playwright install chromium`
 pytest>=8
