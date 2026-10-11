@@ -55,12 +55,12 @@ hazards:
 - kind: water
   name: Dammen
   polygon:
-  - [18, 215]
-  - [40, 212]
-  - [50, 260]
-  - [46, 325]
-  - [22, 322]
-  - [16, 270]
+  - [26, 216]
+  - [42, 212]
+  - [52, 260]
+  - [50, 322]
+  - [30, 324]
+  - [25, 270]
 - kind: bunker
   name: Fairwaybunker
   polygon:
@@ -91,3 +91,33 @@ hazards:
   - [-14.0, 364.0]
   - [-11.0, 365.1]
   - [-8.8, 368.0]
+fairways:
+- - [-14, 140]
+  - [14, 140]
+  - [17, 200]
+  - [19, 240]
+  - [20, 300]
+  - [22, 350]
+  - [18, 368]
+  - [2, 368]
+  - [-4, 350]
+  - [-10, 300]
+  - [-15, 240]
+  - [-17, 200]
+trees:
+- - [-90, -20]
+  - [-45, -20]
+  - [-42, 120]
+  - [-48, 250]
+  - [-40, 340]
+  - [-30, 440]
+  - [-90, 440]
+- - [40, -20]
+  - [95, -20]
+  - [95, 440]
+  - [50, 440]
+  - [58, 330]
+  - [62, 210]
+  - [45, 120]
+strategy: {säkert: 'Slå 190–200 m över bäcken men kort om dammen. Sikta på greenens högra halva, bort från bunkern.', chansa: En drive på 240 m längs vänster sida lämnar bara 140 m in – men korridoren mellan
+    dammen och bunkern är smal.}

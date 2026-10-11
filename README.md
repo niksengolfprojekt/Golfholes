@@ -17,17 +17,25 @@ Mer i [docs/flode.md](docs/flode.md).
 
 ## Kom igång
 
+Installation på Mac: se [docs/mac.md](docs/mac.md).
+
 ```bash
-pip install -r requirements.txt
-python -m golfholes rapport klubbar/exempel-ekbacka/hal-07.yaml
+python -m golfholes rapport klubbar/exempel-ekbacka/hal-07.yaml   # avstånd + kontroll
+python -m golfholes halbild klubbar/exempel-ekbacka/hal-07.yaml   # hålbild
+python -m golfholes skylt   klubbar/exempel-ekbacka/hal-07.yaml   # skylt 70 × 100 cm
+python -m golfholes webb    klubbar/exempel-ekbacka               # digital banguide
 python -m pytest
 ```
+
+Ritverktyget för att digitalisera hål från ortofoto: öppna `verktyg/ritverktyg.html` i webbläsaren.
 
 ## Struktur
 
 | Mapp | Innehåll |
 | --- | --- |
-| `golfholes/` | Koden: geometri, avstånd, kamera, kontroll |
+| `golfholes/` | Koden: geometri, avstånd, kamera, kontroll, Lantmäteriet-utsnitt |
+| `golfholes/render/` | Hålbild, skylt, webbsidor |
+| `verktyg/` | Ritverktyget (öppnas i webbläsaren) |
 | `klubbar/<klubb>/` | En mapp per klubb: `klubb.yaml` + ett `hal-NN.yaml` per hål |
 | `klubbar/exempel-ekbacka/` | Påhittat exempelhål för demo och tester |
 | `tests/` | Tester |

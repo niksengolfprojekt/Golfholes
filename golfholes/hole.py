@@ -46,6 +46,9 @@ class Hole:
     green: list[g.Point]
     tees: list[Tee]
     hazards: list[Hazard] = field(default_factory=list)
+    fairways: list[list[g.Point]] = field(default_factory=list)
+    trees: list[list[g.Point]] = field(default_factory=list)  # skogs-/trädytor
+    strategy: dict[str, str] = field(default_factory=dict)  # "säkert"/"chansa", granskas av golfare
     source: str = ""
 
     # ---------- inläsning ----------
@@ -65,7 +68,10 @@ class Hole:
             centerline=pts(d["centerline"]),
             green=pts(d["green"]),
             tees=[Tee(t["name"], pts([t["point"]])[0], t.get("length_m")) for t in d["tees"]],
-            hazards=[Hazard(h["kind"], h.get("name", ""), pts(h["polygon"])) for h in d.get("hazards", [])],
+            hazards=[Hazard(h["kind"], h.get("name", ""), pts(h["polygon"])) for h in d.get("hazards") or []],
+            fairways=[pts(f) for f in d.get("fairways") or []],
+            trees=[pts(t) for t in d.get("trees") or []],
+            strategy=d.get("strategy", {}) or {},
             source=d.get("source", ""),
         )
 

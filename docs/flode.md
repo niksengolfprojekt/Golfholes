@@ -1,18 +1,27 @@
 # Produktionsflödet steg för steg
 
-| Steg | Vad | Vem | Klart när |
+| Steg | Vad | Kommando / verktyg | Klart när |
 | --- | --- | --- | --- |
-| 1. Underlag | Ladda ner ortofoto (16 cm) + markhöjdmodell (1 m) för klubbens område från Geotorget. Hämta scorekort och hålkartor. | Ni (inloggning) + Claude | Filerna ligger i `data/<klubb>/`, området i `klubb.yaml` |
-| 2. Vektorisera | Rita ut tees, spellinje, green, bunkrar, vatten per hål. Först med AI-segmentering, sedan manuell kontroll mot klubbens hålkarta. | Claude, ni granskar | Ett `hal-NN.yaml` per hål |
-| 3. Räkna | Avstånd till hinder och green, längd mot scorekort, kamera för tee-vy. | Koden (`python -m golfholes rapport`) | Alla hål "ok" i längdkontrollen |
-| 4. Klubbkontroll | Skicka utkast per hål till klubben/greenkeeper. Rätta tee-lägen, nya bunkrar, OB. | Ni | Klubben har godkänt skriftligt |
-| 5. Rendera | Hålbild i vald stil, tee-vy och flygfilm. | Koden; filmer på Mac Pro | Bilder och filmer per hål |
-| 6. Mallar | Skylt (tre plattor), digital banguide, tryckfiler. Sponsorlogga + QR. | Koden + Malin granskar | Tryckfärdiga PDF:er till Ecosign, webbsidor publicerade |
+| 1. Underlag | Ladda ner ortofoto + markhöjdmodell för området i `klubb.yaml` från Geotorget till `data/<klubb>/orto/` och `data/<klubb>/hojd/`. Hämta scorekort och hålkartor. | Geotorget (ni loggar in) | Filerna ligger på plats |
+| 2. Utsnitt | Klipp ut banan ur ortofotot. | `python -m golfholes utsnitt klubbar/<klubb> data/<klubb>/orto/*.tif` | `data/<klubb>/utsnitt/orto.jpg` + `.jgw` |
+| 3. Digitalisera | Öppna `verktyg/ritverktyg.html` i webbläsaren, ladda bilden + .jgw, klicka ut tees, spellinje, green, fairway, bunkrar, vatten, skog. Kontrollrutan visar längd mot scorekort direkt. | Ritverktyget | `hal-NN.yaml` sparad i `klubbar/<klubb>/` |
+| 4. Kontrollera | Avstånd, längd mot scorekort (±3 %), kamera för tee-vy. | `python -m golfholes rapport klubbar/<klubb>/hal-NN.yaml` | Alla tees "ok" |
+| 5. "Så spelar du hålet" | Skriv Säkert/Chansa i hålfilen utifrån avstånden. Granskas av en golfare. | Text i `strategy:` | Granskad |
+| 6. Klubbkontroll | Skicka hålbild + avstånd till klubben. | `python -m golfholes halbild …` | Skriftligt godkänt |
+| 7. Skylt | Förhandsvisning + tryck-PDF per platta till Ecosign. | `python -m golfholes skylt …` | Malin har granskat, QR-kod äkta |
+| 8. Webb | Digital banguide, sidan QR-koden pekar på. | `python -m golfholes webb klubbar/<klubb>` | Publicerad på klubbens/vår domän |
+| 9. Film | Tee-vy och flygfilm i 3D. | (kommer – Blender på Mac Pro) | Filmer per tee och hål |
 
 ## Status
-- [x] Grundstruktur, geometri, avstånd, kamera, längdkontroll (exempelhål)
-- [ ] Nedladdning och utsnitt av Lantmäteriets data (väntar på Geotorget)
-- [ ] Vektorisering från ortofoto
-- [ ] Hålbild i stilen Nordisk/grafisk direkt från vektorer (först – mest automatiserbar)
+- [x] Geometri, avstånd, tee-kamera, längdkontroll
+- [x] Grafisk hålbild från vektorer (grund för stilen Nordisk)
+- [x] Skylt 70 × 100 cm, tre plattor, förhandsvisning + tryck-PDF per platta
+- [x] Digital banguide: sida per hål med sponsor, tee-val och filmplats
+- [x] Ritverktyg för att digitalisera hål från ortofoto (testat end-to-end på syntetiskt ortofoto)
+- [x] Utsnitt ur Lantmäteriets GeoTIFF (testat på syntetiska rutor)
+- [ ] Riktig QR-kod (kräver `segno`, installeras på Macen)
+- [ ] Testa på Glasriket hål 3 med riktigt ortofoto (väntar på Geotorget)
+- [ ] Höjddata i rapporten (uppför/nedför) – `Elevation` finns, kopplas in när vi har filerna
+- [ ] Stilarna Signatur, Klassisk, Arv
 - [ ] Tee-vy och flygfilm (3D, Mac Pro)
-- [ ] Skyltmall 70 × 100 cm och digital banguide
+- [ ] Ecosigns tryckspecifikation in i `SignSpec` (mått, utfall, PDF/X)

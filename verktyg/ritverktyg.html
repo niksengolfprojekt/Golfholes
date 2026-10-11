@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ritverktyg – hål från ortofoto</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,'Helvetica Neue',Arial,sans-serif;display:flex;height:100vh;background:#1f241e;color:#2f3a2d}
+  aside{width:300px;background:#f4f1e8;padding:14px;overflow:auto;display:flex;flex-direction:column;gap:12px;font-size:13px}
+  h1{font-size:16px} h2{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#6b7565;margin-bottom:6px}
+  label{display:block;margin:4px 0 2px;color:#6b7565}
+  input,select,button,textarea{font:inherit}
+  input[type=text],input[type=number]{width:100%;padding:5px 7px;border:1px solid #d6d0bf;border-radius:6px;background:#fff}
+  .row{display:flex;gap:6px}.row>*{flex:1}
+  .layers button{display:block;width:100%;text-align:left;padding:7px 9px;margin-bottom:4px;border:1px solid #d6d0bf;border-radius:7px;background:#fff;cursor:pointer}
+  .layers button.on{background:#2f3a2d;color:#fff;border-color:#2f3a2d}
+  .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:7px;vertical-align:-1px}
+  .btn{padding:7px 10px;border-radius:7px;border:1px solid #2f3a2d;background:#2f3a2d;color:#fff;cursor:pointer}
+  .btn.light{background:#fff;color:#2f3a2d}
+  #status{background:#fff;border:1px solid #d6d0bf;border-radius:7px;padding:8px;line-height:1.5}
+  .ok{color:#3d7a35;font-weight:600}.bad{color:#b3362b;font-weight:600}
+  main{flex:1;position:relative;overflow:hidden;cursor:crosshair}
+  canvas{position:absolute;inset:0}
+  #help{position:absolute;left:10px;bottom:10px;background:rgba(244,241,232,.92);padding:7px 10px;border-radius:7px;font-size:12px}
+  textarea{width:100%;height:120px;font-family:ui-monospace,monospace;font-size:11px}
+</style>
+</head>
+<body>
+<aside>
+  <h1>Ritverktyg – hål från ortofoto</h1>
+
+  <div>
+    <h2>1. Ortofoto</h2>
+    <label>Bild (PNG/JPG) + world-fil (.pgw/.jgw) – välj båda</label>
+    <input type="file" id="files" multiple accept=".png,.jpg,.jpeg,.pgw,.jgw,.wld,.json">
+    <div id="geo" style="margin-top:4px;color:#6b7565">Ingen bild laddad.</div>
+  </div>
+
+  <div>
+    <h2>2. Hålet</h2>
+    <label>Klubb</label><input type="text" id="club" value="Glasrikets Golfklubb">
+    <div class="row">
+      <div><label>Hål</label><input type="number" id="hole" value="3"></div>
+      <div><label>Par</label><input type="number" id="par" value="4"></div>
+      <div><label>Index</label><input type="number" id="index" value=""></div>
+    </div>
+    <label>Tees enligt scorekort (namn=meter, kommaseparerat)</label>
+    <input type="text" id="scorecard" value="52/56/60=290, 49=274, 44=199">
+  </div>
+
+  <div>
+    <h2>3. Rita – välj lager</h2>
+    <div class="layers" id="layers"></div>
+    <div class="row"><button class="btn light" id="undo">Ångra punkt</button><button class="btn light" id="delete">Ta bort senaste</button></div>
+  </div>
+
+  <div>
+    <h2>4. Kontroll</h2>
+    <div id="status">Rita tees, spellinje och green.</div>
+  </div>
+
+  <div>
+    <h2>5. Spara</h2>
+    <div class="row"><button class="btn" id="export">Ladda ner hal-NN.yaml</button></div>
+    <label>Förhandsvisning</label><textarea id="yaml" readonly></textarea>
+  </div>
+</aside>
+
+<main id="stage">
+  <canvas id="cv"></canvas>
+  <div id="help">Klick = punkt · Dubbelklick/Enter = avsluta yta · Hjul = zoom · Dra med högerknapp eller mellanslag = panorera · Esc = avbryt</div>
+</main>
+
+<script>
+// ---------- Lager ----------
+const LAYERS = [
+  {key:'tee', name:'Tee (punkt)', color:'#ffffff', kind:'point'},
+  {key:'centerline', name:'Spellinje (linje, tee → green)', color:'#ffd23f', kind:'line', single:true},
+  {key:'green', name:'Green', color:'#7fe07a', kind:'poly', single:true},
+  {key:'fairway', name:'Fairway', color:'#b6e36b', kind:'poly'},
+  {key:'bunker', name:'Bunker', color:'#f1e2b8', kind:'poly'},
+  {key:'water', name:'Vatten / damm', color:'#56b4e9', kind:'poly'},
+  {key:'creek', name:'Bäck / dike', color:'#2c8fd6', kind:'poly'},
+  {key:'trees', name:'Skog / träd', color:'#2f7d32', kind:'poly'},
+];
+const S = {img:null, wf:null, view:{x:0,y:0,k:1}, layer:'tee', feats:[], cur:null};
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d'), stage = document.getElementById('stage');
+
+function layer(k){ return LAYERS.find(l=>l.key===k); }
+function renderLayers(){
+  const box = document.getElementById('layers'); box.innerHTML='';
+  for(const l of LAYERS){
+    const n = S.feats.filter(f=>f.layer===l.key).length;
+    const b = document.createElement('button');
+    b.className = l.key===S.layer?'on':'';
+    b.innerHTML = `<span class="sw" style="background:${l.color}"></span>${l.name} <span style="float:right;opacity:.7">${n||''}</span>`;
+    b.onclick = ()=>{ finish(); S.layer=l.key; renderLayers(); };
+    box.appendChild(b);
+  }
+}
+
+// ---------- Georeferens ----------
+// World-fil: A, D, B, E, C, F  →  E = A*col + B*row + C ;  N = D*col + E*row + F  (pixelmitt)
+function pix2geo(c,r){ const w=S.wf; return [w.A*c + w.B*r + w.C, w.D*c + w.E*r + w.F]; }
+function geo2pix(e,n){ const w=S.wf, det=w.A*w.E - w.B*w.D;
+  const x=e-w.C, y=n-w.F; return [( w.E*x - w.B*y)/det, (-w.D*x + w.A*y)/det]; }
+
+document.getElementById('files').onchange = async ev=>{
+  for(const f of ev.target.files){
+    const ext = f.name.split('.').pop().toLowerCase();
+    if(['png','jpg','jpeg'].includes(ext)){
+      const url = URL.createObjectURL(f); const im = new Image();
+      await new Promise(r=>{im.onload=r; im.src=url;}); S.img=im; S.imgName=f.name;
+    } else if(['pgw','jgw','wld'].includes(ext)){
+      const v=(await f.text()).trim().split(/\s+/).map(Number);
+      S.wf={A:v[0],D:v[1],B:v[2],E:v[3],C:v[4],F:v[5]};
+    } else if(ext==='json'){
+      const j=JSON.parse(await f.text()); if(j.worldfile) S.wf=j.worldfile;
+    }
+  }
+  if(S.img){ fit(); }
+  document.getElementById('geo').textContent = S.img && S.wf
+    ? `${S.imgName}: ${S.img.width}×${S.img.height} px, ${Math.abs(S.wf.A).toFixed(2)} m/px, SWEREF 99 TM`
+    : (S.img ? 'Bild laddad – world-fil saknas!' : 'World-fil laddad – bild saknas.');
+  draw(); update();
+};
+
+// ---------- Vy ----------
+function resize(){ cv.width=stage.clientWidth*devicePixelRatio; cv.height=stage.clientHeight*devicePixelRatio; draw(); }
+function fit(){ const k=Math.min(stage.clientWidth/S.img.width, stage.clientHeight/S.img.height);
+  S.view={k, x:(stage.clientWidth-S.img.width*k)/2, y:(stage.clientHeight-S.img.height*k)/2}; }
+function scr2pix(sx,sy){ return [(sx-S.view.x)/S.view.k, (sy-S.view.y)/S.view.k]; }
+function pix2scr(px,py){ return [px*S.view.k+S.view.x, py*S.view.k+S.view.y]; }
+window.onresize=resize;
+
+let pan=null, space=false;
+stage.addEventListener('wheel', e=>{ e.preventDefault(); const f=Math.exp(-e.deltaY*0.0015);
+  const r=stage.getBoundingClientRect(), mx=e.clientX-r.left, my=e.clientY-r.top;
+  S.view.x = mx-(mx-S.view.x)*f; S.view.y = my-(my-S.view.y)*f; S.view.k*=f; draw(); }, {passive:false});
+stage.addEventListener('contextmenu', e=>e.preventDefault());
+stage.addEventListener('mousedown', e=>{ if(e.button===2||e.button===1||space){ pan=[e.clientX,e.clientY,S.view.x,S.view.y]; } });
+window.addEventListener('mousemove', e=>{ if(pan){ S.view.x=pan[2]+e.clientX-pan[0]; S.view.y=pan[3]+e.clientY-pan[1]; draw(); } });
+window.addEventListener('mouseup', ()=>{ pan=null; });
+window.addEventListener('keydown', e=>{
+  if(e.target.tagName==='INPUT') return;
+  if(e.code==='Space'){ space=true; e.preventDefault(); }
+  if(e.key==='Enter') finish();
+  if(e.key==='Escape'){ S.cur=null; draw(); }
+  if((e.metaKey||e.ctrlKey) && e.key==='z'){ undo(); }
+});
+window.addEventListener('keyup', e=>{ if(e.code==='Space') space=false; });
+
+stage.addEventListener('click', e=>{
+  if(!S.img||!S.wf||space) return;
+  const r=stage.getBoundingClientRect(); const [px,py]=scr2pix(e.clientX-r.left, e.clientY-r.top);
+  const geo = pix2geo(px,py); const L=layer(S.layer);
+  if(L.kind==='point'){
+    const name = prompt('Teens namn (som på scorekortet), t.ex. 52/56/60:', '');
+    if(!name) return;
+    S.feats.push({layer:'tee', name, pts:[geo]});
+  } else {
+    if(!S.cur){ if(L.single) S.feats = S.feats.filter(f=>f.layer!==L.key); S.cur={layer:L.key, pts:[]}; }
+    S.cur.pts.push(geo);
+  }
+  draw(); update(); renderLayers();
+});
+stage.addEventListener('dblclick', e=>{ e.preventDefault(); if(S.cur) S.cur.pts.pop(); finish(); });
+
+function finish(){
+  if(!S.cur) return; const L=layer(S.cur.layer);
+  const min = L.kind==='line'?2:3;
+  if(S.cur.pts.length>=min){
+    let name='';
+    if(['bunker','water','creek'].includes(L.key)) name = prompt('Namn på hindret (frivilligt), t.ex. "Dammen":', '') || '';
+    S.feats.push({layer:S.cur.layer, name, pts:S.cur.pts});
+  }
+  S.cur=null; draw(); update(); renderLayers();
+}
+function undo(){ if(S.cur && S.cur.pts.length){ S.cur.pts.pop(); draw(); } }
+document.getElementById('undo').onclick=undo;
+document.getElementById('delete').onclick=()=>{ if(S.cur){S.cur=null;} else S.feats.pop(); draw(); update(); renderLayers(); };
+
+// ---------- Ritning ----------
+function draw(){
+  const d=devicePixelRatio; ctx.setTransform(d,0,0,d,0,0); ctx.clearRect(0,0,cv.width,cv.height);
+  if(!S.img) return;
+  ctx.save(); ctx.translate(S.view.x,S.view.y); ctx.scale(S.view.k,S.view.k); ctx.drawImage(S.img,0,0); ctx.restore();
+  if(!S.wf) return;
+  const all = S.cur ? [...S.feats, S.cur] : S.feats;
+  for(const f of all){
+    const L=layer(f.layer); const sp=f.pts.map(g=>pix2scr(...geo2pix(...g)));
+    ctx.strokeStyle=L.color; ctx.fillStyle=L.color; ctx.lineWidth=2;
+    if(L.kind==='point'){ const [x,y]=sp[0]; ctx.beginPath(); ctx.arc(x,y,6,0,7); ctx.fill(); ctx.strokeStyle='#000'; ctx.stroke();
+      ctx.fillStyle='#fff'; ctx.font='600 13px Inter,Arial'; ctx.fillText(f.name, x+9, y-8); continue; }
+    ctx.beginPath(); sp.forEach(([x,y],i)=> i?ctx.lineTo(x,y):ctx.moveTo(x,y));
+    if(L.kind==='poly' && f!==S.cur){ ctx.closePath(); ctx.globalAlpha=.28; ctx.fill(); ctx.globalAlpha=1; }
+    ctx.stroke(); sp.forEach(([x,y])=>{ ctx.beginPath(); ctx.arc(x,y,3,0,7); ctx.fill(); });
+  }
+}
+
+// ---------- Geometri för kontroll ----------
+const dist=(a,b)=>Math.hypot(b[0]-a[0],b[1]-a[1]);
+function project(line,p){ let best=[1e18,0], walked=0;
+  for(let i=0;i<line.length-1;i++){ const a=line[i],b=line[i+1],dx=b[0]-a[0],dy=b[1]-a[1],s2=dx*dx+dy*dy,s=Math.sqrt(s2);
+    let t=s2?((p[0]-a[0])*dx+(p[1]-a[1])*dy)/s2:0; t=Math.max(0,Math.min(1,t));
+    const q=[a[0]+t*dx,a[1]+t*dy], d=dist(p,q); if(d<best[0]) best=[d,walked+t*s]; walked+=s; }
+  return best[1]; }
+function centroid(poly){ let a=0,cx=0,cy=0; for(let i=0;i<poly.length;i++){ const [x0,y0]=poly[i],[x1,y1]=poly[(i+1)%poly.length],c=x0*y1-x1*y0; a+=c; cx+=(x0+x1)*c; cy+=(y0+y1)*c; }
+  a/=2; return [cx/(6*a), cy/(6*a)]; }
+function scorecard(){ const m={}; document.getElementById('scorecard').value.split(',').forEach(s=>{ const [k,v]=s.split('='); if(k&&v) m[k.trim()]=Number(v); }); return m; }
+
+function update(){
+  const st=document.getElementById('status');
+  const line=S.feats.find(f=>f.layer==='centerline'), green=S.feats.find(f=>f.layer==='green');
+  const tees=S.feats.filter(f=>f.layer==='tee');
+  const out=[];
+  if(!tees.length) out.push('Saknas: minst en tee.');
+  if(!line) out.push('Saknas: spellinje.');
+  if(!green) out.push('Saknas: green.');
+  if(line && green && tees.length){
+    const gm=project(line.pts, centroid(green.pts)); const sc=scorecard();
+    for(const t of tees){ const m=gm-project(line.pts,t.pts[0]); const want=sc[t.name];
+      if(want){ const diff=(m-want)/want*100; const ok=Math.abs(diff)<=3;
+        out.push(`Tee ${t.name}: ${m.toFixed(0)} m (scorekort ${want} m, ${diff>=0?'+':''}${diff.toFixed(1)} %) <span class="${ok?'ok':'bad'}">${ok?'ok':'kontrollera'}</span>`);
+      } else out.push(`Tee ${t.name}: ${m.toFixed(0)} m <span class="bad">namnet finns inte på scorekortet</span>`); }
+  }
+  st.innerHTML=out.join('<br>')||'–';
+  document.getElementById('yaml').value=toYaml();
+}
+
+// ---------- Export ----------
+const r1=v=>Math.round(v*10)/10;
+const pt=p=>`[${r1(p[0])}, ${r1(p[1])}]`;
+const poly=ps=>'['+ps.map(pt).join(', ')+']';
+function toYaml(){
+  const v=id=>document.getElementById(id).value; const sc=scorecard();
+  const by=k=>S.feats.filter(f=>f.layer===k);
+  const L=[];
+  L.push(`# Digitaliserat i ritverktyget ${new Date().toISOString().slice(0,10)} från ${S.imgName||'?'}`);
+  L.push(`club: ${JSON.stringify(v('club'))}`, `hole: ${Number(v('hole'))}`, `par: ${Number(v('par'))}`);
+  L.push(`index: ${v('index')?Number(v('index')):'null'}`);
+  L.push(`source: ${JSON.stringify('Ortofoto ©Lantmäteriet ('+(S.imgName||'?')+'), digitaliserat manuellt')}`);
+  L.push('origin: [0.0, 0.0]');
+  const cl=by('centerline')[0]; L.push(`centerline: ${cl?poly(cl.pts):'[]'}`);
+  L.push('tees:'); for(const t of by('tee')) L.push(`- {name: ${JSON.stringify(t.name)}, point: ${pt(t.pts[0])}, length_m: ${sc[t.name]??'null'}}`);
+  const gr=by('green')[0]; L.push(`green: ${gr?poly(gr.pts):'[]'}`);
+  const list=(key,items)=>{ L.push(items.length?`${key}:`:`${key}: []`); items.forEach(s=>L.push('- '+s)); };
+  list('hazards', ['bunker','water','creek'].flatMap(k=>by(k).map(h=>`{kind: ${k}, name: ${JSON.stringify(h.name||'')}, polygon: ${poly(h.pts)}}`)));
+  list('fairways', by('fairway').map(f=>poly(f.pts)));
+  list('trees', by('trees').map(f=>poly(f.pts)));
+  L.push('strategy: {}   # "säkert"/"chansa" skrivs och granskas av en golfare');
+  return L.join('\n')+'\n';
+}
+document.getElementById('export').onclick=()=>{
+  const n=String(document.getElementById('hole').value).padStart(2,'0');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([toYaml()],{type:'text/yaml'}));
+  a.download=`hal-${n}.yaml`; a.click();
+};
+document.querySelectorAll('aside input').forEach(i=>i.addEventListener('input',update));
+
+renderLayers(); resize(); update();
+</script>
+</body>
+</html>

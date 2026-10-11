@@ -87,6 +87,26 @@ def centroid(polygon: Sequence[Point]) -> Point:
     return (cx / (6 * a), cy / (6 * a))
 
 
+def contains(polygon: Sequence[Point], p: Point) -> bool:
+    """Ligger punkten inuti polygonen (ray casting)."""
+    x, y = p
+    inside = False
+    n = len(polygon)
+    for i in range(n):
+        x0, y0 = polygon[i]
+        x1, y1 = polygon[(i + 1) % n]
+        if (y0 > y) != (y1 > y) and x < (x1 - x0) * (y - y0) / (y1 - y0) + x0:
+            inside = not inside
+    return inside
+
+
+def rotate(p: Point, origin: Point, degrees_ccw: float) -> Point:
+    """Rotera punkten moturs kring origin."""
+    r = math.radians(degrees_ccw)
+    x, y = p[0] - origin[0], p[1] - origin[1]
+    return (x * math.cos(r) - y * math.sin(r), x * math.sin(r) + y * math.cos(r))
+
+
 def bearing(a: Point, b: Point) -> float:
     """Kompassriktning i grader från a mot b (0 = norr, 90 = öster)."""
     return math.degrees(math.atan2(b[0] - a[0], b[1] - a[1])) % 360

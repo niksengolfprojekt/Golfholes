@@ -19,5 +19,8 @@ Grafiska hålpresentationer och hålsponsorskyltar för svenska golfklubbar. Äg
 - Pilotklubb: Glasrikets GK, hål 3.
 
 ## Miljö
-- Molnmiljön saknar ofta paketindex: kärnkoden använder bara standardbiblioteket + PyYAML. Tyngre bibliotek (rasterio, shapely, Blender) körs på ägarens Mac Pro.
+- Molnmiljön saknar ofta paketindex: kärnkoden använder bara standardbiblioteket, PyYAML och Pillow. Tyngre bibliotek (rasterio, shapely, Blender) körs på ägarens Mac Pro.
 - Kör `python -m golfholes rapport <fil>` och testerna efter varje ändring.
+- I molnet saknas pytest: kör testfunktionerna direkt med python om pytest inte finns.
+- QR-koden är en tydlig platshållare om `segno` saknas – trycks aldrig så.
+- Status och nästa steg: `docs/flode.md`. Uppdatera den när något blir klart.

@@ -1,0 +1,10 @@
+# Påhittad exempelklubb för demo och tester
+club: Ekbacka Golfklubb
+web_base: https://exempel.se/ekbacka   # byts mot riktig domän före tryck
+style: nordisk
+sponsors:
+  7:
+    name: Nordvik
+    url: nordvik.se
+    logo: null        # sökväg till vektorlogga (SVG). null = namnet sätts i typsnittet
+    naming_rights: true   # rubriken blir "Nordvik-hålet"
