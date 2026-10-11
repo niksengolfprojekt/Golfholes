@@ -48,3 +48,33 @@ def test_mosaic_crop_places_tiles_correctly(tmp_path):
     assert im.getpixel((10, 30))[0] > 200 and im.getpixel((90, 30))[2] > 200
     jgw = out.with_suffix(".jgw").read_text().split()
     assert float(jgw[4]) == 500050.5 and float(jgw[5]) == 6300079.5
+
+
+def test_four_styles_render_from_same_data():
+    from golfholes.render.styles import STYLE_NAMES, render_green, render_hole
+
+    hole = Hole.from_yaml(EXAMPLE)
+    for st in STYLE_NAMES:
+        svg = render_hole(hole, st)
+        assert svg.startswith("<svg") and svg.endswith("</svg>")
+        assert render_green(hole, st).startswith("<svg")
+
+
+def test_club_picks_style_by_number_or_name():
+    from golfholes.render.styles import parse_style
+
+    assert parse_style(1) == 1 and parse_style("3") == 3 and parse_style("Klassisk") == 2
+    assert parse_style(None) == 4
+    for bad in (0, 5, "guld"):
+        try:
+            parse_style(bad)
+        except ValueError:
+            continue
+        raise AssertionError(f"{bad!r} borde ge fel")
+
+
+def test_scope_ids_keeps_svgs_apart():
+    from golfholes.render.styles import scope_ids
+
+    out = scope_ids('<filter id="wc"/><path filter="url(#wc)"/>', "h")
+    assert 'id="h-wc"' in out and "url(#h-wc)" in out

@@ -13,7 +13,7 @@ Grafiska hålpresentationer och hålsponsorskyltar för svenska golfklubbar. Äg
 - Påhittade klubbar och sponsorer (t.ex. "Ekbacka Golfklubb", "Nordvik") används i demo; riktiga sponsorers loggor bara med tillstånd.
 
 ## Produktbeslut (2026-10-11)
-- En datagrund per klubb, fyra stilar: Signatur (foto ovanifrån), Klassisk (akvarell), Arv (gravyr), Nordisk (mjuk 3D-illustration).
+- En datagrund per klubb, fyra stilar: 1 Signatur (foto ovanifrån), 2 Klassisk (akvarell), 3 Arv (gravyr), 4 Nordisk (mjuk 3D-illustration). Klubben väljer med `stil: 1–4` i `klubb.yaml`; koden i `golfholes/render/styles.py` (hålbild) och `sign.py` (`THEMES`, skylt).
 - Tee-vy: kamera på tee, 1,6 m höjd, sikte 150 m ut längs mittlinjen (par 3: mot green). Flygfilm: 5 m höjd längs hålet, avslutas i hålbild ovanifrån med sponsorlogga.
 - Skylt 70 × 100 cm, tre plattor: rubrik ("[Sponsor]-hålet"), hålguide (byts aldrig), sponsorplatta med logga i en färg + QR-kod. Tillverkas av Ecosign.
 - Pilotklubb: Glasrikets GK, hål 3.

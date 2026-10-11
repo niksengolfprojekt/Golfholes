@@ -49,6 +49,7 @@ class Hole:
     fairways: list[list[g.Point]] = field(default_factory=list)
     trees: list[list[g.Point]] = field(default_factory=list)  # skogs-/trädytor
     strategy: dict[str, str] = field(default_factory=dict)  # "säkert"/"chansa", granskas av golfare
+    ortho: Path | None = None  # utsnitt (JPG) med world-fil bredvid – används av fotostilen
     source: str = ""
 
     # ---------- inläsning ----------
@@ -72,6 +73,7 @@ class Hole:
             fairways=[pts(f) for f in d.get("fairways") or []],
             trees=[pts(t) for t in d.get("trees") or []],
             strategy=d.get("strategy", {}) or {},
+            ortho=(Path(path).parent / d["ortho"]).resolve() if d.get("ortho") else None,
             source=d.get("source", ""),
         )
 

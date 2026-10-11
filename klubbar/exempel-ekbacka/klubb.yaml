@@ -1,7 +1,8 @@
 # Påhittad exempelklubb för demo och tester
 club: Ekbacka Golfklubb
 web_base: https://exempel.se/ekbacka   # byts mot riktig domän före tryck
-style: nordisk
+stil: 4             # klubbens val: 1 Signatur, 2 Klassisk, 3 Arv, 4 Nordisk
+logo: null          # klubbmärke (SVG) – används i rubriken i stil 1
 sponsors:
   7:
     name: Nordvik

@@ -7,6 +7,7 @@
 | 3. Digitalisera | Öppna `verktyg/ritverktyg.html` i webbläsaren, ladda bilden + .jgw, klicka ut tees, spellinje, green, fairway, bunkrar, vatten, skog. Kontrollrutan visar längd mot scorekort direkt. | Ritverktyget | `hal-NN.yaml` sparad i `klubbar/<klubb>/` |
 | 4. Kontrollera | Avstånd, längd mot scorekort (±3 %), kamera för tee-vy. | `python -m golfholes rapport klubbar/<klubb>/hal-NN.yaml` | Alla tees "ok" |
 | 5. "Så spelar du hålet" | Skriv Säkert/Chansa i hålfilen utifrån avstånden. Granskas av en golfare. | Text i `strategy:` | Granskad |
+| 5b. Stilval | Klubben ser samma hål i alla fyra stilar och väljer 1–4. Valet skrivs in som `stil:` i `klubb.yaml`. | `python -m golfholes stilprov klubbar/<klubb>/hal-NN.yaml` | `stil:` satt |
 | 6. Klubbkontroll | Skicka hålbild + avstånd till klubben. | `python -m golfholes halbild …` | Skriftligt godkänt |
 | 7. Skylt | Förhandsvisning + tryck-PDF per platta till Ecosign. | `python -m golfholes skylt …` | Malin har granskat, QR-kod äkta |
 | 8. Webb | Digital banguide, sidan QR-koden pekar på. | `python -m golfholes webb klubbar/<klubb>` | Publicerad på klubbens/vår domän |
@@ -15,6 +16,7 @@
 ## Status
 - [x] Geometri, avstånd, tee-kamera, längdkontroll
 - [x] Grafisk hålbild från vektorer (grund för stilen Nordisk)
+- [x] Fyra stilar att välja 1–4 (Signatur, Klassisk, Arv, Nordisk) – hålbild, greenförstoring och hel skylt i varje stil, plus `stilprov` som visar alla fyra sida vid sida
 - [x] Skylt 70 × 100 cm, tre plattor, förhandsvisning + tryck-PDF per platta
 - [x] Digital banguide: sida per hål med sponsor, tee-val och filmplats
 - [x] Ritverktyg för att digitalisera hål från ortofoto (testat end-to-end på syntetiskt ortofoto)
@@ -22,6 +24,9 @@
 - [ ] Riktig QR-kod (kräver `segno`, installeras på Macen)
 - [ ] Testa på Glasriket hål 3 med riktigt ortofoto (väntar på Geotorget)
 - [ ] Höjddata i rapporten (uppför/nedför) – `Elevation` finns, kopplas in när vi har filerna
-- [ ] Stilarna Signatur, Klassisk, Arv
+- [ ] Signatur med riktigt ortofoto (koden är klar, väntar på Geotorget – visar platshållare tills dess)
+- [ ] Malin granskar de fyra stilarna (typsnitt, färger, ornament) – akvarell och gravyr är kodritade och mindre måleriska än AI-skisserna
+- [ ] Webbsidorna i klubbens stil (använder ännu Nordisk)
+- [ ] Klubbmärke (SVG) från klubben till rubriken i stil 1
 - [ ] Tee-vy och flygfilm (3D, Mac Pro)
 - [ ] Ecosigns tryckspecifikation in i `SignSpec` (mått, utfall, PDF/X)
