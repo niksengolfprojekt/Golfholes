@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+.DS_Store
+data/
+output/
+*.tif
+*.tiff
+*.laz
+*.las

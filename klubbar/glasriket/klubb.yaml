@@ -1,0 +1,29 @@
+# Glasrikets Golfklubb – pilotklubb
+club: Glasrikets Golfklubb
+web: https://www.glasriketsgk.se
+contact: info@glasriketsgk.se, 0470-653 20
+caddee: false   # finns inte på caddee.se/anslutna-klubbar (2026-10-11)
+
+# Banans yta med 100 m marginal, SWEREF 99 TM (EPSG:3006).
+# Underlag från OpenStreetMap (relation 2715292). Ladda ner detta område från Geotorget.
+bbox_sweref99tm:
+  e_min: 491366
+  n_min: 6305290
+  e_max: 492427
+  n_max: 6306850
+
+lantmateriet:
+  status: ansökan skickad 2026-10-09, väntar på godkännande
+  ortofoto: null        # fyll i filnamn + bildår när nedladdat
+  markhojdmodell: null
+
+holes:
+  - hole: 3
+    par: 4
+    index: 16
+    tees: {"52/56/60": 290, "49": 274, "44": 199}   # meter, klubbens hålkarta
+    notes: >
+      Damm till höger vid tee 49. Hålet nästan rakt, svag vänsterböj mot green.
+      Spelriktning ungefär nordväst. Referensfoton tagna strax bakom bakre tee
+      (52/56/60), vänster sida.
+    geometry: null      # hal-03.yaml skapas när ortofotot är vektoriserat

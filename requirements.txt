@@ -1,0 +1,4 @@
+pyyaml>=6
+pytest>=8
+# Kommer när vi börjar läsa Lantmäteriets data och rendera:
+# numpy, rasterio, shapely, pillow
