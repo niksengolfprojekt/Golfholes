@@ -8,6 +8,7 @@
 | 4. Kontrollera | Avstånd, längd mot scorekort (±3 %), kamera för tee-vy. | `python -m golfholes rapport klubbar/<klubb>/hal-NN.yaml` | Alla tees "ok" |
 | 5. "Så spelar du hålet" | Skriv Säkert/Chansa i hålfilen utifrån avstånden. Granskas av en golfare. | Text i `strategy:` | Granskad |
 | 5b. Stilval | Klubben ser samma hål i alla fyra stilar och väljer 1–4. Valet skrivs in som `stil:` i `klubb.yaml`. | `python -m golfholes stilprov klubbar/<klubb>/hal-NN.yaml` | `stil:` satt |
+| 5c. Layoutval | Klubben ser samma hål i alla layouter och väljer. Valet skrivs in som `layout:` i `klubb.yaml` (en siffra eller en lista). Texterna per hål ligger i `klubbar/<klubb>/halkort/hal-NN.yaml`; mallen säger till om en text är för lång. | `python -m golfholes layoutprov klubbar/<klubb>/halkort/hal-NN.yaml` | `layout:` satt |
 | 6. Klubbkontroll | Skicka hålbild + avstånd till klubben. | `python -m golfholes halbild …` | Skriftligt godkänt |
 | 7. Skylt | Förhandsvisning + tryck-PDF per platta till Ecosign. | `python -m golfholes skylt …` | Malin har granskat, QR-kod äkta |
 | 8. Webb | Digital banguide, sidan QR-koden pekar på. | `python -m golfholes webb klubbar/<klubb>` | Publicerad på klubbens/vår domän |
@@ -21,6 +22,10 @@
 - [x] Digital banguide: sida per hål med sponsor, tee-val och filmplats
 - [x] Ritverktyg för att digitalisera hål från ortofoto (testat end-to-end på syntetiskt ortofoto)
 - [x] Utsnitt ur Lantmäteriets GeoTIFF (testat på syntetiska rutor)
+- [x] Hålkort som fasta mallar: 1 Hålkort (spikad 2026-10-16), 2 Poster, 3 Mörk, 4 Skärm 16:9, 5 Banguide, 6 Sponsorhål. Samma mall för varje hål, maxlängd per textfält, `halkort` och `layoutprov`
+- [x] Glasriket hål 14 och hål 3 som typbilder i mallen (AI-bild, inte exakt form – byts mot ortofoto)
+- [ ] Hålkort från riktig hålbild: koppla `halbild` (ortofoto + masker) som bild i hålkortet, med avståndsmarkeringar ur hålfilen
+- [ ] Tryck-PDF av hålkorten (mått bestäms när klubben valt format)
 - [ ] Riktig QR-kod (kräver `segno`, installeras på Macen)
 - [ ] Testa på Glasriket hål 3 med riktigt ortofoto (väntar på Geotorget)
 - [ ] Höjddata i rapporten (uppför/nedför) – `Elevation` finns, kopplas in när vi har filerna

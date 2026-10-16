@@ -2,6 +2,7 @@
 club: Glasrikets Golfklubb
 web: https://www.glasriketsgk.se
 contact: info@glasriketsgk.se, 0470-653 20
+layout: 1            # hålkortets layout: 1 Hålkort (spikad), 2 Poster, 3 Mörk, 4 Skärm, 5 Banguide, 6 Sponsorhål
 caddee: false   # finns inte på caddee.se/anslutna-klubbar (2026-10-11)
 
 # Banans yta med 100 m marginal, SWEREF 99 TM (EPSG:3006).

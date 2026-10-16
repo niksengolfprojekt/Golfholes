@@ -1,0 +1,24 @@
+# Hålkort för Glasriket hål 14 – TYPBILD. Texten är den spikade layoutens referens (Eric 2026-10-16).
+# Bilden är AI-genererad för att visa stilen och är inte banans exakta form. Byts mot hålbild från
+# Lantmäteriets ortofoto när hal-14.yaml finns. Längder enligt typbilden – stäm av mot scorekortet.
+club: Glasrikets Golfklubb
+bana: Fylleryd
+hole: 14
+par: 4
+index: 1
+tees: [["60", 369], ["56", 335], ["52", 290]]
+bild: ../typbilder/hal-14.webp
+typbild: true
+rubrik: Banans svåraste hål
+beskrivning: >-
+  Ett smalt dogleg höger genom björkskogen i Fylleryd. Out längs hela vänstersidan,
+  skog till höger och en bunker som vaktar greenen kort om höger. Här vinns och förloras rundan.
+rad_rubrik: Råd från pro:n
+rad:
+  - Siktet från tee är den 2,5 meter höga enen i högra skogskanten. Slå över den så ligger du bra till på fairway.
+  - Långtslående kan gena över skogen mot green och lämna sig ett kort inspel – men det kräver ett perfekt utslag.
+  - "Medelgolfaren ska inte ta den chansen. Spela hålet som ett par fem: utslag mot enen, ett andraslag fram mot greenen och ett kort inspel förbi bunkern."
+slutrad: En bogey på index 1 är inget att skämmas för.
+strategi:
+  sakert: Utslag mot enen, ett andraslag fram mot greenen och ett kort inspel förbi bunkern.
+  chansa: Gena över skogen mot green. Kräver ett perfekt utslag – out längs hela vänstersidan.

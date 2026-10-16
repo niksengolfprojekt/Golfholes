@@ -7,6 +7,11 @@
 
 Stil väljs i klubb.yaml med `stil: 1–4`:  1 Signatur · 2 Klassisk · 3 Arv · 4 Nordisk.
 --stil på kommandoraden går före klubbens val.
+  python -m golfholes halkort  klubbar/<klubb>/halkort/hal-14.yaml [--layout 1-6] → output/<klubb>/halkort/
+  python -m golfholes layoutprov klubbar/<klubb>/halkort/hal-14.yaml  → samma hål i alla layouter + översikt
+
+Layout väljs i klubb.yaml med `layout: 1` (eller en lista, t.ex. [1, 4]):
+  1 Hålkort (spikad) · 2 Poster · 3 Mörk · 4 Skärm · 5 Banguide · 6 Sponsorhål
   python -m golfholes webb     klubbar/<klubb>                      → output/<klubb>/webb/
   python -m golfholes utsnitt  klubbar/<klubb> data/<klubb>/orto/*.tif  → data/<klubb>/utsnitt/orto.jpg + .jgw
 """
@@ -103,6 +108,45 @@ def stilprov(path: str) -> int:
     return 0
 
 
+def _club_dir(p: Path) -> Path:
+    for d in [p.parent, *p.parents]:
+        if (d / "klubb.yaml").exists():
+            return d
+    return p.parent
+
+
+def halkort(path: str, layout: str | None) -> int:
+    from .render.halkort import Halkort, parse_layout, render
+
+    p = Path(path)
+    club_dir = _club_dir(p)
+    club = yaml.safe_load((club_dir / "klubb.yaml").read_text(encoding="utf-8")) or {}
+    layouts = parse_layout(layout if layout is not None else club.get("layout", 1))
+    c = Halkort.from_yaml(p)
+    fel = c.kontroll()
+    for f in fel:
+        print(f"FEL: {f}")
+    if fel:
+        return 1
+    for n in layouts:
+        out = render(c, n, Path("output") / club_dir.name / "halkort" / f"{p.stem}-layout{n}.png")
+        print(f"  {out}")
+    return 0
+
+
+def layoutprov(path: str) -> int:
+    from .render.halkort import Halkort, build_layout_samples
+
+    p = Path(path)
+    c = Halkort.from_yaml(p)
+    for f in c.kontroll():
+        print(f"FEL: {f}")
+    for k, v in build_layout_samples(c, Path("output") / _club_dir(p).name / "layoutprov").items():
+        print(f"  {k}: {v}")
+    print("Klubben väljer layout och skriver in det som `layout:` i klubb.yaml.")
+    return 0
+
+
 def webb(club_dir: str) -> int:
     from .render.web import build_site
 
@@ -136,6 +180,10 @@ def main(argv: list[str] | None = None) -> int:
         sp.add_argument("fil")
         sp.add_argument("--stil", default=None, help="1 Signatur, 2 Klassisk, 3 Arv, 4 Nordisk (standard: klubbens val)")
     sub.add_parser("stilprov", help="Samma hål i alla fyra stilar – för klubbens val").add_argument("fil")
+    hk = sub.add_parser("halkort", help="Hålkort i klubbens layout (PNG)")
+    hk.add_argument("fil")
+    hk.add_argument("--layout", default=None, help="1–6 (standard: klubbens val i klubb.yaml)")
+    sub.add_parser("layoutprov", help="Samma hål i alla layouter – för klubbens val").add_argument("fil")
     sub.add_parser("webb", help="Digital banguide för en klubb").add_argument("klubbmapp")
     u = sub.add_parser("utsnitt", help="Klipp ut banan ur Lantmäteriets ortofoto")
     u.add_argument("klubbmapp")
@@ -150,6 +198,10 @@ def main(argv: list[str] | None = None) -> int:
         return skylt(a.fil, a.stil)
     if a.cmd == "stilprov":
         return stilprov(a.fil)
+    if a.cmd == "halkort":
+        return halkort(a.fil, a.layout)
+    if a.cmd == "layoutprov":
+        return layoutprov(a.fil)
     if a.cmd == "webb":
         return webb(a.klubbmapp)
     if a.cmd == "utsnitt":
