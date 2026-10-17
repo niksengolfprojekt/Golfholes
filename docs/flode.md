@@ -34,6 +34,8 @@
 - [ ] Högupplösta texturkit för tryck (genereras som rena texturer, inte hela hål) + kit för Arv och Signatur-ljussättning
 - [ ] Ritverktyget: fler lager som skisserna visar – gångvägar, broar, solitärträd, ruffkant
 - [ ] Malin granskar de fyra stilarna (typsnitt, färger, ornament) – akvarell och gravyr är kodritade och mindre måleriska än AI-skisserna
+- [x] Stilprov av hålbilden, Glasriket hål 14: akvarell, gravyr, mjuk 3D, platt grafisk och arkitektskiss (AI-målade på typbilden, med originalets siluett så formen är exakt densamma). Bilder i `klubbar/glasriket/typbilder/stilar/`. De visar målbilden för texturkiten; riktiga hål målas från ortofotots masker.
+- [ ] Eric väljer vilka hålbildsstilar som ska erbjudas
 - [ ] Webbsidorna i klubbens stil (använder ännu Nordisk)
 - [ ] Klubbmärke (SVG) från klubben till rubriken i stil 1
 - [ ] Tee-vy och flygfilm (3D, Mac Pro)
