@@ -37,7 +37,8 @@
 - [x] Stilprov av hålbilden, Glasriket hål 14: akvarell, gravyr, mjuk 3D, platt grafisk och arkitektskiss (AI-målade på typbilden, med originalets siluett så formen är exakt densamma). Bilder i `klubbar/glasriket/typbilder/stilar/`. De visar målbilden för texturkiten; riktiga hål målas från ortofotots masker.
 - [x] Andra omgången stilprov med egna färgskalor: blå gravyr, screentryck, sommarakvarell, vinterskymning
 - [ ] Spelinformationen (prickar, flagga, outlinje) ritas av koden ovanpå stilen så den är lika och läsbar i alla stilar
-- [ ] Eric väljer vilka fem hålbildsstilar som visas på sajten
+- [x] Eric spikade fem hålbildsstilar för sajten (2026-10-17): 1 Foto höst, 2 Blå gravyr, 3 Sommarakvarell, 4 Screentryck, 5 Papperssnitt (bäst i mörkt hålkort). Regel i alla: fairway ljusast, ruff mörkare, skog mörkast. Översikt: `/mnt/project-files/hallayouter/stilar/hal-14-SPIKADE-fem-stilar.jpg`
+- [ ] Koppla de fem stilarna till `stil:` i koden (i dag 1–4 kodritade) med texturkit per stil
 - [ ] Webbsidorna i klubbens stil (använder ännu Nordisk)
 - [ ] Klubbmärke (SVG) från klubben till rubriken i stil 1
 - [ ] Tee-vy och flygfilm (3D, Mac Pro)
