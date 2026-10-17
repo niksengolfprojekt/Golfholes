@@ -38,6 +38,7 @@
 - [x] Andra omgången stilprov med egna färgskalor: blå gravyr, screentryck, sommarakvarell, vinterskymning
 - [ ] Spelinformationen (prickar, flagga, outlinje) ritas av koden ovanpå stilen så den är lika och läsbar i alla stilar
 - [x] Eric spikade fem hålbildsstilar för sajten (2026-10-17): 1 Foto höst, 2 Blå gravyr, 3 Sommarakvarell, 4 Screentryck, 5 Papperssnitt (bäst i mörkt hålkort). Regel i alla: fairway ljusast, ruff mörkare, skog mörkast. Översikt: `/mnt/project-files/hallayouter/stilar/hal-14-SPIKADE-fem-stilar.jpg`
+- [x] Klubbens färger: `verktyg/klubbfarg.py` byter stilens färger mot klubbens tonskala (5 färger, mörk till ljus) och ritar prickar och flagga ovanpå. Mörka hålkortet tar `farg_mork` från hålfilen. Prov i tre paletter: `/mnt/project-files/hallayouter/klubbfarger/`
 - [ ] Koppla de fem stilarna till `stil:` i koden (i dag 1–4 kodritade) med texturkit per stil
 - [ ] Webbsidorna i klubbens stil (använder ännu Nordisk)
 - [ ] Klubbmärke (SVG) från klubben till rubriken i stil 1

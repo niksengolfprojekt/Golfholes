@@ -60,6 +60,7 @@ class Halkort:
     chansa: str = ""
     sponsor: Sponsor | None = None
     typbild: bool = False
+    farg_mork: str = "#142219"   # bakgrund i mörk layout; klubbens mörkaste färg
 
     @classmethod
     def from_yaml(cls, path: str | Path) -> "Halkort":
@@ -75,6 +76,7 @@ class Halkort:
             slutrad=d.get("slutrad", ""), sakert=d.get("strategi", {}).get("sakert", ""),
             chansa=d.get("strategi", {}).get("chansa", ""),
             sponsor=Sponsor(**sp) if sp else None, typbild=bool(d.get("typbild", False)),
+            farg_mork=d.get("farg_mork", "#142219"),
         )
 
     def kontroll(self) -> list[str]:
@@ -149,7 +151,9 @@ def _tee_rows(c: Halkort) -> str:
 def layout_halkort(c: Halkort, dark: bool = False) -> tuple[str, int, int]:
     W, H = 848, 1264
     if dark:
-        bg = "radial-gradient(ellipse at 35% 45%,#1d3328 0%,#142219 70%,#101b14 100%)"
+        m = c.farg_mork
+        bg = (f"radial-gradient(ellipse at 35% 45%,color-mix(in srgb,{m} 94%,#fff) 0%,{m} 70%,"
+              f"color-mix(in srgb,{m} 80%,#000) 100%)")
         ink, body, head, rule, num = "#efe7d6", "rgba(239,231,214,.74)", "#c8a96b", "rgba(200,169,107,.55)", "#efe7d6"
         num_font = "'Cormorant Garamond',serif;font-weight:500"
         sans = "'DM Sans',sans-serif"
