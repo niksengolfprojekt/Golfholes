@@ -199,7 +199,13 @@ def hamta(club_dir: str, ar: int | None) -> int:
         print(f"  {f['katalog']:<5} {f['datum']}  {f['fil']}")
     orto = [f["fil"] for f in logg["filer"] if f["katalog"] == "orto"]
     print(f"Logg: {data_dir / 'lantmateriet.json'}")
-    return utsnitt(club_dir, orto, None)
+    utsnitt(club_dir, orto, None)
+    from .lantmateriet import hojd_utsnitt
+
+    hojd = [f["fil"] for f in logg["filer"] if f["katalog"] == "hojd"]
+    h = hojd_utsnitt(hojd, (b["e_min"], b["n_min"], b["e_max"], b["n_max"]), data_dir / "utsnitt")
+    print(f"Höjd: {h['lagst']}–{h['hogst']} m ö.h. → {h['fil']} + hojd_skuggning.png")
+    return 0
 
 
 def main(argv: list[str] | None = None) -> int:

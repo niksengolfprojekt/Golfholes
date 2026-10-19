@@ -27,7 +27,7 @@
 - [ ] Hålkort från riktig hålbild: koppla `halbild` (ortofoto + masker) som bild i hålkortet, med avståndsmarkeringar ur hålfilen
 - [ ] Tryck-PDF av hålkorten (mått bestäms när klubben valt format)
 - [ ] Riktig QR-kod (kräver `segno`, installeras på Macen)
-- [x] Sök och hämta direkt från Lantmäteriets STAC-API (`sok`, `hamta`) – sökning testad mot riktiga API:t, nedladdning väntar på inloggningen som miljövariabel
+- [x] Sök och hämta direkt från Lantmäteriets STAC-API (`sok`, `hamta`) – testat skarpt 2026-10-19: Glasrikets ortofoto 2025 och markhöjdmodell hämtade med nätverkshemligheten, utsnitt + höjd + reliefbild klara
 - [ ] Testa på Glasriket hål 3 med riktigt ortofoto (Eric har åtkomst sedan 2026-10-19; väntar på inloggningen som nätverkshemlighet i molnmiljön)
 - [ ] Höjddata i rapporten (uppför/nedför) – `Elevation` finns, kopplas in när vi har filerna
 - [ ] Signatur med riktigt ortofoto (koden är klar, väntar på Geotorget – visar platshållare tills dess)

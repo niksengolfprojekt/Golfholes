@@ -14,10 +14,10 @@ bbox_sweref99tm:
   n_max: 6306850
 
 lantmateriet:
-  status: åtkomst klar 2026-10-19 (Eric har laddat ner rutorna till Drive)
+  status: hämtat i molnet 2026-10-19 med hamta (utsnitt i projektmappen glasriket/lantmateriet/)
   # Hämtas med `python -m golfholes hamta klubbar/glasriket` (kräver Geotorget-inloggning i molnmiljön)
   ortofoto: o63050_4900_25_mr25.tif     # orto-e2-2025, fotograferat 2025-07-01, 16 cm
-  markhojdmodell: m630_49.tif           # 1 m, laserskannat 2026-03-09/10
+  markhojdmodell: m630_49.tif           # 1 m, laserskannat 2026-03-09/10, 169,9–205,7 m ö.h. inom banan
 
 holes:
   - hole: 3
