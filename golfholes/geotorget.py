@@ -1,8 +1,9 @@
 """Söker och hämtar Lantmäteriets ortofoto och markhöjdmodell direkt via deras STAC-API.
 
 Sökningen är öppen för alla. Nedladdningen kräver Geotorget-inloggning, som läses
-från miljövariablerna LM_ANVANDARE och LM_LOSENORD. De sätts i projektets
-inställningar (miljövariabler), aldrig i chatten och aldrig i en fil i repot.
+helst som nätverkshemlighet (Basic) för dl1.lantmateriet.se i molnmiljön, så att
+lösenordet aldrig syns för koden. Alternativt miljövariablerna LM_ANVANDARE och
+LM_LOSENORD. Aldrig i chatten och aldrig i en fil i repot.
 
 Typiskt flöde:
     python -m golfholes sok klubbar/glasriket          # vad finns, vilka år
@@ -92,13 +93,15 @@ def senaste(rutor: list[Ruta]) -> list[Ruta]:
     return sorted((r for r in rutor if r.samling == nyast), key=lambda r: r.id)
 
 
-def inloggning() -> str:
+def inloggning() -> str | None:
+    """Authorization-huvud från LM_ANVANDARE/LM_LOSENORD, eller None.
+
+    None betyder att inloggningen ligger som nätverkshemlighet för dl1.lantmateriet.se
+    i molnmiljön: då lägger miljön själv på huvudet och koden ser aldrig lösenordet.
+    """
     anv, lös = os.environ.get("LM_ANVANDARE"), os.environ.get("LM_LOSENORD")
     if not anv or not lös:
-        raise SystemExit(
-            "Inloggning saknas: sätt miljövariablerna LM_ANVANDARE och LM_LOSENORD "
-            "(Geotorget-användarnamn och lösenord) i projektinställningarna. "
-            "Klistra aldrig in dem i chatten.")
+        return None
     return "Basic " + base64.b64encode(f"{anv}:{lös}".encode()).decode()
 
 
@@ -122,8 +125,10 @@ def ladda_ner(url: str, mål: Path, auth: str | None) -> Path:
             pass
         elif e.code in (401, 403):
             raise SystemExit(
-                f"Lantmäteriet nekade nedladdningen ({e.code}). Kontrollera LM_ANVANDARE/LM_LOSENORD "
-                "och att kontot har godkända villkor för ortofoto och markhöjdmodell på Geotorget.") from e
+                f"Lantmäteriet nekade nedladdningen ({e.code}). Inloggning saknas eller är fel: lägg "
+                "Geotorget-inloggningen som nätverkshemlighet för dl1.lantmateriet.se i molnmiljön "
+                "(eller LM_ANVANDARE/LM_LOSENORD), och kontrollera att kontot har godkända villkor "
+                "för ortofoto och markhöjdmodell på Geotorget. Klistra aldrig in den i chatten.") from e
         else:
             raise
     del_fil.replace(mål)

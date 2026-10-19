@@ -1,5 +1,3 @@
-import pytest
-
 from golfholes.geotorget import Ruta, bbox_wgs84, inloggning, senaste
 from golfholes.sweref import sweref99tm_to_wgs84, wgs84_to_sweref99tm
 
@@ -30,8 +28,10 @@ def test_senaste_picks_newest_colour_photo():
     assert [r.id for r in senaste(rutor)] == ["o1_25_mr25", "o2_25_mr25"]
 
 
-def test_inloggning_kraver_miljovariabler(monkeypatch):
+def test_inloggning_fran_miljovariabler_eller_natverkshemlighet(monkeypatch):
     monkeypatch.delenv("LM_ANVANDARE", raising=False)
     monkeypatch.delenv("LM_LOSENORD", raising=False)
-    with pytest.raises(SystemExit):
-        inloggning()
+    assert inloggning() is None  # miljön lägger på huvudet själv
+    monkeypatch.setenv("LM_ANVANDARE", "a")
+    monkeypatch.setenv("LM_LOSENORD", "b")
+    assert inloggning() == "Basic YTpi"
