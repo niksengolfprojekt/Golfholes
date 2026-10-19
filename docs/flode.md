@@ -25,7 +25,8 @@
 - [x] Utsnitt ur Lantmäteriets GeoTIFF (testat på syntetiska rutor)
 - [x] Hålkort som fasta mallar: 1 Hålkort (spikad 2026-10-16), 2 Poster, 3 Mörk, 4 Skärm 16:9, 5 Banguide, 6 Sponsorhål. Samma mall för varje hål, maxlängd per textfält, `halkort` och `layoutprov`
 - [x] Glasriket hål 14 och hål 3 som typbilder i mallen (AI-bild, inte exakt form – byts mot ortofoto)
-- [ ] Hålkort från riktig hålbild: koppla `halbild` (ortofoto + masker) som bild i hålkortet, med avståndsmarkeringar ur hålfilen
+- [x] Hålkort från riktig hålbild: `fotobild` gör stil 1 Foto höst ur ortofotot längs hålets spelytor (höstfärger, skuggor utjämnade, prickar 100/150 m och flagga ritade av koden) – Glasriket hål 3 i hålkort layout 1, 2026-10-19. Outlinje ritas först när klubben gett den.
+- [x] Spelkorridoren: `utkast` ritar aldrig skog i bandet längs spellinjen och från varje tee (`spelfri_m`, 12 m)
 - [ ] Tryck-PDF av hålkorten (mått bestäms när klubben valt format)
 - [ ] Riktig QR-kod (kräver `segno`, installeras på Macen)
 - [x] Utkast ur ortofoto (`utkast`): trollstav för green/fairway, automatisk skog/vatten/bunker, spellinje genom fairwayns mitt, rättning i ritverktyget – provat på Glasriket hål 3 2026-10-19 (två av tre tees inom ±3 %, tee 44 syns inte på fotot)

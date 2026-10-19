@@ -1,25 +1,24 @@
-# Hålkort för Glasriket hål 3 – TYPBILD, test att mallen går att upprepa på ett andra hål.
-# Fakta från klubb.yaml (klubbens hålkarta) och förslaget till klubben (nya bunkrar i höst).
-# Bilden är AI-genererad efter hålkartans beskrivning: formen, dammen och bunkrarna är INTE exakta.
-# Spelråden är UTKAST – ska skrivas eller granskas av klubbens pro innan något visas för klubben.
+# Hålkort för Glasriket hål 3 – hålbild ur Lantmäteriets ortofoto 2025 (python -m golfholes fotobild).
+# Längder och par/index: klubbens banguide 2025 (glasriketsgk.se/haloversikt).
+# Råden är klubbens egna "Råd från PRO:n" ur samma banguide, lätt redigerade – klubben godkänner.
+# Tee 44 är inte bekräftad på fotot (längdkontrollen -11,5 %) – klubben markerar den.
 club: Glasrikets Golfklubb
 bana: Fylleryd
 hole: 3
 par: 4
 index: 16
 tees: [["52 · 56 · 60", 290], ["49", 274], ["44", 199]]
-bild: ../typbilder/hal-03.webp
-typbild: true
-rubrik: Kort par 4 med dammen
+bild: ../halbilder/hal-03-foto.webp
+typbild: false
+rubrik: Genvägen kräver 240 m
 beskrivning: >-
-  Nästan rakt och kort, med en svag vänsterböj in mot greenen. Dammen till höger syns redan
-  från tee 49 och fångar den som slår för långt åt höger. Bunkrarna vid greenen är nybyggda i höst.
+  Ett kort par 4 som svänger höger mot en liten, inbunkrad green. Out längs hela högersidan
+  och en damm till höger om tee 49.
 rad_rubrik: Råd från pro:n
 rad:
-  - Driver behövs inte. Ett järn eller en hybrid från tee, siktat mot vänstra halvan av fairway, håller bollen borta från dammen.
-  - Då återstår ett kort inspel. Sikta på mitten av greenen, oavsett var flaggan står.
-  - Hålet är ett av banans lättaste på index. Här finns en birdiechans.
-slutrad: Spela säkert från tee, attackera med inspelet.
+  - Den långtslående genar mot greenen, men det krävs en carry på cirka 240 meter.
+  - Medelgolfaren slår sitt utslag cirka 170 meter rakt fram och får då ett inspel på cirka 100 meter.
+slutrad: Håll dig borta från högersidan – där är det out.
 strategi:
-  sakert: Järn eller hybrid mot vänstra halvan av fairway, kort inspel mot mitten av greenen.
-  chansa: Driver förbi dammen för ett wedgeinspel. Ett slag åt höger hamnar i vattnet.
+  sakert: Utslag cirka 170 meter rakt fram, sedan ett inspel på cirka 100 meter mot den lilla greenen.
+  chansa: Gena mot greenen. Kräver en carry på cirka 240 meter, och högersidan är out.

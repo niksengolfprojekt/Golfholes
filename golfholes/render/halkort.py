@@ -183,7 +183,7 @@ def layout_halkort(c: Halkort, dark: bool = False) -> tuple[str, int, int]:
     pro = c.rad[:2] if c.sponsor else c.rad   # sponsorplattan tar plats: bara de två första råden
     css = f"""
 body{{background:{bg}}}
-.num{{position:absolute;left:517px;width:300px;top:{92 if c.sponsor else 98}px;text-align:center;font:{num_font};
+.num{{position:absolute;left:517px;width:300px;top:{92 if c.sponsor else 98}px;text-align:center;font-family:{num_font};
   font-size:{160 if dark else 146}px;line-height:1;color:{num};letter-spacing:{'0' if dark else '-.01em'}}}
 .par{{position:absolute;left:517px;width:300px;top:251px;text-align:center;font:700 29px {sans};color:{ink};
   text-transform:uppercase;{caps}}}

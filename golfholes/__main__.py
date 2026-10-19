@@ -233,6 +233,18 @@ def utkast(fro_fil: str) -> int:
     return rapport(str(ut), None)
 
 
+def fotobild(path: str) -> int:
+    from .render.foto import fotobild as rita, orto_for
+
+    p = Path(path)
+    hole = Hole.from_yaml(p)
+    club_dir = _club_dir(p)
+    ut = club_dir / "halbilder" / f"hal-{hole.number:02d}-foto.webp"
+    rita(hole, orto_for(Path("data") / club_dir.name), ut)
+    print(f"Sparat: {ut} – lägg in som `bild:` i halkort/hal-{hole.number:02d}.yaml")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="golfholes")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -260,7 +272,10 @@ def main(argv: list[str] | None = None) -> int:
     h.add_argument("klubbmapp")
     h.add_argument("--ar", type=int, default=None, help="ortofotots år (standard: nyaste)")
     sub.add_parser("utkast", help="Utkast av ett hål ur ortofotot från fröpunkter (trollstav)").add_argument("frofil")
+    sub.add_parser("fotobild", help="Hålbild i fotostil ur ortofotot (för hålkortet)").add_argument("fil")
     a = p.parse_args(argv)
+    if a.cmd == "fotobild":
+        return fotobild(a.fil)
     if a.cmd == "utkast":
         return utkast(a.frofil)
     if a.cmd == "sok":

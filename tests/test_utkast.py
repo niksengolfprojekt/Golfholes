@@ -60,3 +60,14 @@ def test_spellinje_gar_via_fairway_till_greenens_bakkant():
     assert abs(linje[1][0] - 500040) < 1 and abs(linje[1][1] - 6299890) < 1
     assert abs(linje[2][0] - 500070) < 1 and abs(linje[2][1] - 6299970) < 1
     assert linje[3][1] > linje[2][1] + 5            # förlängd förbi mitten
+
+
+def test_spelfri_korridor_fran_varje_tee():
+    from golfholes.utkast import Fonster, spelfri
+    f = Fonster(np.zeros((100, 100, 4), dtype=np.uint8), 0.0, 100.0, 1.0)
+    linje = [(10.0, 50.0), (90.0, 50.0)]
+    tees = [{"point": [10.0, 50.0]}, {"point": [30.0, 80.0]}]
+    m = spelfri(f, linje, tees, (100, 100), 12)
+    assert m[50, 50] and not m[80, 50]          # längs linjen fritt, 30 m bredvid inte
+    assert m[35, 60]                             # på väg från den främre teen till linjen
+    assert not spelfri(f, linje, tees, (100, 100), 0).any()

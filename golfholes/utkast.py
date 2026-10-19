@@ -296,6 +296,19 @@ def _avstand_till_linje(f: Fonster, linje: list[tuple[float, float]], shape) -> 
     return d
 
 
+def spelfri(f: Fonster, linje: list, tees: list, shape, bredd_m: float = 12.0) -> np.ndarray:
+    """Spelkorridoren: bandet längs spellinjen och från varje tee fram till linjen.
+    Där ritas aldrig skog – hålet är öppet från tee. Mörkt gräs och skuggor som
+    klassats som skog försvinner; ett verkligt träd i spellinjen läggs in för hand
+    (eller med spelfri_m: 0 i fröfilen)."""
+    if bredd_m <= 0:
+        return np.zeros(shape, dtype=bool)
+    d = _avstand_till_linje(f, linje, shape)
+    for t in tees:
+        d = np.minimum(d, _avstand_till_linje(f, [tuple(t["point"]), tuple(linje[1])], shape))
+    return d < bredd_m / 2
+
+
 def _bitar(m: np.ndarray):
     """Varje sammanhängande del av m för sig, som (mask, ruta) – rutan ger ett litet
     utsnitt så att formmåtten går fort."""
@@ -385,6 +398,7 @@ def utkast_hal(fro: dict, orto: str | Path, marginal: float = 70.0) -> tuple[dic
         if a >= 25 and korridor[v].min() < marginal and kompakthet(v[y0:y1, x0:x1]) > 0.3:
             vatten += polygoner(v, f, min_m2=25, tol_m=0.6)
     skog = oppna(stang(kl["skog"], 2), 3) & (korridor < fro.get("skog_avstand", 55)) & ~vidga(fairway | green, 1)
+    skog &= ~spelfri(f, linje, fro["tees"], skog.shape, fro.get("spelfri_m", 12))
     # Skogen delas i rutor om 40 m så att gläntor (andra håls fairways) inte fylls igen –
     # hålfilens polygoner har inga hål, och träden ritas som punkter i ytorna.
     trad = []
