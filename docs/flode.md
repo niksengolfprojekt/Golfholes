@@ -2,7 +2,7 @@
 
 | Steg | Vad | Kommando / verktyg | Klart när |
 | --- | --- | --- | --- |
-| 1. Underlag | Ladda ner ortofoto + markhöjdmodell för området i `klubb.yaml` från Geotorget till `data/<klubb>/orto/` och `data/<klubb>/hojd/`. Hämta scorekort och hålkartor. | Geotorget (ni loggar in) | Filerna ligger på plats |
+| 1. Underlag | Se vilka bildår som finns, hämta nyaste ortofoto + markhöjdmodell för området i `klubb.yaml` direkt från Lantmäteriets API (gör utsnittet automatiskt). Hämta scorekort och hålkartor. | `python -m golfholes sok klubbar/<klubb>` (öppet) och `python -m golfholes hamta klubbar/<klubb>` (kräver miljövariablerna `LM_ANVANDARE`/`LM_LOSENORD` = Geotorget-inloggning) | `data/<klubb>/lantmateriet.json` + utsnitt |
 | 2. Utsnitt | Klipp ut banan ur ortofotot. | `python -m golfholes utsnitt klubbar/<klubb> data/<klubb>/orto/*.tif` | `data/<klubb>/utsnitt/orto.jpg` + `.jgw` |
 | 3. Digitalisera | Öppna `verktyg/ritverktyg.html` i webbläsaren, ladda bilden + .jgw, klicka ut tees, spellinje, green, fairway, bunkrar, vatten, skog. Kontrollrutan visar längd mot scorekort direkt. | Ritverktyget | `hal-NN.yaml` sparad i `klubbar/<klubb>/` |
 | 4. Kontrollera | Avstånd, längd mot scorekort (±3 %), kamera för tee-vy. | `python -m golfholes rapport klubbar/<klubb>/hal-NN.yaml` | Alla tees "ok" |
@@ -27,7 +27,8 @@
 - [ ] Hålkort från riktig hålbild: koppla `halbild` (ortofoto + masker) som bild i hålkortet, med avståndsmarkeringar ur hålfilen
 - [ ] Tryck-PDF av hålkorten (mått bestäms när klubben valt format)
 - [ ] Riktig QR-kod (kräver `segno`, installeras på Macen)
-- [ ] Testa på Glasriket hål 3 med riktigt ortofoto (väntar på Geotorget)
+- [x] Sök och hämta direkt från Lantmäteriets STAC-API (`sok`, `hamta`) – sökning testad mot riktiga API:t, nedladdning väntar på inloggningen som miljövariabel
+- [ ] Testa på Glasriket hål 3 med riktigt ortofoto (Eric har åtkomst sedan 2026-10-19; väntar på LM_ANVANDARE/LM_LOSENORD i projektinställningarna)
 - [ ] Höjddata i rapporten (uppför/nedför) – `Elevation` finns, kopplas in när vi har filerna
 - [ ] Signatur med riktigt ortofoto (koden är klar, väntar på Geotorget – visar platshållare tills dess)
 - [x] Texturrendering: Klassisk och Nordisk ritas med texturkit (gräs, vatten, lövverk, penseldrag) klippta efter exakta masker – demo-kit utklippt ur AI-skisserna

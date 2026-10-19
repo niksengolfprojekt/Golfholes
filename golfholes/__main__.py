@@ -168,6 +168,40 @@ def utsnitt(club_dir: str, tiffs: list[str], resolution: float | None) -> int:
     return 0
 
 
+def _club_bbox(club_dir: str) -> tuple[Path, dict]:
+    p = Path(club_dir)
+    club = yaml.safe_load((p / "klubb.yaml").read_text(encoding="utf-8"))
+    if not club.get("bbox_sweref99tm"):
+        raise SystemExit(f"{p / 'klubb.yaml'} saknar bbox_sweref99tm – banans yta måste anges först.")
+    return p, club["bbox_sweref99tm"]
+
+
+def sok(club_dir: str) -> int:
+    from .geotorget import bbox_wgs84, sok as stac_sok
+
+    _p, b = _club_bbox(club_dir)
+    bbox = bbox_wgs84(b)
+    for kat, namn in (("orto", "Ortofoto"), ("hojd", "Markhöjdmodell")):
+        rutor = stac_sok(kat, bbox)
+        print(f"{namn}: {len(rutor)} rutor")
+        for r in sorted(rutor, key=lambda r: r.datum, reverse=True):
+            print(f"  {r.datum}  {r.samling:<18} {r.id}")
+    return 0
+
+
+def hamta(club_dir: str, ar: int | None) -> int:
+    from .geotorget import bbox_wgs84, hamta as stac_hamta
+
+    p, b = _club_bbox(club_dir)
+    data_dir = Path("data") / p.name
+    logg = stac_hamta(bbox_wgs84(b), data_dir, ar)
+    for f in logg["filer"]:
+        print(f"  {f['katalog']:<5} {f['datum']}  {f['fil']}")
+    orto = [f["fil"] for f in logg["filer"] if f["katalog"] == "orto"]
+    print(f"Logg: {data_dir / 'lantmateriet.json'}")
+    return utsnitt(club_dir, orto, None)
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="golfholes")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -189,7 +223,16 @@ def main(argv: list[str] | None = None) -> int:
     u.add_argument("klubbmapp")
     u.add_argument("tiffar", nargs="+")
     u.add_argument("--upplosning", type=float, default=None, help="meter per pixel (standard: som källan)")
+    sub.add_parser("sok", help="Vilka ortofoton och höjdmodeller Lantmäteriet har för banan (ingen inloggning)"
+                   ).add_argument("klubbmapp")
+    h = sub.add_parser("hamta", help="Hämta nyaste ortofoto + höjdmodell från Lantmäteriet och gör utsnitt")
+    h.add_argument("klubbmapp")
+    h.add_argument("--ar", type=int, default=None, help="ortofotots år (standard: nyaste)")
     a = p.parse_args(argv)
+    if a.cmd == "sok":
+        return sok(a.klubbmapp)
+    if a.cmd == "hamta":
+        return hamta(a.klubbmapp, a.ar)
     if a.cmd == "rapport":
         return rapport(a.fil, a.tee)
     if a.cmd == "halbild":

@@ -39,3 +39,29 @@ def wgs84_to_sweref99tm(lat: float, lon: float) -> tuple[float, float]:
     x = _K0 * a_hat * (xi + sum(b * math.sin(2 * (i + 1) * xi) * math.cosh(2 * (i + 1) * eta) for i, b in enumerate(beta)))
     y = _K0 * a_hat * (eta + sum(b * math.cos(2 * (i + 1) * xi) * math.sinh(2 * (i + 1) * eta) for i, b in enumerate(beta))) + _FE
     return y, x
+
+
+def sweref99tm_to_wgs84(e: float, n: float) -> tuple[float, float]:
+    """Returnerar (lat, lon) i grader. Omvändningen av wgs84_to_sweref99tm."""
+    e2 = _F * (2 - _F)
+    nn = _F / (2 - _F)
+    a_hat = _A / (1 + nn) * (1 + nn**2 / 4 + nn**4 / 64)
+    delta = [
+        nn / 2 - 2 * nn**2 / 3 + 37 * nn**3 / 96 - nn**4 / 360,
+        nn**2 / 48 + nn**3 / 15 - 437 * nn**4 / 1440,
+        17 * nn**3 / 480 - 37 * nn**4 / 840,
+        4397 * nn**4 / 161280,
+    ]
+    xi = n / (_K0 * a_hat)
+    eta = (e - _FE) / (_K0 * a_hat)
+    xi_p = xi - sum(d * math.sin(2 * (i + 1) * xi) * math.cosh(2 * (i + 1) * eta) for i, d in enumerate(delta))
+    eta_p = eta - sum(d * math.cos(2 * (i + 1) * xi) * math.sinh(2 * (i + 1) * eta) for i, d in enumerate(delta))
+    phi_star = math.asin(math.sin(xi_p) / math.cosh(eta_p))
+    lam = math.atan(math.sinh(eta_p) / math.cos(xi_p))
+    a_ = e2 + e2**2 + e2**3 + e2**4
+    b_ = -(7 * e2**2 + 17 * e2**3 + 30 * e2**4) / 6
+    c_ = (224 * e2**3 + 889 * e2**4) / 120
+    d_ = -4279 * e2**4 / 1260
+    s, c = math.sin(phi_star), math.cos(phi_star)
+    phi = phi_star + s * c * (a_ + b_ * s**2 + c_ * s**4 + d_ * s**6)
+    return math.degrees(phi), _LON0 + math.degrees(lam)
