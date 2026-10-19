@@ -92,6 +92,7 @@ def _ramp(L: np.ndarray, stopp) -> np.ndarray:
     return np.stack([np.interp(L, xs, [c[i] for c in stopp]) for i in range(3)], -1) / 255.0
 
 
+LOV_GRANS = 1.8  # nära-IR/grönt; Glasriket: hål 3 ~25 % av skogen över, granhålet 14 ~15 %
 GRAN = [(22, 38, 26), (44, 72, 40), (86, 112, 58), (150, 160, 96)]
 LOV = [(70, 64, 24), (168, 146, 44), (232, 204, 84), (250, 238, 168)]
 
@@ -106,9 +107,10 @@ def _host(rgb: np.ndarray, mt: dict, skog: np.ndarray, gras: np.ndarray, klippt:
     x = x + lyft * (1 - x)
     # löv eller barr: lövträd reflekterar mer nära-IR i förhållande till grönt
     lov = medel(mt["N"] / (mt["G"] + 1), 4)
-    grans = np.percentile(lov[skog], 40) if skog.any() else 0
+    # fast gräns (inte andel per hål): ett granhål som 14 ska inte bli gult för att
+    # hålet råkar sakna björk. Solbelysta lövkronor har högst kvot.
     sk = _mjuk(skog.astype(np.float32), 2)[..., None]
-    lovtrad = np.clip(_mjuk((skog & (lov > grans)).astype(np.float32), 6) * 1.3, 0, 1)[..., None]
+    lovtrad = np.clip(_mjuk((skog & (lov > LOV_GRANS)).astype(np.float32), 3) * 1.3, 0, 1)[..., None]
     L = np.clip((lum - 0.04) / 0.40, 0, 1) ** 0.7
     trad = _ramp(L, GRAN) * (1 - 0.92 * lovtrad) + _ramp(L, LOV) * 0.92 * lovtrad
     x = x * (1 - 0.92 * sk) + trad * 0.92 * sk
