@@ -1,14 +1,14 @@
-# Hålkort för Glasriket hål 14 – TYPBILD. Texten är den spikade layoutens referens (Eric 2026-10-16).
-# Bilden är AI-genererad för att visa stilen och är inte banans exakta form. Byts mot hålbild från
-# Lantmäteriets ortofoto när hal-14.yaml finns. Längder enligt typbilden – stäm av mot scorekortet.
+# Hålkort för Glasriket hål 14. Hålbilden är AI-målad på hålets exakta form ur Lantmäteriets
+# ortofoto (python -m golfholes aiunderlag / aibild). Texten är den spikade layoutens referens
+# (Eric 2026-10-16) och ska stämmas av med klubbens pro.
 club: Glasrikets Golfklubb
 bana: Fylleryd
 hole: 14
 par: 4
 index: 1
-tees: [["60", 369], ["56", 335], ["52", 290]]
-bild: ../typbilder/hal-14.webp
-typbild: true
+tees: [["60", 369], ["56", 335], ["52 · 49 · 44", 290]]
+bild: ../halbilder/hal-14-malad.webp
+typbild: false
 rubrik: Banans svåraste hål
 beskrivning: >-
   Ett smalt dogleg höger genom björkskogen i Fylleryd. Out längs hela vänstersidan,

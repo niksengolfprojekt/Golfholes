@@ -34,7 +34,10 @@ def test_too_long_text_is_flagged():
 
 def test_typbild_is_labelled():
     c = Halkort.from_yaml(HAL14)
-    assert c.typbild and "Typbild" in render_html(c, 1)[0]
+    c.typbild = True  # en AI-typbild (inte hålets exakta form) märks alltid på kortet
+    assert "Typbild" in render_html(c, 1)[0]
+    c.typbild = False
+    assert "Typbild" not in render_html(c, 1)[0]
 
 
 def test_parse_layout():
