@@ -4,7 +4,8 @@
 | --- | --- | --- | --- |
 | 1. Underlag | Se vilka bildår som finns, hämta nyaste ortofoto + markhöjdmodell för området i `klubb.yaml` direkt från Lantmäteriets API (gör utsnittet automatiskt). Hämta scorekort och hålkartor. | `python -m golfholes sok klubbar/<klubb>` (öppet) och `python -m golfholes hamta klubbar/<klubb>` (kräver Geotorget-inloggningen som nätverkshemlighet för `dl1.lantmateriet.se` i molnmiljön, eller miljövariablerna `LM_ANVANDARE`/`LM_LOSENORD`) | `data/<klubb>/lantmateriet.json` + utsnitt |
 | 2. Utsnitt | Klipp ut banan ur ortofotot. | `python -m golfholes utsnitt klubbar/<klubb> data/<klubb>/orto/*.tif` | `data/<klubb>/utsnitt/orto.jpg` + `.jgw` |
-| 3. Digitalisera | Öppna `verktyg/ritverktyg.html` i webbläsaren, ladda bilden + .jgw, klicka ut tees, spellinje, green, fairway, bunkrar, vatten, skog. Kontrollrutan visar längd mot scorekort direkt. | Ritverktyget | `hal-NN.yaml` sparad i `klubbar/<klubb>/` |
+| 3. Utkast | Sätt fröpunkter per hål i `klubbar/<klubb>/utkast/hal-NN.yaml` mot klubbens hålkarta: tees (namn + längd från scorekortet), en punkt mitt på green och en eller flera i fairway. Koden växer ut green och fairway ur fotot (trollstav), hittar skog, vatten och bunkrar och räknar fram spellinjen genom fairwayns mitt. Ligger greenen i skugga kan kanten ritas in som `green_polygon`. | `python -m golfholes utkast klubbar/<klubb>/utkast/hal-NN.yaml` | `hal-NN.yaml` + kontrollbild `data/<klubb>/utkast/hal-NN_kontroll.jpg` |
+| 3b. Rätta | Öppna `verktyg/ritverktyg.html`, ladda `orto.jpg` + `.jgw` + `hal-NN_ritverktyg.json`. Dra hörnpunkter, Alt+klick tar bort falska ytor (grus vid tee, skuggor längs vägar), rita till det som saknas. Kontrollrutan visar längd mot scorekort direkt. | Ritverktyget | `hal-NN.yaml` sparad i `klubbar/<klubb>/` |
 | 4. Kontrollera | Avstånd, längd mot scorekort (±3 %), kamera för tee-vy. | `python -m golfholes rapport klubbar/<klubb>/hal-NN.yaml` | Alla tees "ok" |
 | 5. "Så spelar du hålet" | Skriv Säkert/Chansa i hålfilen utifrån avstånden. Granskas av en golfare. | Text i `strategy:` | Granskad |
 | 5b. Stilval | Klubben ser samma hål i alla fyra stilar och väljer 1–4. Valet skrivs in som `stil:` i `klubb.yaml`. | `python -m golfholes stilprov klubbar/<klubb>/hal-NN.yaml` | `stil:` satt |
@@ -27,6 +28,7 @@
 - [ ] Hålkort från riktig hålbild: koppla `halbild` (ortofoto + masker) som bild i hålkortet, med avståndsmarkeringar ur hålfilen
 - [ ] Tryck-PDF av hålkorten (mått bestäms när klubben valt format)
 - [ ] Riktig QR-kod (kräver `segno`, installeras på Macen)
+- [x] Utkast ur ortofoto (`utkast`): trollstav för green/fairway, automatisk skog/vatten/bunker, spellinje genom fairwayns mitt, rättning i ritverktyget – provat på Glasriket hål 3 2026-10-19 (två av tre tees inom ±3 %, tee 44 syns inte på fotot)
 - [x] Sök och hämta direkt från Lantmäteriets STAC-API (`sok`, `hamta`) – testat skarpt 2026-10-19: Glasrikets ortofoto 2025 och markhöjdmodell hämtade med nätverkshemligheten, utsnitt + höjd + reliefbild klara
 - [ ] Testa på Glasriket hål 3 med riktigt ortofoto (Eric har åtkomst sedan 2026-10-19; väntar på inloggningen som nätverkshemlighet i molnmiljön)
 - [ ] Höjddata i rapporten (uppför/nedför) – `Elevation` finns, kopplas in när vi har filerna

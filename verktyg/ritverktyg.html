@@ -32,7 +32,7 @@
 
   <div>
     <h2>1. Ortofoto</h2>
-    <label>Bild (PNG/JPG) + world-fil (.pgw/.jgw) – välj båda</label>
+    <label>Bild (PNG/JPG) + world-fil (.pgw/.jgw) – välj båda. Har du ett utkast (hal-NN.json), välj det också.</label>
     <input type="file" id="files" multiple accept=".png,.jpg,.jpeg,.pgw,.jgw,.wld,.json">
     <div id="geo" style="margin-top:4px;color:#6b7565">Ingen bild laddad.</div>
   </div>
@@ -69,7 +69,7 @@
 
 <main id="stage">
   <canvas id="cv"></canvas>
-  <div id="help">Klick = punkt · Dubbelklick/Enter = avsluta yta · Hjul = zoom · Dra med högerknapp eller mellanslag = panorera · Esc = avbryt</div>
+  <div id="help">Klick = punkt · Dubbelklick/Enter = avsluta yta · Dra en hörnpunkt = flytta den · Alt+klick på en yta = ta bort den · Hjul = zoom · Dra med högerknapp eller mellanslag = panorera · Esc = avbryt</div>
 </main>
 
 <script>
@@ -117,6 +117,10 @@ document.getElementById('files').onchange = async ev=>{
       S.wf={A:v[0],D:v[1],B:v[2],E:v[3],C:v[4],F:v[5]};
     } else if(ext==='json'){
       const j=JSON.parse(await f.text()); if(j.worldfile) S.wf=j.worldfile;
+      if(j.feats){  // utkast från `python -m golfholes utkast` – rätta i stället för att rita
+        S.feats=j.feats;
+        for(const k of ['club','hole','par','index','scorecard']) if(j[k]!=null) document.getElementById(k).value=j[k];
+      }
     }
   }
   if(S.img){ fit(); }
@@ -139,9 +143,22 @@ stage.addEventListener('wheel', e=>{ e.preventDefault(); const f=Math.exp(-e.del
   const r=stage.getBoundingClientRect(), mx=e.clientX-r.left, my=e.clientY-r.top;
   S.view.x = mx-(mx-S.view.x)*f; S.view.y = my-(my-S.view.y)*f; S.view.k*=f; draw(); }, {passive:false});
 stage.addEventListener('contextmenu', e=>e.preventDefault());
-stage.addEventListener('mousedown', e=>{ if(e.button===2||e.button===1||space){ pan=[e.clientX,e.clientY,S.view.x,S.view.y]; } });
-window.addEventListener('mousemove', e=>{ if(pan){ S.view.x=pan[2]+e.clientX-pan[0]; S.view.y=pan[3]+e.clientY-pan[1]; draw(); } });
-window.addEventListener('mouseup', ()=>{ pan=null; });
+// Flytta en befintlig hörnpunkt: tryck nära den och dra
+let drag=null, dragged=false;
+function nearVertex(sx,sy){ let best=null, bd=7;
+  for(const f of S.feats) f.pts.forEach((g,i)=>{ const [x,y]=pix2scr(...geo2pix(...g)); const d=Math.hypot(x-sx,y-sy); if(d<bd){ bd=d; best=[f,i]; } });
+  return best; }
+function inside(poly,p){ let c=false; for(let i=0,j=poly.length-1;i<poly.length;j=i++){ const a=poly[i],b=poly[j];
+  if((a[1]>p[1])!==(b[1]>p[1]) && p[0]<(b[0]-a[0])*(p[1]-a[1])/(b[1]-a[1])+a[0]) c=!c; } return c; }
+stage.addEventListener('mousedown', e=>{
+  if(e.button===2||e.button===1||space){ pan=[e.clientX,e.clientY,S.view.x,S.view.y]; return; }
+  if(e.button===0 && !S.cur && S.wf && !e.altKey){ const r=stage.getBoundingClientRect(); drag=nearVertex(e.clientX-r.left,e.clientY-r.top); dragged=false; }
+});
+window.addEventListener('mousemove', e=>{
+  if(pan){ S.view.x=pan[2]+e.clientX-pan[0]; S.view.y=pan[3]+e.clientY-pan[1]; draw(); }
+  else if(drag){ const r=stage.getBoundingClientRect(); drag[0].pts[drag[1]]=pix2geo(...scr2pix(e.clientX-r.left,e.clientY-r.top)); dragged=true; draw(); }
+});
+window.addEventListener('mouseup', ()=>{ pan=null; if(drag){ drag=null; if(dragged) update(); } });
 window.addEventListener('keydown', e=>{
   if(e.target.tagName==='INPUT') return;
   if(e.code==='Space'){ space=true; e.preventDefault(); }
@@ -153,8 +170,15 @@ window.addEventListener('keyup', e=>{ if(e.code==='Space') space=false; });
 
 stage.addEventListener('click', e=>{
   if(!S.img||!S.wf||space) return;
+  if(dragged){ dragged=false; return; }  // slutet på en flytt, ingen ny punkt
   const r=stage.getBoundingClientRect(); const [px,py]=scr2pix(e.clientX-r.left, e.clientY-r.top);
   const geo = pix2geo(px,py); const L=layer(S.layer);
+  if(e.altKey){  // ta bort ytan (eller teen) under markören – översta först
+    const hit=[...S.feats].reverse().find(f=> f.layer==='tee' ? Math.hypot(...pix2scr(...geo2pix(...f.pts[0])).map((v,i)=>v-[e.clientX-r.left,e.clientY-r.top][i]))<8
+                                                : layer(f.layer).kind==='poly' && inside(f.pts,geo));
+    if(hit){ S.feats=S.feats.filter(f=>f!==hit); draw(); update(); renderLayers(); }
+    return;
+  }
   if(L.kind==='point'){
     const name = prompt('Teens namn (som på scorekortet), t.ex. 52/56/60:', '');
     if(!name) return;

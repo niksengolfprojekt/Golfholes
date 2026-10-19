@@ -18,6 +18,7 @@ Layout väljs i klubb.yaml med `layout: 1` (eller en lista, t.ex. [1, 4]):
 from __future__ import annotations
 
 import argparse
+from datetime import date
 import json
 import re
 import sys
@@ -208,6 +209,30 @@ def hamta(club_dir: str, ar: int | None) -> int:
     return 0
 
 
+def utkast(fro_fil: str) -> int:
+    from .utkast import kontrollbild, utkast_hal
+
+    fp = Path(fro_fil)
+    fro = yaml.safe_load(fp.read_text(encoding="utf-8"))
+    fro["_fil"] = str(fp)
+    hal, f, _ = utkast_hal(fro, fro["orto"])
+    ut = fp.parent.parent / f"hal-{int(fro['hole']):02d}.yaml"
+    huvud = (f"# UTKAST – genererat {date.today()} av `python -m golfholes utkast {fp}`.\n"
+             "# Granska mot klubbens hålkarta och kontrollbilden innan det godkänns.\n")
+    ut.write_text(huvud + yaml.safe_dump(hal, allow_unicode=True, sort_keys=False, default_flow_style=None, width=200),
+                  encoding="utf-8")
+    kb = kontrollbild(hal, f, Path("data") / fp.parent.parent.name / "utkast" / f"hal-{int(fro['hole']):02d}_kontroll.jpg")
+    from .utkast import ritverktyg_json
+    rj = ritverktyg_json(hal, kb.with_name(f"hal-{int(fro['hole']):02d}_ritverktyg.json"))
+    n = {k: len(hal[k]) for k in ("fairways", "trees")}
+    print(f"Sparat: {ut} (green {len(hal['green'])} punkter, {n['fairways']} fairway, "
+          f"{sum(h['kind'] == 'bunker' for h in hal['hazards'])} bunkrar, "
+          f"{sum(h['kind'] == 'water' for h in hal['hazards'])} vatten, {n['trees']} skogsytor)")
+    print(f"Kontrollbild: {kb}")
+    print(f"Rätta i verktyg/ritverktyg.html: öppna orto.jpg + orto.jgw + {rj}")
+    return rapport(str(ut), None)
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="golfholes")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -234,7 +259,10 @@ def main(argv: list[str] | None = None) -> int:
     h = sub.add_parser("hamta", help="Hämta nyaste ortofoto + höjdmodell från Lantmäteriet och gör utsnitt")
     h.add_argument("klubbmapp")
     h.add_argument("--ar", type=int, default=None, help="ortofotots år (standard: nyaste)")
+    sub.add_parser("utkast", help="Utkast av ett hål ur ortofotot från fröpunkter (trollstav)").add_argument("frofil")
     a = p.parse_args(argv)
+    if a.cmd == "utkast":
+        return utkast(a.frofil)
     if a.cmd == "sok":
         return sok(a.klubbmapp)
     if a.cmd == "hamta":
