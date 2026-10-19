@@ -19,13 +19,113 @@ lantmateriet:
   ortofoto: o63050_4900_25_mr25.tif     # orto-e2-2025, fotograferat 2025-07-01, 16 cm
   markhojdmodell: m630_49.tif           # 1 m, laserskannat 2026-03-09/10, 169,9–205,7 m ö.h. inom banan
 
+# Scorekort: klubbens banguide utgåva 2025, https://www.glasriketsgk.se/haloversikt/ (hämtad 2026-10-19).
+# Längder i meter per tee. Par 72. Tee 60 ligger bakom 56 ("+37" på kartan = 37 m längre).
+# Ändrat 2025 enligt sidan: nya bunkrar hål 4, 7, 13; gångvägen vid hål 3 närmare green.
 holes:
+  - hole: 1
+    par: 5
+    index: 12
+    tees: {"56/60": 442, "52/49": 394, "44": 303}
+    notes: "Out både vänster och höger."
+    geometry: null
+  - hole: 2
+    par: 4
+    index: 4
+    tees: {"60": 355, "56/52": 318, "49": 284, "44": 248}
+    notes: "Fyrkantig damm ca 220 m från tee 56. Oändligt rött pliktområde höger fram till dammen."
+    geometry: null
   - hole: 3
     par: 4
     index: 16
-    tees: {"52/56/60": 290, "49": 274, "44": 199}   # meter, klubbens hålkarta
+    tees: {"52/56/60": 290, "49": 274, "44": 199}
     notes: >
       Damm till höger vid tee 49. Hålet nästan rakt, svag vänsterböj mot green.
       Spelriktning ungefär nordväst. Referensfoton tagna strax bakom bakre tee
       (52/56/60), vänster sida.
     geometry: null      # hal-03.yaml skapas när ortofotot är vektoriserat
+  - hole: 4
+    par: 3
+    index: 14
+    tees: {"60": 176, "56/52": 140, "49/44": 125}
+    notes: "Ny bunkerlayout 2025 (filmen stämmer inte)."
+    geometry: null
+  - hole: 5
+    par: 4
+    index: 8
+    tees: {"60": 355, "56/52": 320, "49/44": 277}
+    geometry: null
+  - hole: 6
+    par: 4
+    index: 2
+    tees: {"60": 331, "56/52": 301, "49/44": 245}
+    geometry: null
+  - hole: 7
+    par: 3
+    index: 18
+    tees: {"56/60": 116, "52/49/44": 105}
+    notes: "Ny bunkerlayout 2025 (filmen stämmer inte)."
+    geometry: null
+  - hole: 8
+    par: 4
+    index: 6
+    tees: {"60": 380, "56": 347, "52/49": 318, "44": 243}
+    notes: "Out längs vänster, tjock ruff höger."
+    geometry: null
+  - hole: 9
+    par: 5
+    index: 10
+    tees: {"56/60": 473, "52/49": 439, "44": 335}
+    notes: "Index 10 enligt sidans text; hålkartan säger Idx 9 (krock med hål 18) – fråga klubben."
+    geometry: null
+  - hole: 10
+    par: 3
+    index: 11
+    tees: {"60": 175, "56": 165, "52/49/44": 140}
+    geometry: null
+  - hole: 11
+    par: 5
+    index: 13
+    tees: {"60": 494, "56": 446, "52/49": 384, "44": 320}
+    notes: "Kartan visar även en tee märkt 45 – fråga klubben."
+    geometry: null
+  - hole: 12
+    par: 5
+    index: 3
+    tees: {"60": 527, "56": 490, "52/49/44": 400}
+    geometry: null
+  - hole: 13
+    par: 4
+    index: 17
+    tees: {"60": 359, "56/52": 320, "49/44": 270}
+    notes: "Ny bunkerlayout 2025. Oändligt rött pliktområde vänster fram till bunkern."
+    geometry: null
+  - hole: 14
+    par: 4
+    index: 1
+    tees: {"60": 369, "56": 335, "52/49/44": 290}
+    notes: "Out vänster, skog höger."
+    geometry: null
+  - hole: 15
+    par: 4
+    index: 7
+    tees: {"60": 324, "56/52": 296, "49/44": 265}
+    notes: "Out höger (ej med på kartan)."
+    geometry: null
+  - hole: 16
+    par: 4
+    index: 15
+    tees: {"52/56/60": 297, "49/44": 259}
+    notes: "Blixtlampa: utslag bara när lampan är släckt."
+    geometry: null
+  - hole: 17
+    par: 3
+    index: 5
+    tees: {"52/56/60": 128, "49/44": 89}
+    notes: "Signaturhål, vatten vänster/kort/långt. Oändligt rött pliktområde bakom green."
+    geometry: null
+  - hole: 18
+    par: 4
+    index: 9
+    tees: {"60": 423, "56": 383, "52/49": 325, "44": 270}
+    geometry: null
