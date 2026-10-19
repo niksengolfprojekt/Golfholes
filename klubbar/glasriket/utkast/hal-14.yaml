@@ -1,0 +1,29 @@
+# Fröpunkter för hål 14 (SWEREF 99 TM, meter). Satta mot ortofoto 2025-07-01 och klubbens
+# hålkarta (banguide 2025). Hålet spelas från norr mot söder och svänger höger (väster)
+# mot greenen nära hål 15:s tee; bunkern kort om höger om greenen syns på fotot.
+#   python -m golfholes utkast klubbar/glasriket/utkast/hal-14.yaml
+club: Glasrikets Golfklubb
+hole: 14
+par: 4
+index: 1
+orto: data/glasriket/orto/o63050_4900_25_mr25.tif
+# Tees i den smala gången i skogen: 52/49/44 = den runda klippta ytan, 56 och 60 bakom
+# (60 ska ligga 34 m bakom 56 enligt klubbens karta). Bekräftas av klubben.
+tees:
+- {name: '60', point: [492309.0, 6305941.0], length_m: 369}
+- {name: '56', point: [492313.0, 6305911.0], length_m: 335}
+- {name: 52/49/44, point: [492314.0, 6305866.0], length_m: 290}
+# Spellinjen följer fairwayns mitt runt doglegen (auto drar den rakt över skogen,
+# och då skulle korridorregeln hugga bort träden som gör hålet svårt).
+centerline:
+- [492309.0, 6305941.0]
+- [492313.0, 6305800.0]
+- [492292.0, 6305722.0]
+- [492242.0, 6305670.0]
+- [492172.0, 6305630.0]
+- [492160.0, 6305623.0]
+green: [492172.0, 6305630.0]
+fairway:
+- [492303.0, 6305750.0]
+- [492275.0, 6305688.0]
+- [492236.0, 6305664.0]

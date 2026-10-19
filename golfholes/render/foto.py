@@ -313,23 +313,57 @@ def ai_underlag(hole: Hole, orto: Path, ut: Path, hojd_px: int = 2400, bredd: in
 AI_SKALA = 0.95
 
 
-def ai_tillbaka(hole: Hole, orto: Path, ai_bild: Path, ut: Path, kontroll: Path | None = None,
-                hojd_px: int = 2400) -> Path:
+def _lum(im: Image.Image, r: int) -> np.ndarray:
+    a = np.asarray(im.convert("RGB"), dtype=np.float32) @ np.array([0.299, 0.587, 0.114], dtype=np.float32)
+    return _mjuk(a, r)
+
+
+def formpoang(underlag: Image.Image, malad: Image.Image, hole: Hole, px) -> dict:
+    """Hur väl målningen ligger på hålets form, 0–1 (högre är bättre).
+    likhet: korrelation mellan fotots och målningens ljusbild (grovt, ~3 m), inom hålet.
+    kant: hur tydligt fairway och green är ljusare än ytan strax utanför i målningen
+    (hålfilens polygoner, alltså formen ur fotot)."""
+    r = max(2, underlag.height // 300)
+    a, b = _lum(underlag, r), _lum(malad, r)
+    m = np.asarray(underlag.getchannel("A")) > 200
+    x, y = a[m] - a[m].mean(), b[m] - b[m].mean()
+    likhet = float((x * y).sum() / (np.sqrt((x * x).sum() * (y * y).sum()) + 1e-6))
+    yta = Image.new("L", underlag.size, 0)
+    d = ImageDraw.Draw(yta)
+    for poly in hole.fairways + [hole.green]:
+        if len(poly) > 2:
+            d.polygon([px(*p) for p in poly], fill=255)
+    inne = np.asarray(yta) > 0
+    ring_px = max(3, underlag.height // 250)
+    ute = (_mjuk(inne.astype(np.float32), ring_px) > 0.02) & ~inne & m
+    inne_k = (_mjuk(inne.astype(np.float32), ring_px // 2) > 0.98) & m
+    l = _lum(malad, 1)
+    kant = float(np.clip((l[inne_k].mean() - l[ute].mean()) / 40, 0, 1)) if ute.any() and inne_k.any() else 0.0
+    return {"likhet": round(likhet, 3), "kant": round(kant, 3), "poang": round(0.6 * likhet + 0.4 * kant, 3)}
+
+
+def ai_tillbaka(hole: Hole, orto: Path, ai_bilder: list[Path], ut: Path, kontroll: Path | None = None,
+                hojd_px: int = 4000) -> tuple[Path, list[dict]]:
     """Lägger AI-målningen på hålets exakta form: duken skalas tillbaka, hålet klipps
     ut med fotounderlagets egen siluett (alfa) och prickar och flagga ritas av koden
-    på hålfilens koordinater. Kontrollbilden visar hålfilens konturer ovanpå målningen
-    – ligger de inte på målningens kanter har AI:n flyttat något och bilden får inte
-    användas."""
+    på hålfilens koordinater. Får den flera målningar väljs den med högst formpoäng.
+    Kontrollbilden visar hålfilens konturer ovanpå målningen – ligger de inte på
+    målningens kanter har AI:n flyttat något och bilden får inte användas."""
     rot, px = fotounderlag(hole, orto, hojd_px)
     inre_h = round(hojd_px * AI_SKALA)
     inre_w = round(rot.width * AI_SKALA)
-    ai = Image.open(ai_bild).convert("RGB")
-    duk_w = round(ai.height and hojd_px * ai.width / ai.height)
-    ai = ai.resize((duk_w, hojd_px), Image.LANCZOS)
-    x0, y0 = (duk_w - inre_w) // 2, (hojd_px - inre_h) // 2
-    malad = ai.crop((x0, y0, x0 + inre_w, y0 + inre_h)).resize(rot.size, Image.LANCZOS).convert("RGBA")
-    malad.putalpha(rot.getchannel("A"))
+    resultat = []
+    for fil in ai_bilder:
+        ai = Image.open(fil).convert("RGB")
+        duk_w = round(hojd_px * ai.width / ai.height)
+        ai = ai.resize((duk_w, hojd_px), Image.LANCZOS)
+        x0, y0 = (duk_w - inre_w) // 2, (hojd_px - inre_h) // 2
+        malad = ai.crop((x0, y0, x0 + inre_w, y0 + inre_h)).resize(rot.size, Image.LANCZOS).convert("RGBA")
+        malad.putalpha(rot.getchannel("A"))
+        resultat.append((formpoang(rot, malad, hole, px) | {"fil": str(fil)}, malad))
+    resultat.sort(key=lambda t: -t[0]["poang"])
+    malad = resultat[0][1]
     if kontroll:
         _spara(rita_konturer(malad, hole, px), kontroll)
     rita_spel(malad, hole, px)
-    return _spara(malad, ut)
+    return _spara(malad, ut), [r[0] for r in resultat]

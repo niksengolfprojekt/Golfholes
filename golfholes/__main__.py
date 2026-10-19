@@ -252,12 +252,15 @@ def aiunderlag(path: str) -> int:
     hole = Hole.from_yaml(p)
     club_dir = _club_dir(p)
     ut = club_dir / "typbilder" / "ai-underlag" / f"hal-{hole.number:02d}-underlag.jpg"
-    ai_underlag(hole, orto_for(Path("data") / club_dir.name), ut)
+    ai_underlag(hole, orto_for(Path("data") / club_dir.name), ut, hojd_px=4096, bredd=2304)
     print(f"Sparat: {ut} – ge den till AI:n (9:16). Den får bara byta yta, aldrig form.")
     return 0
 
 
-def aibild(path: str, malning: str) -> int:
+AI_GRANS = 0.7  # under detta har AI:n ritat om hålet (provat: trogna 0,80–0,88, omritade 0,38)
+
+
+def aibild(path: str, malningar: list[str]) -> int:
     from .render.foto import ai_tillbaka, orto_for
 
     p = Path(path)
@@ -265,7 +268,11 @@ def aibild(path: str, malning: str) -> int:
     club_dir = _club_dir(p)
     ut = club_dir / "halbilder" / f"hal-{hole.number:02d}-malad.webp"
     kontroll = Path("data") / club_dir.name / "utkast" / f"hal-{hole.number:02d}_ai_kontroll.jpg"
-    ai_tillbaka(hole, orto_for(Path("data") / club_dir.name), Path(malning), ut, kontroll)
+    _, poang = ai_tillbaka(hole, orto_for(Path("data") / club_dir.name), [Path(m) for m in malningar], ut, kontroll)
+    for i, r in enumerate(poang):
+        print(f"  {'VALD ' if i == 0 else '     '}{r['poang']:.3f}  (likhet {r['likhet']:.3f}, kant {r['kant']:.3f})  {r['fil']}")
+    if poang[0]["poang"] < AI_GRANS:
+        print(f"VARNING: bästa formpoängen {poang[0]['poang']:.2f} är under {AI_GRANS} – AI:n har flyttat formen. Använd inte bilden, måla om.")
     print(f"Sparat: {ut}\nKontrollera {kontroll}: hålfilens linjer måste ligga på målningens kanter.")
     return 0
 
@@ -301,7 +308,7 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("aiunderlag", help="Fotounderlag utan markeringar för AI-målning (9:16)").add_argument("fil")
     ai = sub.add_parser("aibild", help="Lägg AI-målningen på hålets exakta form + prickar och flagga")
     ai.add_argument("fil")
-    ai.add_argument("malning", help="AI-bilden (gjord på aiunderlag)")
+    ai.add_argument("malning", nargs="+", help="AI-bilder gjorda på aiunderlag; den med bäst formpoäng väljs")
     a = p.parse_args(argv)
     if a.cmd == "aiunderlag":
         return aiunderlag(a.fil)
