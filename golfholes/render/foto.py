@@ -161,7 +161,16 @@ def _retusch(rgb: np.ndarray, yta: np.ndarray, res: float) -> np.ndarray:
     return ut
 
 
-def fotobild(hole: Hole, orto: Path, ut: Path, hojd_px: int = 2400) -> Path:
+def fotobild(hole: Hole, orto: Path, ut: Path, hojd_px: int = 2400, markeringar: bool = True) -> Path:
+    rot, px = fotounderlag(hole, orto, hojd_px)
+    if markeringar:
+        rita_spel(rot, hole, px)
+    return _spara(rot, ut)
+
+
+def fotounderlag(hole: Hole, orto: Path, hojd_px: int = 2400):
+    """Hålet ur ortofotot, vridet så att bakre tee är nederst. Returnerar (RGBA-bild,
+    px) där px(e, n) ger bildkoordinaten för en SWEREF-punkt."""
     if not hole.green:
         raise ValueError("Hålfilen saknar green – kör utkast först.")
     bak = max(hole.tees, key=lambda t: t.length_m or 0)
@@ -238,8 +247,14 @@ def fotobild(hole: Hole, orto: Path, ut: Path, hojd_px: int = 2400) -> Path:
         x, y = till_rot(e, n)
         return ((x - box[0]) * k, (y - box[1]) * k)
 
+    return rot, px
+
+
+def rita_spel(rot: Image.Image, hole: Hole, px) -> None:
+    """Prickar (100/150 m kvar till greenens mitt) och flagga – alltid ritade av koden."""
     d = ImageDraw.Draw(rot)
-    s = hojd_px / 1000  # storlek på symboler oberoende av upplösning
+    s = rot.height / 1000  # storlek på symboler oberoende av upplösning
+    mitt = _tyngdpunkt(hole.green)
     for meter, farg in PRICKAR:
         p = _punkt_fore_green(hole.centerline, mitt, meter)
         if p:
@@ -253,10 +268,68 @@ def fotobild(hole: Hole, orto: Path, ut: Path, hojd_px: int = 2400) -> Path:
     d.polygon([(x, y - stang), (x + 17 * s, y - stang + 5 * s), (x, y - stang + 11 * s)], fill=(247, 197, 24, 255))
     d.ellipse((x - 2.5 * s, y - 1.5 * s, x + 2.5 * s, y + 1.5 * s), fill=(30, 30, 30, 255))
 
+
+def rita_konturer(rot: Image.Image, hole: Hole, px) -> Image.Image:
+    """Kontrollbild: hålfilens fairway, green, bunkrar och vatten som tunna linjer ovanpå
+    bilden. Används för att se att en AI-målning inte har flyttat något."""
+    ut = rot.convert("RGBA").copy()
+    d = ImageDraw.Draw(ut)
+    w = max(2, rot.height // 600)
+    lager = [(fw, (255, 0, 200)) for fw in hole.fairways] + [(hole.green, (0, 160, 255))]
+    lager += [(h.polygon, (255, 255, 255) if h.kind == "bunker" else (0, 60, 255)) for h in hole.hazards]
+    for poly, farg in lager:
+        pts = [px(*p) for p in poly]
+        if len(pts) > 2:
+            d.line(pts + [pts[0]], fill=farg + (255,), width=w)
+    linje = [px(*p) for p in hole.centerline]
+    d.line(linje, fill=(255, 200, 0, 255), width=w)
+    return ut
+
+
+def _spara(rot: Image.Image, ut: Path) -> Path:
     ut = Path(ut)
     ut.parent.mkdir(parents=True, exist_ok=True)
     if ut.suffix.lower() == ".webp":
         rot.save(ut, quality=90, method=6)
+    elif ut.suffix.lower() in (".jpg", ".jpeg"):
+        bg = Image.new("RGB", rot.size, (250, 244, 236))
+        bg.paste(rot, mask=rot.getchannel("A") if rot.mode == "RGBA" else None)
+        bg.save(ut, quality=92)
     else:
         rot.save(ut)
     return ut
+
+
+def ai_underlag(hole: Hole, orto: Path, ut: Path, hojd_px: int = 2400, bredd: int = 1350) -> Path:
+    """Fotounderlaget utan prickar och flagga, centrerat på krämfärgad duk i 9:16
+    (1350 × 2400) – det AI:n får måla om. Placeringen följer AI_SKALA så att
+    AI-bilden kan läggas tillbaka exakt med ai_tillbaka."""
+    rot, _ = fotounderlag(hole, orto, round(hojd_px * AI_SKALA))
+    duk = Image.new("RGB", (bredd, hojd_px), (250, 244, 236))
+    duk.paste(rot, ((bredd - rot.width) // 2, (hojd_px - rot.height) // 2), rot)
+    return _spara(duk, ut)
+
+
+AI_SKALA = 0.95
+
+
+def ai_tillbaka(hole: Hole, orto: Path, ai_bild: Path, ut: Path, kontroll: Path | None = None,
+                hojd_px: int = 2400) -> Path:
+    """Lägger AI-målningen på hålets exakta form: duken skalas tillbaka, hålet klipps
+    ut med fotounderlagets egen siluett (alfa) och prickar och flagga ritas av koden
+    på hålfilens koordinater. Kontrollbilden visar hålfilens konturer ovanpå målningen
+    – ligger de inte på målningens kanter har AI:n flyttat något och bilden får inte
+    användas."""
+    rot, px = fotounderlag(hole, orto, hojd_px)
+    inre_h = round(hojd_px * AI_SKALA)
+    inre_w = round(rot.width * AI_SKALA)
+    ai = Image.open(ai_bild).convert("RGB")
+    duk_w = round(ai.height and hojd_px * ai.width / ai.height)
+    ai = ai.resize((duk_w, hojd_px), Image.LANCZOS)
+    x0, y0 = (duk_w - inre_w) // 2, (hojd_px - inre_h) // 2
+    malad = ai.crop((x0, y0, x0 + inre_w, y0 + inre_h)).resize(rot.size, Image.LANCZOS).convert("RGBA")
+    malad.putalpha(rot.getchannel("A"))
+    if kontroll:
+        _spara(rita_konturer(malad, hole, px), kontroll)
+    rita_spel(malad, hole, px)
+    return _spara(malad, ut)

@@ -26,6 +26,7 @@
 - [x] Hålkort som fasta mallar: 1 Hålkort (spikad 2026-10-16), 2 Poster, 3 Mörk, 4 Skärm 16:9, 5 Banguide, 6 Sponsorhål. Samma mall för varje hål, maxlängd per textfält, `halkort` och `layoutprov`
 - [x] Glasriket hål 14 och hål 3 som typbilder i mallen (AI-bild, inte exakt form – byts mot ortofoto)
 - [x] Hålkort från riktig hålbild: `fotobild` gör stil 1 Foto höst ur ortofotot längs hålets spelytor (höstfärger, skuggor utjämnade, prickar 100/150 m och flagga ritade av koden) – Glasriket hål 3 i hålkort layout 1, 2026-10-19. Outlinje ritas först när klubben gett den.
+- [x] AI-målad hålbild i förlagans stil (2026-10-19): `aiunderlag` gör fotounderlaget (9:16, utan markeringar), AI:n målar om ytan (OpenArt Nano Banana 2.1, bara bilden som referens – med förlagan som andra bild flyttade AI:n green och ritade nya tees), `aibild` lägger målningen på hålets exakta siluett, ritar prickar och flagga och gör en kontrollbild med hålfilens konturer. Används bara om konturerna ligger på målningens kanter. Glasriket hål 3: `klubbar/glasriket/halbilder/hal-03-malad.webp`
 - [x] Spelkorridoren: `utkast` ritar aldrig skog i bandet längs spellinjen och från varje tee (`spelfri_m`, 12 m)
 - [ ] Tryck-PDF av hålkorten (mått bestäms när klubben valt format)
 - [ ] Riktig QR-kod (kräver `segno`, installeras på Macen)

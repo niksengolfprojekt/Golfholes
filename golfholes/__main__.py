@@ -245,6 +245,31 @@ def fotobild(path: str) -> int:
     return 0
 
 
+def aiunderlag(path: str) -> int:
+    from .render.foto import ai_underlag, orto_for
+
+    p = Path(path)
+    hole = Hole.from_yaml(p)
+    club_dir = _club_dir(p)
+    ut = club_dir / "typbilder" / "ai-underlag" / f"hal-{hole.number:02d}-underlag.jpg"
+    ai_underlag(hole, orto_for(Path("data") / club_dir.name), ut)
+    print(f"Sparat: {ut} – ge den till AI:n (9:16). Den får bara byta yta, aldrig form.")
+    return 0
+
+
+def aibild(path: str, malning: str) -> int:
+    from .render.foto import ai_tillbaka, orto_for
+
+    p = Path(path)
+    hole = Hole.from_yaml(p)
+    club_dir = _club_dir(p)
+    ut = club_dir / "halbilder" / f"hal-{hole.number:02d}-malad.webp"
+    kontroll = Path("data") / club_dir.name / "utkast" / f"hal-{hole.number:02d}_ai_kontroll.jpg"
+    ai_tillbaka(hole, orto_for(Path("data") / club_dir.name), Path(malning), ut, kontroll)
+    print(f"Sparat: {ut}\nKontrollera {kontroll}: hålfilens linjer måste ligga på målningens kanter.")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="golfholes")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -273,7 +298,15 @@ def main(argv: list[str] | None = None) -> int:
     h.add_argument("--ar", type=int, default=None, help="ortofotots år (standard: nyaste)")
     sub.add_parser("utkast", help="Utkast av ett hål ur ortofotot från fröpunkter (trollstav)").add_argument("frofil")
     sub.add_parser("fotobild", help="Hålbild i fotostil ur ortofotot (för hålkortet)").add_argument("fil")
+    sub.add_parser("aiunderlag", help="Fotounderlag utan markeringar för AI-målning (9:16)").add_argument("fil")
+    ai = sub.add_parser("aibild", help="Lägg AI-målningen på hålets exakta form + prickar och flagga")
+    ai.add_argument("fil")
+    ai.add_argument("malning", help="AI-bilden (gjord på aiunderlag)")
     a = p.parse_args(argv)
+    if a.cmd == "aiunderlag":
+        return aiunderlag(a.fil)
+    if a.cmd == "aibild":
+        return aibild(a.fil, a.malning)
     if a.cmd == "fotobild":
         return fotobild(a.fil)
     if a.cmd == "utkast":
