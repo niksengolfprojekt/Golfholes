@@ -150,6 +150,15 @@ def _hole(c: Halkort, x: int, y: int, w: int, h: int, pos: str = "left top", fea
             f"background-image:url(\"{c.image.as_uri()}\");background-size:100% 100%'></div>")
 
 
+def _smal(c: Halkort, kvot: float) -> bool:
+    """Ryms hålbilden på höjden i en ruta med bredd/höjd = kvot? Breda hål (par 3 med
+    dammar runt) får annars gå in i textspalten."""
+    from PIL import Image
+
+    with Image.open(c.image) as im:
+        return im.width / im.height <= kvot
+
+
 def _paras(items: list[str], cls: str = "") -> str:
     return "".join(f"<p class='{cls}'>{_e(t)}</p>" for t in items if t)
 
@@ -216,7 +225,7 @@ body{{background:{bg}}}
 {top_css}{sponsor_css}
 """
     body_html = f"""
-{_hole(c, 0, 72, 600, 1060)}
+{_hole(c, 0, 72, 600, 1060) if _smal(c, 600 / 1060) else _hole(c, 0, 72, 500, 1060, 'left center')}
 {top_html}
 <div class='num'>{c.hole}</div>
 <div class='par'>Par {c.par} · Index {c.index}</div>
