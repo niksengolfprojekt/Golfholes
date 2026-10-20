@@ -267,7 +267,7 @@ def rita_spel(rot: Image.Image, hole: Hole, px) -> None:
     d = ImageDraw.Draw(rot)
     s = rot.height / 1000  # storlek på symboler oberoende av upplösning
     mitt = _tyngdpunkt(hole.green)
-    for meter, farg in PRICKAR:
+    for meter, farg in ([] if hole.par == 3 else PRICKAR):  # par 3: slås mot green, inga prickar
         p = _punkt_fore_green(hole.centerline, mitt, meter)
         if p:
             x, y = px(*p)
