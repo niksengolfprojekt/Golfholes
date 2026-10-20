@@ -193,6 +193,10 @@ def fotounderlag(hole: Hole, orto: Path, hojd_px: int = 2400):
     bunker = _rastrera([h.polygon for h in hole.hazards if h.kind == "bunker"], f, shape)
     spel = fairway | green | bunker
     spel |= _rastrera([hole.centerline], f, shape, bredd=int(12 / res))
+    # dammar och bäckar som hålfilen tar med syns alltid (hål 5: dammen 45 m från linjen)
+    vatten = _rastrera([h.polygon for h in hole.hazards if h.kind == "water"], f, shape)
+    if vatten.sum() * res ** 2 >= 100:
+        spel |= vatten
     for t in hole.tees:
         spel |= _rastrera([[t.point, t.point]], f, shape, bredd=int(14 / res))
 
