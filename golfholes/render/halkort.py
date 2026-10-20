@@ -215,7 +215,7 @@ body{{background:{bg}}}
 .tees table{{margin:0 auto;border-collapse:collapse;font:400 20.5px {sans};color:{ink}}}
 .tees td{{padding:0;line-height:1.54}}
 .tn{{text-align:right;padding-right:14px!important;min-width:44px}}
-.txt{{position:absolute;left:517px;width:300px;top:{450 if c.sponsor else 452}px;color:{body};font:400 17px/1.5 {sans}}}
+.txt{{position:absolute;left:517px;width:300px;top:{(450 if c.sponsor else 452) + 32 * max(0, len(c.tees) - 3)}px;color:{body};font:400 17px/1.5 {sans}}}
 .txt h2{{font:700 18px {sans};color:{head};text-transform:uppercase;{caps};margin-bottom:4px}}
 .txt h2+p{{margin-top:0}}
 .txt p{{margin-top:9px}}

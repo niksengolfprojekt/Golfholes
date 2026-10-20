@@ -1,8 +1,8 @@
 # Hålkort för Glasriket hål 17. Hålbilden är AI-målad på hålets exakta form ur Lantmäteriets
 # ortofoto; vatten och träd ur Laserdata Skog (python -m golfholes aiunderlag / aibild).
 # Råden är klubbens egna "Råd från PRO:n" ur banguiden 2025 (glasriketsgk.se/haloversikt),
-# lätt redigerade – klubben godkänner. Tees syns inte tydligt på fotot: längdkontrollen ligger
-# 10 % kort, klubben markerar tees.
+# lätt redigerade – klubben godkänner. Tees satta efter klubbens karta och flygfotot (inom ±3 %),
+# klubben bekräftar var tee-markeringarna står.
 club: Glasrikets Golfklubb
 bana: Fylleryd
 hole: 17

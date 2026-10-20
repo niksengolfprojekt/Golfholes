@@ -1,0 +1,24 @@
+# Hålkort för Glasriket hål 9. Hålbilden är AI-målad på hålets exakta form ur Lantmäteriets
+# ortofoto; träd ur Laserdata Skog (python -m golfholes aiunderlag / aibild).
+# Råden är klubbens egna "Råd från PRO:n" (glasriketsgk.se/haloversikt, hämtad 2026-10-20),
+# lätt redigerade. Beskrivning och strategi är Claudes utkast ur hålfilen – klubben godkänner.
+club: Glasrikets Golfklubb
+bana: Fylleryd
+hole: 9
+par: 5
+index: 10
+tees: [["56 · 60", 473], ["52 · 49", 439], ["44", 335]]
+bild: ../halbilder/hal-09-malad.webp
+typbild: false
+rubrik: Gott om plats från tee
+beskrivning: >-
+  En lång par 5 rakt norrut. Två fairwaybunkrar ligger cirka 215–260 m från tee 56/60,
+  sedan smalnar hålet av fram mot greenen, som har en bunker till vänster.
+rad_rubrik: Råd från pro:n
+rad:
+  - Här finns det gott om plats från tee.
+  - Det är ganska smalt framme vid greenen, så placera ditt transportslag med precision.
+slutrad: Greenen är snäll.
+strategi:
+  sakert: Lägg transportslaget kort om det smala partiet och spela in med ett fullt slag.
+  chansa: Två långa slag tar dig nära, men framme vid greenen är det smalt och bunker vänster.
