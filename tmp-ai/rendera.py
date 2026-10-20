@@ -14,7 +14,7 @@ vyer={
  "h05-tee":   ((491797.0,6305418.0),(491960.0,6305460.0),1.6),
  "h05-inspel":((491945.0,6305452.0),(492055.0,6305487.0),3.0),
  "h03-tee":   ((491546.8,6305902.0),(491653.5,6305800.7),1.6),
- "h03-inspel":((491688.0,6305772.0),(491715.1,6305712.0),3.0),
+ "h03-inspel":((491698.0,6305783.0),(491715.1,6305712.0),3.0),
  "allm-park": ((491830.0,6305730.0),(491960.0,6305780.0),5.0),
  "allm-lang": ((492060.0,6305630.0),(492040.0,6305860.0),5.0),
  "allm-damm": ((491850.0,6305440.0),(491805.0,6305490.0),5.0),
@@ -22,4 +22,4 @@ vyer={
 }
 for n in (sys.argv[1:] or vyer):
     k,m,h=vyer[n]
-    perspektiv(O,D,k,m,hojd_m=h,fov_grader=70 if n.startswith('allm') else 60,ut=Path(f'tmp-ai/{n}-3d.jpg'),fria=fria,linjer=linjer,laz=Path('data/glasriket/laser/y26a023-63050_4900_25.copc.laz')); print(n)
+    perspektiv(O,D,k,m,hojd_m=h,fov_grader=70 if n.startswith(('allm','h03-inspel')) else 60,ut=Path(f'tmp-ai/{n}-3d.jpg'),fria=fria,linjer=linjer,laz=Path('data/glasriket/laser/y26a023-63050_4900_25.copc.laz')); print(n)
