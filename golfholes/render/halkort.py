@@ -62,6 +62,8 @@ class Halkort:
     sponsor: Sponsor | None = None
     typbild: bool = False
     farg_mork: str = "#142219"   # bakgrund i mörk layout; klubbens mörkaste färg
+    halfil: Path | None = None   # hålfilen: tees och hinderavstånd ritas på bilden ur den
+    forklaring: str = ""         # t.ex. "Hinder: meter från tee 60, till – över"
 
     @classmethod
     def from_yaml(cls, path: str | Path) -> "Halkort":
@@ -70,6 +72,7 @@ class Halkort:
         sp = d.get("sponsor")
         typsnitt = d.get("typsnitt")
         klubb = path.parent.parent / "klubb.yaml"
+        halfil = path.parent.parent / f"hal-{int(d['hole']):02d}.yaml"
         if typsnitt is None and klubb.exists():
             typsnitt = (yaml.safe_load(klubb.read_text(encoding="utf-8")) or {}).get("typsnitt")
         return cls(
@@ -82,6 +85,7 @@ class Halkort:
             chansa=d.get("strategi", {}).get("chansa", ""),
             sponsor=Sponsor(**sp) if sp else None, typbild=bool(d.get("typbild", False)),
             farg_mork=d.get("farg_mork", "#142219"), typsnitt=typsnitt,
+            halfil=(halfil if d.get("markera", True) and halfil.exists() and not d.get("typbild") else None),
         )
 
     def kontroll(self) -> list[str]:
@@ -98,7 +102,9 @@ class Halkort:
 
     @property
     def credit(self) -> str:
-        return TYPBILD_NOTE if self.typbild else ATTRIBUTION
+        if self.typbild:
+            return TYPBILD_NOTE
+        return f"{self.forklaring} · {ATTRIBUTION}" if self.forklaring else ATTRIBUTION
 
 
 def _e(s) -> str:
@@ -414,7 +420,23 @@ def to_png(page: str, w: int, h: int, out: str | Path, scale: float = 2.0) -> Pa
     return out
 
 
+def markera(c: Halkort) -> Halkort:
+    """Kopia av kortet där hålbilden har alla tees och hindrens avstånd inritade."""
+    if not c.halfil:
+        return c
+    from dataclasses import replace
+
+    from ..hole import Hole
+    from .foto import markera_halbild, orto_for
+
+    hole = Hole.from_yaml(c.halfil)
+    ut = ROOT / "output" / c.halfil.parent.name / "halbilder" / f"{c.image.stem}-markerad.png"
+    bild, forklaring = markera_halbild(hole, orto_for(ROOT / "data" / c.halfil.parent.name), c.image, ut)
+    return replace(c, image=bild, forklaring=forklaring, halfil=None)
+
+
 def render(c: Halkort, layout: int, out: str | Path, scale: float = 2.0) -> Path:
+    c = markera(c)
     page, w, h = render_html(c, layout)
     return to_png(page, w, h, out, scale)
 

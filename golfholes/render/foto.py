@@ -281,6 +281,79 @@ def rita_spel(rot: Image.Image, hole: Hole, px) -> None:
     d.ellipse((x - 2.5 * s, y - 1.5 * s, x + 2.5 * s, y + 1.5 * s), fill=(30, 30, 30, 255))
 
 
+TYPSNITT_MARK = Path(__file__).resolve().parent.parent.parent / "assets" / "typsnitt" / "HankenGrotesk-SemiBold.ttf"
+
+
+def _etikett(d: ImageDraw.ImageDraw, x: float, y: float, text: str, s: float, at: str, mork: bool) -> None:
+    """Liten rundad lapp med text; at = 'v' (lappen till vänster om x) eller 'h'."""
+    from PIL import ImageFont
+
+    f = ImageFont.truetype(str(TYPSNITT_MARK), max(8, round(15 * s)))
+    b = d.textbbox((0, 0), text, font=f)
+    w, h, pad = b[2] - b[0], b[3] - b[1], 5 * s
+    x0 = x - w - 2 * pad if at == "v" else x
+    x0 = min(max(x0, 2 * s), d.im.size[0] - w - 2 * pad - 2 * s)  # hela lappen inom bilden
+    y0 = y - h / 2 - pad
+    bg, fg = ((24, 34, 28, 215), (255, 255, 255, 255)) if mork else ((255, 255, 255, 235), (24, 34, 28, 255))
+    d.rounded_rectangle((x0, y0, x0 + w + 2 * pad, y0 + h + 2 * pad), radius=4 * s, fill=bg)
+    d.text((x0 + pad - b[0], y0 + pad - b[1]), text, font=f, fill=fg)
+
+
+def rita_tees_och_hinder(rot: Image.Image, hole: Hole, px) -> str:
+    """Alla tees som vita markeringar med namn, och varje hinder med avstånd från bakre tee:
+    till hindret och över det (carry), i meter längs mittlinjen. Returnerar förklaringen
+    som hålkortet skriver ut, t.ex. "Hinder: meter från tee 60 till – över"."""
+    d = ImageDraw.Draw(rot)
+    s = rot.height / 1000
+    # Tees: punkt på teen, namnet bredvid. Tees på samma plats delar lapp.
+    platser: dict[tuple[int, int], list[str]] = {}
+    for t in hole.tees:
+        platser.setdefault((round(t.point[0]), round(t.point[1])), []).append(t.name)
+    for (e, n), namn in platser.items():
+        x, y = px(e, n)
+        r = 5.5 * s
+        d.ellipse((x - r, y - r, x + r, y + r), fill=(255, 255, 255, 255), outline=(24, 34, 28, 255), width=max(1, int(1.6 * s)))
+        _etikett(d, x + 9 * s, y, " · ".join(namn), s, "h", False)
+    # Hinder: avstånd från bakre tee, lappen på hindrets utsida
+    bak = max(hole.tees, key=lambda t: t.length_m or 0)
+    langd = hole.green_distances(bak.name)["fram"]
+    for h in hole.hazards:
+        till, over, sida = _hinder_avstand(hole, h, bak)
+        if over < 20 or till > langd + 15:  # bakom tee eller bortom green
+            continue
+        pts = [px(*p) for p in h.polygon]
+        xs, ys = [p[0] for p in pts], [p[1] for p in pts]
+        ym = (min(ys) + max(ys)) / 2
+        text = f"{max(0, till)}–{over} m" if over - till >= 8 else f"{max(0, till)} m"
+        if sida < -3:
+            _etikett(d, min(xs) - 6 * s, ym, text, s, "v", True)
+        else:
+            _etikett(d, max(xs) + 6 * s, ym, text, s, "h", True)
+    return f"Hinder: meter från tee {bak.name}, till – över" if hole.hazards else ""
+
+
+def _hinder_avstand(hole: Hole, h, tee) -> tuple[int, int, float]:
+    from .. import geometry as g
+
+    s0 = hole._tee_station(tee)
+    forst, sist, sida = g.station_range(hole.centerline, h.polygon)
+    return round(forst - s0), round(sist - s0), sida
+
+
+def markera_halbild(hole: Hole, orto: Path, bild: Path, ut: Path) -> tuple[Path, str]:
+    """Färdig hålbild (målad eller foto) + tees och hinderavstånd, för hålkortet.
+    Placeringen räknas om ur fotounderlaget i bildens höjd, samma som när bilden gjordes."""
+    im = Image.open(bild).convert("RGBA")
+    rot, px = fotounderlag(hole, orto, im.height)
+    if rot.size != im.size:  # bilden gjord på en äldre hålfil: rita inget hellre än fel
+        print(f"VARNING: {bild.name} passar inte hålfilen ({im.size} mot {rot.size}) – inga tees/hinder ritade")
+        return bild, ""
+    forklaring = rita_tees_och_hinder(im, hole, px)
+    ut.parent.mkdir(parents=True, exist_ok=True)
+    im.save(ut)
+    return ut, forklaring
+
+
 def rita_konturer(rot: Image.Image, hole: Hole, px) -> Image.Image:
     """Kontrollbild: hålfilens fairway, green, bunkrar och vatten som tunna linjer ovanpå
     bilden. Används för att se att en AI-målning inte har flyttat något."""
