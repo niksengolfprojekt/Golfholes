@@ -366,6 +366,14 @@ def utkast_hal(fro: dict, orto: str | Path, marginal: float = 70.0) -> tuple[dic
     f = las_fonster(orto, bbox)
     mt = matt(f)
     kl = klassa(mt)
+    if fro.get("laser"):  # Laserdata Skog: vatten och träd ur punkterna i stället för ur färgen
+        from .laser import till_fonster, vatten_och_trad
+        lv, lt = vatten_och_trad(fro["laser"], fro["hojd"], bbox)
+        kl["skog"] = till_fonster(lt > 0, bbox, 1.0, f)
+        # dammar med näckrosor/alger ger laserekon men syns på färgen; tak och trädskuggor
+        # som färgen tar för vatten har laserhöjd eller ligger under kronor och faller bort
+        kl["vatten"] = oppna(till_fonster(lv, bbox, 1.0, f), 2) | (kl["vatten"] & ~vidga(kl["skog"], 3))
+        kl["bunker"] &= ~kl["vatten"] & ~kl["skog"]
     korridor = _avstand_till_linje(f, linje, kl["skog"].shape)
     per_m = 1 / f.res
 
@@ -398,7 +406,10 @@ def utkast_hal(fro: dict, orto: str | Path, marginal: float = 70.0) -> tuple[dic
     for v, (y0, y1, x0, x1) in _bitar(oppna(kl["vatten"], 2)):
         a = v[y0:y1, x0:x1].sum() * f.res ** 2
         # stora dammar har flikig strandkant (hål 5: 0,19), små mörka fläckar måste vara runda
-        if a >= 25 and korridor[v].min() < marginal and kompakthet(v[y0:y1, x0:x1]) > (0.12 if a >= 300 else 0.3):
+        # med laserdata är vattnet uppmätt (inga ekon/LAS 9), så smala ringar runt en green får vara med
+        krav = 0.02 if fro.get("laser") else (0.12 if a >= 300 else 0.3)
+        if a >= 25 and korridor[v].min() < marginal and kompakthet(v[y0:y1, x0:x1]) > krav \
+                and not (a < 100 and (v & nara_tee).any()):  # skuggfläck vid tee
             vatten += polygoner(v, f, min_m2=25, tol_m=0.6)
     skog = oppna(stang(kl["skog"], 2), 3) & (korridor < fro.get("skog_avstand", 55)) & ~vidga(fairway | green, 1)
     skog &= ~spelfri(f, linje, fro["tees"], skog.shape, fro.get("spelfri_m", 12))

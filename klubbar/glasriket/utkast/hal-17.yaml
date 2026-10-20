@@ -1,0 +1,22 @@
+# Fröpunkter för hål 17 (SWEREF 99 TM, meter). Satta mot ortofoto 2025-07-01 och klubbens
+# hålkarta (banguide 2025). Par 3 mot nordväst: green med vatten till vänster och framför,
+# gångbro mellan green och dammen med trädön, tee nere vid maskinhallen.
+#   python -m golfholes utkast klubbar/glasriket/utkast/hal-17.yaml
+club: Glasrikets Golfklubb
+hole: 17
+par: 3
+index: 5
+orto: data/glasriket/orto/o63050_4900_25_mr25.tif
+# Tee syns inte tydligt på fotot. 49/44 = slutet på den klippta remsan sydost om dammen,
+# 52/56/60 = gräsytan vid maskinhallen. Båda är tolkningar och måste bekräftas av klubben.
+tees:
+- {name: 52/56/60, point: [491724.0, 6305970.0], length_m: 128}
+- {name: 49/44, point: [491702.0, 6305998.0], length_m: 89}
+centerline: auto
+green: [491641.0, 6306060.0]
+fairway:
+- [491688.0, 6306022.0]
+# Vatten och träd ur Lantmäteriets Laserdata Skog (mars 2026) – dammen med trädön ligger
+# i skugga och syns inte på färgen.
+laser: data/glasriket/laser/y26a023-63050_4900_25.copc.laz
+hojd: data/glasriket/hojd/m630_49.tif

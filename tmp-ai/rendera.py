@@ -4,7 +4,7 @@ from golfholes.hole import Hole
 from golfholes.render.perspektiv import perspektiv
 O=Path('data/glasriket/orto/o63050_4900_25_mr25.tif'); D=Path('data/glasriket/hojd/m630_49.tif')
 fria=[]; linjer=[]
-for h in ("03","05","14"):
+for h in ("03","05","14","17"):
     hole=Hole.from_yaml(f"klubbar/glasriket/hal-{h}.yaml")
     fria += hole.fairways + [hole.green] + [z.polygon for z in hole.hazards]
     linjer.append(hole.centerline)
@@ -15,6 +15,7 @@ vyer={
  "h05-inspel":((491945.0,6305452.0),(492055.0,6305487.0),3.0),
  "h03-tee":   ((491546.8,6305902.0),(491653.5,6305800.7),1.6),
  "h03-inspel":((491698.0,6305783.0),(491715.1,6305712.0),3.0),
+ "h17-tee":   ((491724.0,6305970.0),(491641.0,6306060.0),1.6),
  "allm-park": ((491830.0,6305730.0),(491960.0,6305780.0),5.0),
  "allm-lang": ((492060.0,6305630.0),(492040.0,6305860.0),5.0),
  "allm-damm": ((491850.0,6305440.0),(491805.0,6305490.0),5.0),
