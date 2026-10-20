@@ -58,6 +58,7 @@ class Halkort:
     slutrad: str = ""
     sakert: str = ""
     chansa: str = ""
+    typsnitt: dict | None = None   # klubbens profil: {siffror: familj, text: familj}; None = mallens
     sponsor: Sponsor | None = None
     typbild: bool = False
     farg_mork: str = "#142219"   # bakgrund i mörk layout; klubbens mörkaste färg
@@ -67,6 +68,10 @@ class Halkort:
         path = Path(path)
         d = yaml.safe_load(path.read_text(encoding="utf-8"))
         sp = d.get("sponsor")
+        typsnitt = d.get("typsnitt")
+        klubb = path.parent.parent / "klubb.yaml"
+        if typsnitt is None and klubb.exists():
+            typsnitt = (yaml.safe_load(klubb.read_text(encoding="utf-8")) or {}).get("typsnitt")
         return cls(
             club=d["club"], hole=int(d["hole"]), par=int(d["par"]), index=int(d["index"]),
             tees=[(str(t[0]), int(t[1])) for t in d["tees"]],
@@ -76,7 +81,7 @@ class Halkort:
             slutrad=d.get("slutrad", ""), sakert=d.get("strategi", {}).get("sakert", ""),
             chansa=d.get("strategi", {}).get("chansa", ""),
             sponsor=Sponsor(**sp) if sp else None, typbild=bool(d.get("typbild", False)),
-            farg_mork=d.get("farg_mork", "#142219"),
+            farg_mork=d.get("farg_mork", "#142219"), typsnitt=typsnitt,
         )
 
     def kontroll(self) -> list[str]:
@@ -106,6 +111,12 @@ def _font_css() -> str:
 @font-face{{font-family:'Cormorant Garamond';src:url('{f}/CormorantGaramond.ttf');font-weight:300 700}}
 @font-face{{font-family:'Cormorant Garamond';src:url('{f}/CormorantGaramond-Italic.ttf');font-weight:300 700;font-style:italic}}
 @font-face{{font-family:'DM Sans';src:url('{f}/DMSans.ttf');font-weight:100 1000}}
+@font-face{{font-family:'Spectral';src:url('{f}/Spectral-Regular.ttf');font-weight:400}}
+@font-face{{font-family:'Spectral';src:url('{f}/Spectral-Medium.ttf');font-weight:500 700}}
+@font-face{{font-family:'Spectral';src:url('{f}/Spectral-Italic.ttf');font-weight:400;font-style:italic}}
+@font-face{{font-family:'Hanken Grotesk';src:url('{f}/HankenGrotesk-Regular.ttf');font-weight:400}}
+@font-face{{font-family:'Hanken Grotesk';src:url('{f}/HankenGrotesk-Medium.ttf');font-weight:500}}
+@font-face{{font-family:'Hanken Grotesk';src:url('{f}/HankenGrotesk-SemiBold.ttf');font-weight:600 800}}
 *{{margin:0;padding:0;box-sizing:border-box}}
 html,body{{overflow:hidden}}
 body{{-webkit-font-smoothing:antialiased;font-kerning:normal;text-rendering:geometricPrecision}}
@@ -164,6 +175,9 @@ def layout_halkort(c: Halkort, dark: bool = False) -> tuple[str, int, int]:
         ink, body, head, rule, num = "#2d2a27", "#57524c", "#2d2a27", "#2d2a27", "#2d2a27"
         num_font = "'DejaVu Sans',sans-serif;font-weight:700"
         sans = "'DejaVu Sans',sans-serif"
+        if c.typsnitt:  # klubbens grafiska profil ersätter mallens typsnitt, rutnätet är detsamma
+            num_font = f"'{c.typsnitt.get('siffror', 'DejaVu Sans')}',serif;font-weight:500"
+            sans = f"'{c.typsnitt.get('text', 'DejaVu Sans')}',sans-serif"
         caps = "letter-spacing:.01em"
         last = "#2d2a27"
     sponsor_css = sponsor_html = top_css = top_html = ""
