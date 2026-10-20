@@ -1,0 +1,28 @@
+# Fröpunkter för hål 18 (SWEREF 99 TM, meter). Satta 2026-10-20 mot ortofoto 2025-07-01,
+# klubbens hålkarta (banguide 2025) och höjdmodellen. Par 4 norrut mot klubbhuset: smal tee-ränna
+# med gångväg till vänster, två fairwaybunkrar, green med bunker vänster, övningsgreen bakom.
+# Tee 60 ("+40") ligger under träd; hittad som en 0,7 m upphöjd platta i höjdmodellen.
+club: Glasrikets Golfklubb
+hole: 18
+par: 4
+index: 9
+orto: data/glasriket/orto/o63050_4900_25_mr25.tif
+tees:
+- {name: '60', point: [491718.0, 6306060.0], length_m: 423}
+- {name: '56', point: [491727.0, 6306097.0], length_m: 383}
+- {name: 52/49, point: [491726.0, 6306152.0], length_m: 325}
+- {name: '44', point: [491733.0, 6306207.0], length_m: 270}
+centerline:
+- [491718.0, 6306060.0]
+- [491727.0, 6306100.0]
+- [491728.0, 6306200.0]
+- [491740.0, 6306330.0]
+- [491748.0, 6306477.0]
+- [491750.0, 6306490.0]
+green: [491748.0, 6306477.0]
+fairway:
+- [491735.0, 6306250.0]
+- [491742.0, 6306360.0]
+- [491746.0, 6306430.0]
+laser: data/glasriket/laser/y26a023-63050_4900_25.copc.laz
+hojd: data/glasriket/hojd/m630_49.tif

@@ -1,0 +1,26 @@
+# Fröpunkter för hål 9 (SWEREF 99 TM, meter). Satta 2026-10-20 mot ortofoto 2025-07-01, klubbens
+# hålkarta (banguide 2025) och översiktskartan. Par 5 rakt norrut: tee vid vägen, två
+# fairwaybunkrar ca 200 m från green, smalt framme vid green, green med bunker vänster fram.
+# Tee 56/60 ligger i trädskugga och syns inte på fotot – placerad där kartan och längden säger.
+club: Glasrikets Golfklubb
+hole: 9
+par: 5
+index: 10  # sidans text; hålkartan säger 9 (krock med hål 18) – klubben bekräftar
+orto: data/glasriket/orto/o63050_4900_25_mr25.tif
+tees:
+- {name: 56/60, point: [491828.0, 6305994.0], length_m: 473}
+- {name: 52/49, point: [491844.0, 6306025.0], length_m: 439}
+- {name: '44', point: [491844.0, 6306124.0], length_m: 335}
+centerline:
+- [491828.0, 6305994.0]
+- [491832.0, 6306100.0]
+- [491830.0, 6306300.0]
+- [491810.0, 6306465.0]
+- [491806.0, 6306478.0]
+green: [491810.0, 6306465.0]
+fairway:
+- [491830.0, 6306180.0]
+- [491828.0, 6306300.0]
+- [491818.0, 6306410.0]
+laser: data/glasriket/laser/y26a023-63050_4900_25.copc.laz
+hojd: data/glasriket/hojd/m630_49.tif

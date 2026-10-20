@@ -1,0 +1,29 @@
+# Fröpunkter för hål 11 (SWEREF 99 TM, meter). Satta 2026-10-20 mot ortofoto 2025-07-01,
+# klubbens hålkarta (banguide 2025) och höjdmodellen. Par 5 norrut: smal tee-ränna, gångväg
+# mellan tee 56 och 49, vägen korsar mitt på hålet, liten upphöjd green uppe till vänster.
+# Greenen är den upphöjda (ca 1,8 m) av de två greenerna i norr – klubben bekräftar.
+# Kartans tee "45" tolkas som tee 44 (scorekortet har ingen 45).
+club: Glasrikets Golfklubb
+hole: 11
+par: 5
+index: 13
+orto: data/glasriket/orto/o63050_4900_25_mr25.tif
+tees:
+- {name: '60', point: [492059.0, 6306049.0], length_m: 494}
+- {name: '56', point: [492060.0, 6306097.0], length_m: 446}
+- {name: 52/49, point: [492056.0, 6306160.0], length_m: 384}
+- {name: '44', point: [492050.0, 6306224.0], length_m: 320}
+centerline:
+- [492059.0, 6306049.0]
+- [492058.0, 6306140.0]
+- [492062.0, 6306300.0]
+- [492068.0, 6306420.0]
+- [492023.0, 6306543.0]
+- [492016.0, 6306552.0]
+green: [492023.0, 6306543.0]
+fairway:
+- [492056.0, 6306190.0]
+- [492065.0, 6306360.0]
+- [492062.0, 6306460.0]
+laser: data/glasriket/laser/y26a023-63050_4900_25.copc.laz
+hojd: data/glasriket/hojd/m630_49.tif
