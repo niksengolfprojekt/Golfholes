@@ -75,7 +75,9 @@ def klassa(mt: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
     och kontrolleras visuellt per bana (kontrollbilden)."""
     sd4 = medel(mt["struktur"], 4)
     vatten = (medel(mt["ndvi"], 3) < -0.15) & (medel(mt["N"], 3) < 40)
-    bunker = (mt["R"] > 150) & (mt["R"] >= mt["G"] - 5) & (mt["R"] - mt["B"] > 15) & (mt["ndvi"] < 0.05)
+    # sand är ljus och saknar klorofyll; torrt gräs (hål 5, juli) har V ~150 och ndvi ~0
+    bunker = (mt["R"] > 150) & (mt["R"] >= mt["G"] - 5) & (mt["R"] - mt["B"] > 15) & (mt["ndvi"] < -0.04) \
+        & (mt["V"] > 172)
     skog = ((medel(mt["V"], 4) < 72) | (sd4 > 11)) & ~vatten
     return {"skog": skog, "vatten": vatten, "bunker": bunker}
 
@@ -395,7 +397,8 @@ def utkast_hal(fro: dict, orto: str | Path, marginal: float = 70.0) -> tuple[dic
     vatten = []
     for v, (y0, y1, x0, x1) in _bitar(oppna(kl["vatten"], 2)):
         a = v[y0:y1, x0:x1].sum() * f.res ** 2
-        if a >= 25 and korridor[v].min() < marginal and kompakthet(v[y0:y1, x0:x1]) > 0.3:
+        # stora dammar har flikig strandkant (hål 5: 0,19), små mörka fläckar måste vara runda
+        if a >= 25 and korridor[v].min() < marginal and kompakthet(v[y0:y1, x0:x1]) > (0.12 if a >= 300 else 0.3):
             vatten += polygoner(v, f, min_m2=25, tol_m=0.6)
     skog = oppna(stang(kl["skog"], 2), 3) & (korridor < fro.get("skog_avstand", 55)) & ~vidga(fairway | green, 1)
     skog &= ~spelfri(f, linje, fro["tees"], skog.shape, fro.get("spelfri_m", 12))

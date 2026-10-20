@@ -1,0 +1,22 @@
+# Fröpunkter för hål 5 (SWEREF 99 TM, meter). Satta mot ortofoto 2025-07-01 och klubbens
+# hålkarta (banguide 2025). Hålet spelas mot öster, dammen ligger till vänster framför tee.
+#   python -m golfholes utkast klubbar/glasriket/utkast/hal-05.yaml
+club: Glasrikets Golfklubb
+hole: 5
+par: 4
+index: 8
+orto: data/glasriket/orto/o63050_4900_25_mr25.tif
+# 49/44 = den klippta ytan där gångvägen slutar (syns på fotot).
+# 56/52 = trolig: ljus gräsyta vid stigen 44 m bakom (scorekortet säger 43 m). Bekräftas.
+# 60 syns INTE på fotot (skog): punkten är en gissning 35 m bakom längs stigen, som på
+# klubbens karta. Måste bekräftas av klubben.
+tees:
+- {name: '60', point: [491722.0, 6305444.0], length_m: 355}
+- {name: 56/52, point: [491755.0, 6305432.0], length_m: 320}
+- {name: 49/44, point: [491797.0, 6305418.0], length_m: 277}
+centerline: auto
+green: [492055.0, 6305487.0]
+fairway:
+- [491880.0, 6305440.0]
+- [491960.0, 6305458.0]
+- [492010.0, 6305472.0]
