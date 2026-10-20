@@ -1,8 +1,10 @@
 # Fröpunkter för hål 11 (SWEREF 99 TM, meter). Omgjorda 2026-10-20 efter Erics rättelse:
 # hålet går SÖDERUT från teeboxarna vid gångvägen, inte norrut över korthålsbanan.
 # Satta mot ortofoto 2025-07-01, klubbens hålkarta (banguide 2025) och scorekortets längder.
-# Tee 56 = klippta teeboxen väster om gångvägen (446 m stämmer). Tee 60 = klippta platsen vid
-# bänken 48 m bakom (kartans "+48"). Tee 52/49 = runda teen söder om stigen. Tee 44 vid
+# Tee 60 och 56 = bak- och framkant på den långa klippta boxen väster om gångvägen (Eric
+# markerade dem 2026-10-20). Tee 60 blir då ca 8 % kortare än scorekortets 494 m – fråga
+# klubben om scorekortet är mätt från en äldre bakre tee (kartans "+48").
+# Trädet mitt i fairway (ca 492043,6305710) är nedtaget enligt Eric; fairway läggs ihop där. Tee 52/49 = runda teen söder om stigen. Tee 44 vid
 # fairwaystarten (kartan säger 45, scorekortet 44) – klubben bekräftar.
 # Green: ensam green i skogsgatan, tee för hål 12 till vänster om den (som på kartan).
 club: Glasrikets Golfklubb
@@ -11,12 +13,12 @@ par: 5
 index: 13
 orto: data/glasriket/orto/o63050_4900_25_mr25.tif
 tees:
-- {name: '60', point: [492049.0, 6306096.0], length_m: 494}
-- {name: '56', point: [492048.0, 6306050.0], length_m: 446}
+- {name: '60', point: [492047.0, 6306060.0], length_m: 494}
+- {name: '56', point: [492048.0, 6306045.0], length_m: 446}
 - {name: 52/49, point: [492052.0, 6305987.0], length_m: 384}
 - {name: '44', point: [492049.0, 6305928.0], length_m: 320}
 centerline:
-- [492049.0, 6306096.0]
+- [492047.0, 6306060.0]
 - [492049.0, 6306030.0]
 - [492048.0, 6305900.0]
 - [492048.0, 6305760.0]
