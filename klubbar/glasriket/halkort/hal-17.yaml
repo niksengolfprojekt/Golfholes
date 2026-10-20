@@ -1,0 +1,25 @@
+# Hålkort för Glasriket hål 17. Hålbilden är AI-målad på hålets exakta form ur Lantmäteriets
+# ortofoto; vatten och träd ur Laserdata Skog (python -m golfholes aiunderlag / aibild).
+# Råden är klubbens egna "Råd från PRO:n" ur banguiden 2025 (glasriketsgk.se/haloversikt),
+# lätt redigerade – klubben godkänner. Tees syns inte tydligt på fotot: längdkontrollen ligger
+# 10 % kort, klubben markerar tees.
+club: Glasrikets Golfklubb
+bana: Fylleryd
+hole: 17
+par: 3
+index: 5
+tees: [["52 · 56 · 60", 128], ["49 · 44", 89]]
+bild: ../halbilder/hal-17-malad.webp
+typbild: false
+rubrik: Banans signaturhål
+beskrivning: >-
+  Ett kort par 3 mot nordväst över vatten. Greenen omges av dammar till vänster,
+  framför och bakom, med en trädö i dammen närmast tee.
+rad_rubrik: Råd från pro:n
+rad:
+  - Rätt längd och riktning, så gör du ett säkert par.
+  - Slår du vänster, kort eller långt blir det blött.
+slutrad: Bakom greenen är det rött pliktområde hela vägen.
+strategi:
+  sakert: Sikta mot högra halvan av greenen – där finns gräs att landa på.
+  chansa: Flaggan till vänster kräver exakt längd över vattnet.

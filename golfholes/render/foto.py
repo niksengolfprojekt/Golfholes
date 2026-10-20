@@ -311,6 +311,8 @@ def ai_underlag(hole: Hole, orto: Path, ut: Path, hojd_px: int = 2400, bredd: in
     (1350 × 2400) – det AI:n får måla om. Placeringen följer AI_SKALA så att
     AI-bilden kan läggas tillbaka exakt med ai_tillbaka."""
     rot, _ = fotounderlag(hole, orto, round(hojd_px * AI_SKALA))
+    if rot.width > bredd * AI_SKALA:  # brett hål (korta par 3): bredden styr i stället
+        rot, _ = fotounderlag(hole, orto, round(hojd_px * AI_SKALA * bredd * AI_SKALA / rot.width))
     duk = Image.new("RGB", (bredd, hojd_px), (250, 244, 236))
     duk.paste(rot, ((bredd - rot.width) // 2, (hojd_px - rot.height) // 2), rot)
     return _spara(duk, ut)
@@ -356,13 +358,17 @@ def ai_tillbaka(hole: Hole, orto: Path, ai_bilder: list[Path], ut: Path, kontrol
     Kontrollbilden visar hålfilens konturer ovanpå målningen – ligger de inte på
     målningens kanter har AI:n flyttat något och bilden får inte användas."""
     rot, px = fotounderlag(hole, orto, hojd_px)
-    inre_h = round(hojd_px * AI_SKALA)
-    inre_w = round(rot.width * AI_SKALA)
     resultat = []
     for fil in ai_bilder:
         ai = Image.open(fil).convert("RGB")
-        duk_w = round(hojd_px * ai.width / ai.height)
+        # AI:n lämnar inte exakt 9:16 (4K: 3072 × 5504); duken räknas som underlagets 9:16
+        duk_w = round(hojd_px * 9 / 16)
         ai = ai.resize((duk_w, hojd_px), Image.LANCZOS)
+        inre_h = round(hojd_px * AI_SKALA)
+        inre_w = round(rot.width * AI_SKALA)
+        if inre_w > duk_w * AI_SKALA:  # brett hål: som i ai_underlag styr bredden
+            inre_w = round(duk_w * AI_SKALA)
+            inre_h = round(inre_w * rot.height / rot.width)
         x0, y0 = (duk_w - inre_w) // 2, (hojd_px - inre_h) // 2
         malad = ai.crop((x0, y0, x0 + inre_w, y0 + inre_h)).resize(rot.size, Image.LANCZOS).convert("RGBA")
         malad.putalpha(rot.getchannel("A"))
