@@ -1,29 +1,49 @@
-# Fröpunkter för hål 11 (SWEREF 99 TM, meter). Satta 2026-10-20 mot ortofoto 2025-07-01,
-# klubbens hålkarta (banguide 2025) och höjdmodellen. Par 5 norrut: smal tee-ränna, gångväg
-# mellan tee 56 och 49, vägen korsar mitt på hålet, liten upphöjd green uppe till vänster.
-# Greenen är den upphöjda (ca 1,8 m) av de två greenerna i norr – klubben bekräftar.
-# Kartans tee "45" tolkas som tee 44 (scorekortet har ingen 45).
+# Fröpunkter för hål 11 (SWEREF 99 TM, meter). Omgjorda 2026-10-20 efter Erics rättelse:
+# hålet går SÖDERUT från teeboxarna vid gångvägen, inte norrut över korthålsbanan.
+# Satta mot ortofoto 2025-07-01, klubbens hålkarta (banguide 2025) och scorekortets längder.
+# Tee 56 = klippta teeboxen väster om gångvägen (446 m stämmer). Tee 60 = klippta platsen vid
+# bänken 48 m bakom (kartans "+48"). Tee 52/49 = runda teen söder om stigen. Tee 44 vid
+# fairwaystarten (kartan säger 45, scorekortet 44) – klubben bekräftar.
+# Green: ensam green i skogsgatan, tee för hål 12 till vänster om den (som på kartan).
 club: Glasrikets Golfklubb
 hole: 11
 par: 5
 index: 13
 orto: data/glasriket/orto/o63050_4900_25_mr25.tif
 tees:
-- {name: '60', point: [492059.0, 6306049.0], length_m: 494}
-- {name: '56', point: [492060.0, 6306097.0], length_m: 446}
-- {name: 52/49, point: [492056.0, 6306160.0], length_m: 384}
-- {name: '44', point: [492050.0, 6306224.0], length_m: 320}
+- {name: '60', point: [492049.0, 6306096.0], length_m: 494}
+- {name: '56', point: [492048.0, 6306050.0], length_m: 446}
+- {name: 52/49, point: [492052.0, 6305987.0], length_m: 384}
+- {name: '44', point: [492049.0, 6305928.0], length_m: 320}
 centerline:
-- [492059.0, 6306049.0]
-- [492058.0, 6306140.0]
-- [492062.0, 6306300.0]
-- [492068.0, 6306420.0]
-- [492023.0, 6306543.0]
-- [492016.0, 6306552.0]
-green: [492023.0, 6306543.0]
+- [492049.0, 6306096.0]
+- [492049.0, 6306030.0]
+- [492048.0, 6305900.0]
+- [492048.0, 6305760.0]
+- [492058.0, 6305660.0]
+- [492079.0, 6305609.0]
+green: [492079.0, 6305609.0]
+# Greenens kontur inritad ur fotot (trollstaven tog bara högra kanten i skuggan).
+green_polygon:
+- [492089.3, 6305612.8]
+- [492086.8, 6305617.2]
+- [492083.2, 6305620.3]
+- [492078.8, 6305621.7]
+- [492074.5, 6305621.2]
+- [492070.9, 6305618.8]
+- [492068.5, 6305615.0]
+- [492067.7, 6305610.2]
+- [492068.7, 6305605.2]
+- [492071.2, 6305600.8]
+- [492074.8, 6305597.7]
+- [492079.2, 6305596.3]
+- [492083.5, 6305596.8]
+- [492087.1, 6305599.2]
+- [492089.5, 6305603.0]
+- [492090.3, 6305607.8]
 fairway:
-- [492056.0, 6306190.0]
-- [492065.0, 6306360.0]
-- [492062.0, 6306460.0]
+- [492048.0, 6305900.0]
+- [492048.0, 6305760.0]
+- [492056.0, 6305660.0]
 laser: data/glasriket/laser/y26a023-63050_4900_25.copc.laz
 hojd: data/glasriket/hojd/m630_49.tif
