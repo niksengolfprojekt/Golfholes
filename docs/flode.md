@@ -48,4 +48,5 @@
 - [ ] Webbsidorna i klubbens stil (använder ännu Nordisk)
 - [ ] Klubbmärke (SVG) från klubben till rubriken i stil 1
 - [ ] Tee-vy och flygfilm (3D, Mac Pro)
+- [x] Ögonhöjdsvy ur data (`golfholes/render/perspektiv.py`): höjdmodell + ortofoto + skogsmassa, spellinjen hålls öppen. AI (OpenArt) målar vyn till foto. Glasriket hål 3, 5, 14: `/mnt/project-files/glasriket/ogonhojd/` – väntar på Erics godkännande. Visas som "Visualisering", aldrig som foto.
 - [ ] Ecosigns tryckspecifikation in i `SignSpec` (mått, utfall, PDF/X)
