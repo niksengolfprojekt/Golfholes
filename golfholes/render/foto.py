@@ -284,60 +284,122 @@ def rita_spel(rot: Image.Image, hole: Hole, px) -> None:
 TYPSNITT_MARK = Path(__file__).resolve().parent.parent.parent / "assets" / "typsnitt" / "HankenGrotesk-SemiBold.ttf"
 
 
-def _etikett(d: ImageDraw.ImageDraw, x: float, y: float, text: str, s: float, at: str, mork: bool) -> None:
-    """Liten rundad lapp med text; at = 'v' (lappen till vänster om x) eller 'h'."""
-    from PIL import ImageFont
-
-    f = ImageFont.truetype(str(TYPSNITT_MARK), max(8, round(15 * s)))
-    b = d.textbbox((0, 0), text, font=f)
-    w, h, pad = b[2] - b[0], b[3] - b[1], 5 * s
-    x0 = x - w - 2 * pad if at == "v" else x
-    x0 = min(max(x0, 2 * s), d.im.size[0] - w - 2 * pad - 2 * s)  # hela lappen inom bilden
-    y0 = y - h / 2 - pad
-    bg, fg = ((24, 34, 28, 215), (255, 255, 255, 255)) if mork else ((255, 255, 255, 235), (24, 34, 28, 255))
-    d.rounded_rectangle((x0, y0, x0 + w + 2 * pad, y0 + h + 2 * pad), radius=4 * s, fill=bg)
-    d.text((x0 + pad - b[0], y0 + pad - b[1]), text, font=f, fill=fg)
+def _tee_grupper(hole: Hole) -> list[tuple[str, tuple[float, float]]]:
+    """Tees på samma plats delar namn ("52 · 49"), längsta först."""
+    platser: dict[tuple[int, int], list] = {}
+    for t in sorted(hole.tees, key=lambda t: -(t.length_m or 0)):
+        platser.setdefault((round(t.point[0]), round(t.point[1])), []).append(t)
+    return [(" · ".join(t.name.replace("/", " · ") for t in ts), ts[0].point) for ts in platser.values()]
 
 
-def rita_tees_och_hinder(rot: Image.Image, hole: Hole, px) -> str:
-    """Alla tees som vita markeringar med namn, och varje hinder med avstånd från bakre tee:
-    till hindret och över det (carry), i meter längs mittlinjen. Returnerar förklaringen
-    som hålkortet skriver ut, t.ex. "Hinder: meter från tee 60 till – över"."""
-    d = ImageDraw.Draw(rot)
-    s = rot.height / 1000
-    # Tees: punkt på teen, namnet bredvid. Tees på samma plats delar lapp.
-    platser: dict[tuple[int, int], list[str]] = {}
-    for t in hole.tees:
-        platser.setdefault((round(t.point[0]), round(t.point[1])), []).append(t.name)
-    for (e, n), namn in platser.items():
-        x, y = px(e, n)
-        r = 5.5 * s
-        d.ellipse((x - r, y - r, x + r, y + r), fill=(255, 255, 255, 255), outline=(24, 34, 28, 255), width=max(1, int(1.6 * s)))
-        _etikett(d, x + 9 * s, y, " · ".join(namn), s, "h", False)
-    # Hinder: avstånd från bakre tee, lappen på hindrets utsida
-    bak = max(hole.tees, key=lambda t: t.length_m or 0)
-    langd = hole.green_distances(bak.name)["fram"]
-    for h in hole.hazards:
-        till, over, sida = _hinder_avstand(hole, h, bak)
-        if over < 20 or till > langd + 15:  # bakom tee eller bortom green
-            continue
-        pts = [px(*p) for p in h.polygon]
-        xs, ys = [p[0] for p in pts], [p[1] for p in pts]
-        ym = (min(ys) + max(ys)) / 2
-        text = f"{max(0, till)}–{over} m" if over - till >= 8 else f"{max(0, till)} m"
-        if sida < -3:
-            _etikett(d, min(xs) - 6 * s, ym, text, s, "v", True)
-        else:
-            _etikett(d, max(xs) + 6 * s, ym, text, s, "h", True)
-    return f"Hinder: meter från tee {bak.name}, till – över" if hole.hazards else ""
-
-
-def _hinder_avstand(hole: Hole, h, tee) -> tuple[int, int, float]:
+def hinderlinjer(hole: Hole) -> list[dict]:
+    """Hinder i spelzonen med fågelvägsavstånd från varje tee: fram till hindret och över
+    det (carry), som en laserkikare mäter. Bara spelzonen: från 100 m från bakre tee till
+    30 m före green. Greenbunkrar, hinder vid tee och par 3 (slås mot green) tas inte med.
+    Hinder som börjar inom 12 m från varandra (bakre tee) slås ihop till en båge."""
     from .. import geometry as g
 
-    s0 = hole._tee_station(tee)
-    forst, sist, sida = g.station_range(hole.centerline, h.polygon)
-    return round(forst - s0), round(sist - s0), sida
+    if hole.par == 3:
+        return []
+    bak = max(hole.tees, key=lambda t: t.length_m or 0)
+    gmitt = _tyngdpunkt(hole.green)
+    grupper = _tee_grupper(hole)
+    rader = []
+    for h in hole.hazards:
+        tat = [p for i, p in enumerate(h.polygon) for p in [p, ((p[0] + h.polygon[i - 1][0]) / 2, (p[1] + h.polygon[i - 1][1]) / 2)]]
+        if min(g.dist(p, gmitt) for p in tat) < 30:  # greenbunker / damm vid green: inspelet, inte utslaget
+            continue
+        fram = min(g.dist(bak.point, p) for p in tat)
+        over = max(g.dist(bak.point, p) for p in tat)
+        if fram < 100 or fram > g.dist(bak.point, gmitt) - 30:
+            continue
+        rader.append({"hinder": [h], "fram": fram, "over": over})
+    rader.sort(key=lambda r: r["fram"])
+    ihop: list[dict] = []
+    for r in rader:
+        if ihop and r["fram"] - ihop[-1]["fram"] < 12:
+            ihop[-1]["hinder"] += r["hinder"]
+            ihop[-1]["over"] = max(ihop[-1]["over"], r["over"])
+        else:
+            ihop.append(r)
+    for r in ihop:
+        tat = [p for h in r["hinder"] for p in h.polygon]
+        r["tees"] = [(namn, round(min(g.dist(pt, p) for p in tat)), round(max(g.dist(pt, p) for p in tat)))
+                     for namn, pt in grupper]
+        r["tees"] = [t for t in r["tees"] if t[2] >= 20]
+    return [r for r in ihop if r["tees"]]
+
+
+def _font(storlek: float, vikt: str = "SemiBold"):
+    from PIL import ImageFont
+
+    return ImageFont.truetype(str(TYPSNITT_MARK.with_name(f"HankenGrotesk-{vikt}.ttf")), max(8, round(storlek)))
+
+
+def _tabell(d: ImageDraw.ImageDraw, x: float, y: float, rader: list[tuple[str, int, int]], s: float, at: str):
+    """Avståndstabell: tee | fram–över m, mörk ruta. at = 'v' betyder att x är högerkanten."""
+    f, fb = _font(13 * s, "Medium"), _font(13 * s)
+    rh, pad = 19 * s, 6 * s
+    texter = [(n, f"{a}–{b}" if b - a >= 6 else f"{a}") for n, a, b in rader]
+    w1 = max(d.textlength(n, font=fb) for n, _ in texter)
+    w2 = max(d.textlength(t + " m", font=f) for _, t in texter)
+    W, H = w1 + w2 + 4 * pad, rh * len(texter) + pad
+    x0 = x - W if at == "v" else x
+    x0 = min(max(x0, 2 * s), d.im.size[0] - W - 2 * s)
+    y0 = min(max(y - H / 2, 2 * s), d.im.size[1] - H - 2 * s)
+    d.rounded_rectangle((x0, y0, x0 + W, y0 + H), radius=3 * s, fill=(22, 30, 25, 225))
+    d.line((x0 + w1 + 2 * pad, y0 + pad, x0 + w1 + 2 * pad, y0 + H - pad), fill=(255, 255, 255, 70), width=max(1, round(s)))
+    for i, (n, t) in enumerate(texter):
+        yy = y0 + pad / 2 + rh * i + rh / 2
+        d.text((x0 + pad + w1, yy), n, font=fb, fill=(255, 255, 255, 255), anchor="rm")
+        d.text((x0 + 3 * pad + w1, yy), t + " m", font=f, fill=(236, 230, 214, 255), anchor="lm")
+    return (x0, y0, x0 + W, y0 + H)
+
+
+def rita_tees_och_hinder(rot: Image.Image, hole: Hole, px, marg: float = 0) -> str:
+    """Yardage-book-markeringar: tees som vita romber med namn, och för varje hinder i
+    spelzonen en tunn båge tvärs över hålet på hindrets framkant (avstånd från bakre tee)
+    med en tabell: varje tee, meter fram till hindret – över det. Fågelväg, som laser.
+    marg = tom kant i px på båda sidor där tabellerna får plats. Returnerar förklaringen."""
+    import math
+
+    d = ImageDraw.Draw(rot)
+    s = rot.height / 1000
+    bak = max(hole.tees, key=lambda t: t.length_m or 0)
+    W = rot.size[0]
+    linje = [px(*p) for p in hole.centerline]
+    for r in hinderlinjer(hole):
+        R = r["fram"]
+        # bågen: konstant avstånd från bakre tee, över hindren och fairway
+        hpts = [p for h in r["hinder"] for p in h.polygon]
+        vinklar = [math.atan2(p[1] - bak.point[1], p[0] - bak.point[0]) for p in hpts]
+        fw = [p for f in hole.fairways for p in f if abs(math.dist(bak.point, p) - R) < 6]
+        vinklar += [math.atan2(p[1] - bak.point[1], p[0] - bak.point[0]) for p in fw]
+        lo, hi = min(vinklar) - 12 / R, max(vinklar) + 12 / R
+        bage = [px(bak.point[0] + R * math.cos(a), bak.point[1] + R * math.sin(a))
+                for a in [lo + (hi - lo) * i / 40 for i in range(41)]]
+        d.line(bage, fill=(0, 0, 0, 70), width=max(2, round(3.2 * s)), joint="curve")
+        d.line(bage, fill=(255, 255, 255, 235), width=max(1, round(1.6 * s)), joint="curve")
+        # tabellen på hindrets sida, i den tomma kanten; tunn linje från bågens ände
+        hx = sum(px(*p)[0] for p in hpts) / len(hpts)
+        lx = min(linje, key=lambda q: abs(q[1] - sum(px(*p)[1] for p in hpts) / len(hpts)))[0]
+        vanster = hx < lx
+        ande = min(bage, key=lambda q: q[0]) if vanster else max(bage, key=lambda q: q[0])
+        tx = ande[0] - 14 * s if vanster else ande[0] + 14 * s
+        box = _tabell(d, tx, ande[1], r["tees"], s, "v" if vanster else "h")
+        kx = box[2] if vanster else box[0]
+        d.line((ande[0], ande[1], kx, (box[1] + box[3]) / 2), fill=(255, 255, 255, 200), width=max(1, round(1.2 * s)))
+    # tees: vit romb med mörk kant och namnet bredvid
+    f = _font(13 * s)
+    for namn, (e, n) in _tee_grupper(hole):
+        x, y = px(e, n)
+        r = 6 * s
+        d.polygon([(x, y - r), (x + r, y), (x, y + r), (x - r, y)], fill=(255, 255, 255, 255), outline=(22, 30, 25, 255),
+                  width=max(1, round(1.4 * s)))
+        tw = d.textlength(namn, font=f)
+        d.rounded_rectangle((x + 9 * s, y - 9 * s, x + 17 * s + tw, y + 9 * s), radius=3 * s, fill=(255, 255, 255, 230))
+        d.text((x + 13 * s, y), namn, font=f, fill=(22, 30, 25, 255), anchor="lm")
+    return "Avstånd i meter fågelväg från varje tee: fram till hindret – över" if hinderlinjer(hole) else ""
 
 
 def markera_halbild(hole: Hole, orto: Path, bild: Path, ut: Path) -> tuple[Path, str]:
@@ -348,7 +410,16 @@ def markera_halbild(hole: Hole, orto: Path, bild: Path, ut: Path) -> tuple[Path,
     if rot.size != im.size:  # bilden gjord på en äldre hålfil: rita inget hellre än fel
         print(f"VARNING: {bild.name} passar inte hålfilen ({im.size} mot {rot.size}) – inga tees/hinder ritade")
         return bild, ""
-    forklaring = rita_tees_och_hinder(im, hole, px)
+    marg = round(im.height * 0.16) if hinderlinjer(hole) else 0  # plats för tabellerna, beskärs sedan
+    if marg:
+        stor = Image.new("RGBA", (im.width + 2 * marg, im.height), (0, 0, 0, 0))
+        stor.paste(im, (marg, 0))
+        im, px0 = stor, px
+        px = lambda e, n: (px0(e, n)[0] + marg, px0(e, n)[1])
+    forklaring = rita_tees_och_hinder(im, hole, px, marg)
+    if marg:  # bara så mycket kant som tabellerna behöver
+        x0, _, x1, _ = im.getchannel("A").point(lambda v: 255 if v > 6 else 0).getbbox()
+        im = im.crop((max(0, x0 - 4), 0, min(im.width, x1 + 4), im.height))
     ut.parent.mkdir(parents=True, exist_ok=True)
     im.save(ut)
     return ut, forklaring

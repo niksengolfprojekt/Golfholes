@@ -231,7 +231,7 @@ body{{background:{bg}}}
 {top_css}{sponsor_css}
 """
     body_html = f"""
-{_hole(c, 0, 72, 600, 1060) if _smal(c, 600 / 1060) else _hole(c, 0, 72, 500, 1060, 'left center')}
+{_hole(c, 0, 72, 500, 1060) if _smal(c, 500 / 1060) else _hole(c, 0, 72, 500, 1060, 'left center')}
 {top_html}
 <div class='num'>{c.hole}</div>
 <div class='par'>Par {c.par} · Index {c.index}</div>
