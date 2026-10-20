@@ -10,8 +10,8 @@ orto: data/glasriket/orto/o63050_4900_25_mr25.tif
 # Tee syns inte tydligt på fotot. 49/44 = slutet på den klippta remsan sydost om dammen,
 # 52/56/60 = gräsytan vid maskinhallen. Båda är tolkningar och måste bekräftas av klubben.
 tees:
-- {name: 52/56/60, point: [491724.0, 6305970.0], length_m: 128}
-- {name: 49/44, point: [491702.0, 6305998.0], length_m: 89}
+- {name: 52/56/60, point: [491725.5, 6305958.0], length_m: 128}
+- {name: 49/44, point: [491716.0, 6305996.0], length_m: 89}
 centerline: auto
 green: [491641.0, 6306060.0]
 fairway:
@@ -20,3 +20,4 @@ fairway:
 # i skugga och syns inte på färgen.
 laser: data/glasriket/laser/y26a023-63050_4900_25.copc.laz
 hojd: data/glasriket/hojd/m630_49.tif
+bildgrans_m: {vanster: 32}  # Eric 2026-10-20: hål 16:s green ska inte med

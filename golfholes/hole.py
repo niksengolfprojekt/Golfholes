@@ -51,6 +51,9 @@ class Hole:
     strategy: dict[str, str] = field(default_factory=dict)  # "säkert"/"chansa", granskas av golfare
     ortho: Path | None = None  # utsnitt (JPG) med world-fil bredvid – används av fotostilen
     source: str = ""
+    # hur långt (m) åt sidan av linjen tee→green hålbilden får visa, t.ex. {"vanster": 32}
+    # när grannhålets green annars kommer med
+    bildgrans_m: dict[str, float] = field(default_factory=dict)
 
     # ---------- inläsning ----------
     @classmethod
@@ -75,6 +78,7 @@ class Hole:
             strategy=d.get("strategy", {}) or {},
             ortho=(Path(path).parent / d["ortho"]).resolve() if d.get("ortho") else None,
             source=d.get("source", ""),
+            bildgrans_m=d.get("bildgrans_m", {}) or {},
         )
 
     # ---------- avstånd ----------

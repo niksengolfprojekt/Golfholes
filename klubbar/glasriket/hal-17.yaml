@@ -7,15 +7,15 @@ index: 5
 source: Ortofoto ©Lantmäteriet (o63050_4900_25_mr25.tif), utkast med trollstav (golfholes/utkast.py) från fröpunkter i klubbar/glasriket/utkast/hal-17.yaml. Granskas mot klubbens hålkarta.
 origin: [0.0, 0.0]
 centerline:
-- [491724.0, 6305970.0]
+- [491725.5, 6305958.0]
 - [491645.4, 6306055.6]
 - [491637.6, 6306064.1]
 tees:
 - name: 52/56/60
-  point: [491724.0, 6305970.0]
+  point: [491725.5, 6305958.0]
   length_m: 128
 - name: 49/44
-  point: [491702.0, 6305998.0]
+  point: [491716.0, 6305996.0]
   length_m: 89
 green:
 - [491646.0, 6306067.0]
@@ -1721,3 +1721,4 @@ trees:
   - [491732.1, 6305927.3]
   - [491734.7, 6305929.2]
 strategy: {}
+bildgrans_m: {vanster: 32}  # Eric 2026-10-20: hål 16:s green ska inte med

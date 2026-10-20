@@ -438,6 +438,7 @@ def utkast_hal(fro: dict, orto: str | Path, marginal: float = 70.0) -> tuple[dic
         "fairways": [[list(p) for p in fw] for fw in polygoner(fairway, f, min_m2=150, tol_m=0.6)],
         "trees": [[list(p) for p in t] for t in trad],
         "strategy": fro.get("strategy") or {},
+        **({"bildgrans_m": fro["bildgrans_m"]} if fro.get("bildgrans_m") else {}),
     }
     return hal, f, {"green": green, "fairway": fairway, "skog": skog, **kl}
 

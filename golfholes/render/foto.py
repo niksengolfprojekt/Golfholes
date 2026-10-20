@@ -218,6 +218,12 @@ def fotounderlag(hole: Hole, orto: Path, hojd_px: int = 2400):
     N = f.n0 - (yy + 0.5) * res
     langs = (E - bak.point[0]) * ax[0] + (N - bak.point[1]) * ax[1]
     alfa *= np.clip((langs + 22) / 26, 0, 1) * np.clip((L + 34 - langs) / 22, 0, 1)
+    # bildgräns åt sidan (grannhålets green ska inte med): mjuk övergång på 10 m
+    sida = (N - bak.point[1]) * ax[0] - (E - bak.point[0]) * ax[1]  # > 0 = vänster om linjen
+    if "vanster" in hole.bildgrans_m:
+        alfa *= np.clip((hole.bildgrans_m["vanster"] + 5 - sida) / 10, 0, 1)
+    if "hoger" in hole.bildgrans_m:
+        alfa *= np.clip((hole.bildgrans_m["hoger"] + 5 + sida) / 10, 0, 1)
     alfa = _mjuk(alfa, int(4 / res))  # mjuk, organisk kant – inga raka snitt
     alfa = np.clip((alfa - 0.04) / 0.96, 0, 1)
 
