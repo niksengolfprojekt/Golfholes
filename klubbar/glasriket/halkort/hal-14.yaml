@@ -1,6 +1,6 @@
 # Hålkort för Glasriket hål 14. Hålbilden är AI-målad på hålets exakta form ur Lantmäteriets
-# ortofoto (python -m golfholes aiunderlag / aibild). Texten är den spikade layoutens referens
-# (Eric 2026-10-16) och ska stämmas av med klubbens pro.
+# ortofoto (python -m golfholes aiunderlag / aibild). Råden är klubbens egna "Råd från PRO:n"
+# ur banguiden 2025 (glasriketsgk.se/haloversikt), lätt redigerade – klubben godkänner.
 club: Glasrikets Golfklubb
 bana: Fylleryd
 hole: 14
@@ -10,16 +10,14 @@ tees: [["60", 369], ["56", 335], ["52 · 49 · 44", 290]]
 bild: ../halbilder/hal-14-malad.webp
 typbild: false
 rubrik: Banans svåraste hål
-# Texten bygger på hålfilen (avstånd ur ortofotot) och klubbens hålkarta. Pro:ns egna råd
-# ska in här innan kortet går till klubben – typbildens text (enen, björkskogen) är struken.
 beskrivning: >-
   Ett smalt dogleg höger genom granskogen. Out längs hela vänstersidan, skog till höger
   och en bunker som vaktar greenen kort om höger. Här vinns och förloras rundan.
 rad_rubrik: Råd från pro:n
 rad:
-  - Från tee 52 är det 290 meter till greenens mitt, och hålet svänger höger efter knappt 150 meter.
-  - Bunkern ligger kort om höger om greenen. Inspel från vänstra halvan av fairway har fri väg in.
-slutrad: En bogey på index 1 är inget att skämmas för.
+  - Den långtslående genar över skogen mot greenen och får ett kort inspel.
+  - Medelgolfaren ska inte utmana här – det är out till vänster och skog till höger.
+slutrad: Spela hålet som ett par fem för säkerhets skull.
 strategi:
-  sakert: Utslag till vänstra halvan av fairway och ett inspel som går fri från bunkern.
+  sakert: Spela hålet som ett par fem – utslag till fairway, fram mot greenen och ett kort inspel förbi bunkern.
   chansa: Gena över skogen till höger mot greenen. Out längs hela vänstersidan om det går snett.

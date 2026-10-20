@@ -1,0 +1,24 @@
+# Hålkort för Glasriket hål 5. Hålbilden är AI-målad på hålets exakta form ur Lantmäteriets
+# ortofoto (python -m golfholes aiunderlag / aibild). Råden är klubbens egna "Råd från PRO:n"
+# ur banguiden 2025 (glasriketsgk.se/haloversikt), lätt redigerade – klubben godkänner.
+# Tees: bara 49/44 syns på fotot; längdkontrollen ligger 3,2–3,4 % kort – klubben markerar tees.
+club: Glasrikets Golfklubb
+bana: Fylleryd
+hole: 5
+par: 4
+index: 8
+tees: [["60", 355], ["56 · 52", 320], ["49 · 44", 277]]
+bild: ../halbilder/hal-05-malad.webp
+typbild: false
+rubrik: Mer plats än det ser ut
+beskrivning: >-
+  Ett rakt par 4 österut mot en stor green. Dammen ligger till vänster framför tee och
+  en bunker vaktar vänstra sidan av fairway en bit före greenen.
+rad_rubrik: Råd från pro:n
+rad:
+  - Det finns mer plats på höger sida än vad som syns från tee.
+  - Sneddar du för tight på vänstersidan blir du lätt mask.
+slutrad: Greenen är stor och lätträffad.
+strategi:
+  sakert: Sikta till höger om mitten från tee – där finns mer plats än det ser ut.
+  chansa: Linjen längs vänstersidan kortar hålet, men där väntar dammen och bunkern.
