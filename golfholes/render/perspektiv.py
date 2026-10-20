@@ -39,10 +39,13 @@ def _hojd_pa(dem: np.ndarray, d0: tuple[float, float, float], E: np.ndarray, N: 
 def perspektiv(orto: Path, dem_fil: Path, kamera: tuple[float, float], mot: tuple[float, float],
                hojd_m: float = 1.6, bredd: int = 1536, hojd_px: int = 1024, fov_grader: float = 60.0,
                sikt_m: float = 420.0, ut: Path | None = None, fria: list | None = None,
-               linjer: list | None = None, korridor_m: float = 24.0, fri_runt_kamera_m: float = 10.0) -> Image.Image:
+               linjer: list | None = None, korridor_m: float = 24.0, fri_runt_kamera_m: float = 10.0,
+               laz: Path | None = None) -> Image.Image:
     """fria: spelytor (polygoner) där inga träd står. linjer: hålens spellinjer – ett band
     korridor_m brett längs dem hålls öppet, som i hålbilderna (hålet är öppet från tee).
-    Kameran står alltid på öppen mark (tee eller fairway)."""
+    Kameran står alltid på öppen mark (tee eller fairway).
+    laz: Laserdata Skog. Då används de riktiga träden (höjd och form ur laserpunkterna)
+    och ingen skog gissas eller tas bort."""
     ce, cn = kamera
     bbox = (ce - sikt_m, cn - sikt_m, ce + sikt_m, cn + sikt_m)
     a, e0, n0, res = read_window(orto, bbox)
@@ -71,9 +74,14 @@ def perspektiv(orto: Path, dem_fil: Path, kamera: tuple[float, float], mot: tupl
     E = e0 + (xx + 0.5) * r
     N = n0 - (yy + 0.5) * r
     mark = _hojd_pa(dem, (de0, dn0, dr), E, N)
-    kron = medel(skog.astype(np.float32), 3)
-    ojamn = medel(mt["V"], 2) / 255.0  # ljusa kronor sticker upp lite
-    H = mark + TRADHOJD_M * np.clip(kron * 1.4 - 0.2, 0, 1) * (0.85 + 0.3 * ojamn)
+    if laz:
+        from ..laser import tradhojd
+        bb = (e0, n0 - rgb.shape[0] * r, e0 + rgb.shape[1] * r, n0)
+        H = mark + tradhojd(laz, mark, bb, res=r)[: rgb.shape[0], : rgb.shape[1]]
+    else:
+        kron = medel(skog.astype(np.float32), 3)
+        ojamn = medel(mt["V"], 2) / 255.0  # ljusa kronor sticker upp lite
+        H = mark + TRADHOJD_M * np.clip(kron * 1.4 - 0.2, 0, 1) * (0.85 + 0.3 * ojamn)
 
     kz = _hojd_pa(dem, (de0, dn0, dr), np.array([ce]), np.array([cn]))[0] + hojd_m
     phi = math.atan2(mot[1] - cn, mot[0] - ce)

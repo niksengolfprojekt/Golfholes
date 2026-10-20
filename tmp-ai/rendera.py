@@ -18,4 +18,4 @@ vyer={
 }
 for n in (sys.argv[1:] or vyer):
     k,m,h=vyer[n]
-    perspektiv(O,D,k,m,hojd_m=h,ut=Path(f'tmp-ai/{n}-3d.jpg'),fria=fria,linjer=linjer); print(n)
+    perspektiv(O,D,k,m,hojd_m=h,ut=Path(f'tmp-ai/{n}-3d.jpg'),fria=fria,linjer=linjer,laz=Path('data/glasriket/laser/y26a023-63050_4900_25.copc.laz')); print(n)
