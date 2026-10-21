@@ -274,11 +274,57 @@ def rita_spel(rot: Image.Image, hole: Hole, px) -> None:
             r = 9 * s
             d.ellipse((x - r, y - r, x + r, y + r), fill=farg + (255,), outline=(255, 255, 255, 230), width=max(1, int(1.6 * s)))
     # flagga i greenens mitt
-    x, y = px(*mitt)
-    stang = 30 * s
-    d.line((x, y, x, y - stang), fill=(30, 30, 30, 255), width=max(2, int(2 * s)))
-    d.polygon([(x, y - stang), (x + 17 * s, y - stang + 5 * s), (x, y - stang + 11 * s)], fill=(247, 197, 24, 255))
-    d.ellipse((x - 2.5 * s, y - 1.5 * s, x + 2.5 * s, y + 1.5 * s), fill=(30, 30, 30, 255))
+    _flagga(rot, *px(*mitt), s)
+
+
+FLAGGFARG = (184, 40, 44)
+
+
+def _flagga(rot: Image.Image, x: float, y: float, s: float) -> None:
+    """Flaggan som i målningen: ljus stång, vajande tygflagga med ljus och skugga, hålkopp
+    och en mjuk slagskugga åt höger–uppåt (solen står lågt nere till vänster, som i målningen).
+    Ritas 4 ggr större och skalas ner för mjuka kanter."""
+    k = 4
+    w, h = int(70 * s), int(56 * s)
+    lag = Image.new("RGBA", (w * k, h * k), (0, 0, 0, 0))
+    ox, oy = 14 * s * k, (h - 8 * s) * k  # stångens fot i lagret
+    S = s * k
+    stang = 27 * S
+    # slagskugga: stång och flagga lagda snett bakåt på greenen
+    sk = Image.new("L", lag.size, 0)
+    ds = ImageDraw.Draw(sk)
+    dx, dy = 1.05, -0.38  # skuggans riktning per meter stång
+    topp = (ox + stang * dx, oy + stang * dy)
+    ds.line((ox, oy, *topp), fill=185, width=int(1.3 * S))
+    ds.polygon([topp, (topp[0] - 14 * S * 0.3, topp[1] - 14 * S * 0.9 + 2 * S),
+                (ox + (stang - 9 * S) * dx, oy + (stang - 9 * S) * dy)], fill=160)
+    sk = sk.filter(ImageFilter.GaussianBlur(1.1 * S))
+    lag.paste((10, 30, 10, 255), mask=sk)
+    d = ImageDraw.Draw(lag)
+    # hålkoppen
+    d.ellipse((ox - 2.4 * S, oy - 1.4 * S, ox + 2.4 * S, oy + 1.4 * S), fill=(235, 240, 225, 200))
+    d.ellipse((ox - 1.8 * S, oy - 1.0 * S, ox + 1.8 * S, oy + 1.0 * S), fill=(30, 40, 28, 255))
+    # stången: ljus med skuggsida
+    d.line((ox, oy, ox, oy - stang), fill=(240, 238, 230, 255), width=int(1.3 * S))
+    d.line((ox + 0.6 * S, oy, ox + 0.6 * S, oy - stang), fill=(170, 168, 160, 255), width=max(1, int(0.6 * S)))
+    # tygflaggan: vajande kant (två bågar), ljusare överkant, mörkare veck
+    t0 = oy - stang
+    fl, fh = 15 * S, 9.5 * S
+    upp = [(ox + fl * i / 12, t0 + 1.4 * S * math.sin(i / 12 * math.pi * 1.6)) for i in range(13)]
+    ned = [(ox + fl * i / 12, t0 + fh - 1.0 * S * i / 12 + 1.4 * S * math.sin(i / 12 * math.pi * 1.6)) for i in range(12, -1, -1)]
+    d.polygon(upp + ned, fill=FLAGGFARG + (255,))
+    for i in range(12):  # ljus och skugga i vågorna
+        a = math.cos(i / 12 * math.pi * 1.6)
+        ton = tuple(int(c * (1 + 0.28 * a)) for c in FLAGGFARG)
+        x0 = ox + fl * i / 12
+        x1 = ox + fl * (i + 1) / 12
+        y0u, y1u = upp[i][1], upp[i + 1][1]
+        y0n = t0 + fh - 1.0 * S * i / 12 + 1.4 * S * math.sin(i / 12 * math.pi * 1.6)
+        y1n = t0 + fh - 1.0 * S * (i + 1) / 12 + 1.4 * S * math.sin((i + 1) / 12 * math.pi * 1.6)
+        d.polygon([(x0, y0u), (x1, y1u), (x1, y1n), (x0, y0n)], fill=tuple(min(255, c) for c in ton) + (255,))
+    d.line([(px_, py_ + 0.6 * S) for px_, py_ in upp], fill=(255, 255, 255, 70), width=max(1, int(0.7 * S)))
+    lag = lag.resize((w, h), Image.LANCZOS)
+    rot.alpha_composite(lag, (int(x - ox / k), int(y - oy / k)))
 
 
 TYPSNITT_MARK = Path(__file__).resolve().parent.parent.parent / "assets" / "typsnitt" / "HankenGrotesk-SemiBold.ttf"
