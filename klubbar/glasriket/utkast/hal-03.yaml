@@ -6,12 +6,12 @@ hole: 3
 par: 4
 index: 16
 orto: data/glasriket/orto/o63050_4900_25_mr25.tif
-# Tees: 52/56/60 = den grå, avlånga ytan i spelriktningen bakom 49 (trolig tee, syns på fotot),
-# 49 = klippt yta vid dammen (dammen till höger, som på klubbens karta).
+# Tees: utmärkta av Eric 2026-10-21 på hålkortet: 52/56/60 vid gångvägen strax bakom 49,
+# 49 = den ovala, klippta teen närmare dammen.
 # 44 syns INTE på fotot – punkten är en gissning nära gångvägen och måste bekräftas av klubben.
 tees:
-- {name: 52/56/60, point: [491533.2, 6305918.4], length_m: 290}
-- {name: '49', point: [491546.8, 6305902.0], length_m: 274}
+- {name: 52/56/60, point: [491537.7, 6305905.0], length_m: 290}
+- {name: '49', point: [491557.2, 6305890.9], length_m: 274}
 - {name: '44', point: [491621.7, 6305850.2], length_m: 199}
 # Spellinje räknas fram: bakre tee → fairwayns tyngdpunkt → greenens mitt → bakkant.
 centerline: auto

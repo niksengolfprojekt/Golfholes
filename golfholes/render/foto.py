@@ -393,7 +393,7 @@ def greenbagar(hole: Hole) -> list[float]:
     return ut
 
 
-def rita_tees_och_hinder(rot: Image.Image, hole: Hole, px, marg: float = 0) -> str:
+def rita_tees_och_hinder(rot: Image.Image, hole: Hole, px, marg: float = 0, bagar: bool = False) -> str:
     """Yardage-book-markeringar: tees som vita romber med namn, och för varje hinder i
     spelzonen en tunn båge tvärs över hålet på hindrets framkant (avstånd från bakre tee)
     med en tabell: varje tee, meter fram till hindret – över det. Fågelväg, som laser.
@@ -407,10 +407,11 @@ def rita_tees_och_hinder(rot: Image.Image, hole: Hole, px, marg: float = 0) -> s
     from .. import geometry as g
 
     # bågar från greenens mitt med meter kvar, siffran vid bågens högra ände
+    # (av tills vidare: Eric 2026-10-21 "ta bort alla strecken, läggs in sen")
     gm = _tyngdpunkt(hole.green)
     fb = _font(15 * s)
     tata = [_tata(f) for f in hole.fairways]
-    for R in greenbagar(hole):
+    for R in (greenbagar(hole) if bagar else []):
         mitt = min((g.point_along(hole.centerline, st) for st in range(0, int(g.polyline_length(hole.centerline)), 2)),
                    key=lambda p: abs(math.dist(gm, p) - R))
         # fairwaykanten där bågen skär den, nära spellinjen (inte andra sidan en dogleg)
@@ -426,7 +427,7 @@ def rita_tees_och_hinder(rot: Image.Image, hole: Hole, px, marg: float = 0) -> s
         d.text((ande[0] + 5 * s, ande[1]), str(round(R)), font=fb, fill=(22, 30, 25, 255), anchor="lm",
                stroke_width=max(1, round(2.4 * s)), stroke_fill=(250, 244, 236, 235))
     upptagna: list = []
-    for r in hinderlinjer(hole):
+    for r in (hinderlinjer(hole) if bagar else []):
         R = r["fram"]
         # bågen: konstant avstånd från bakre tee, över hindren och fairway
         hpts = [p for h in r["hinder"] for p in h.polygon]
@@ -455,12 +456,14 @@ def rita_tees_och_hinder(rot: Image.Image, hole: Hole, px, marg: float = 0) -> s
         tw = d.textlength(namn, font=f)
         d.rounded_rectangle((x + 9 * s, y - 9 * s, x + 17 * s + tw, y + 9 * s), radius=3 * s, fill=(255, 255, 255, 230))
         d.text((x + 13 * s, y), namn, font=f, fill=(22, 30, 25, 255), anchor="lm")
+    if not bagar:
+        return ""
     delar = (["Mörka bågar: meter kvar till greenens mitt"] if greenbagar(hole) else []) + \
         (["tabeller: meter från varje tee fram till hindret – över"] if hinderlinjer(hole) else [])
     return ", ".join(delar)
 
 
-def markera_halbild(hole: Hole, orto: Path, bild: Path, ut: Path) -> tuple[Path, str]:
+def markera_halbild(hole: Hole, orto: Path, bild: Path, ut: Path, bagar: bool = False) -> tuple[Path, str]:
     """Färdig hålbild (målad eller foto) + tees och hinderavstånd, för hålkortet.
     Placeringen räknas om ur fotounderlaget i bildens höjd, samma som när bilden gjordes."""
     im = Image.open(bild).convert("RGBA")
@@ -468,13 +471,13 @@ def markera_halbild(hole: Hole, orto: Path, bild: Path, ut: Path) -> tuple[Path,
     if rot.size != im.size:  # bilden gjord på en äldre hålfil: rita inget hellre än fel
         print(f"VARNING: {bild.name} passar inte hålfilen ({im.size} mot {rot.size}) – inga tees/hinder ritade")
         return bild, ""
-    marg = round(im.height * 0.16) if hinderlinjer(hole) or greenbagar(hole) else 0  # plats för tabellerna, beskärs sedan
+    marg = round(im.height * 0.16) if bagar and (hinderlinjer(hole) or greenbagar(hole)) else 0  # plats för tabellerna, beskärs sedan
     if marg:
         stor = Image.new("RGBA", (im.width + 2 * marg, im.height), (0, 0, 0, 0))
         stor.paste(im, (marg, 0))
         im, px0 = stor, px
         px = lambda e, n: (px0(e, n)[0] + marg, px0(e, n)[1])
-    forklaring = rita_tees_och_hinder(im, hole, px, marg)
+    forklaring = rita_tees_och_hinder(im, hole, px, marg, bagar)
     if marg:  # bara så mycket kant som tabellerna behöver
         x0, _, x1, _ = im.getchannel("A").point(lambda v: 255 if v > 6 else 0).getbbox()
         im = im.crop((max(0, x0 - 4), 0, min(im.width, x1 + 4), im.height))
