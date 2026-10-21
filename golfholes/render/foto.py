@@ -277,7 +277,9 @@ def rita_spel(rot: Image.Image, hole: Hole, px) -> None:
     _flagga(rot, *px(*mitt), s)
 
 
-FLAGGFARG = (184, 40, 44)
+FLAGGFARG = (87, 31, 48)        # TACADA Vinröd #571F30: tydlig mot allt grönt
+FLAGGMARKE = (243, 237, 226)    # TACADA Elfenben #F3EDE2
+TYPSNITT_TACADA = Path(__file__).resolve().parent.parent.parent / "assets" / "typsnitt" / "Marcellus-Regular.ttf"
 
 
 def _flagga(rot: Image.Image, x: float, y: float, s: float) -> None:
@@ -309,13 +311,13 @@ def _flagga(rot: Image.Image, x: float, y: float, s: float) -> None:
     d.line((ox + 0.6 * S, oy, ox + 0.6 * S, oy - stang), fill=(170, 168, 160, 255), width=max(1, int(0.6 * S)))
     # tygflaggan: vajande kant (två bågar), ljusare överkant, mörkare veck
     t0 = oy - stang
-    fl, fh = 15 * S, 9.5 * S
+    fl, fh = 19 * S, 13 * S
     upp = [(ox + fl * i / 12, t0 + 1.4 * S * math.sin(i / 12 * math.pi * 1.6)) for i in range(13)]
     ned = [(ox + fl * i / 12, t0 + fh - 1.0 * S * i / 12 + 1.4 * S * math.sin(i / 12 * math.pi * 1.6)) for i in range(12, -1, -1)]
     d.polygon(upp + ned, fill=FLAGGFARG + (255,))
     for i in range(12):  # ljus och skugga i vågorna
         a = math.cos(i / 12 * math.pi * 1.6)
-        ton = tuple(int(c * (1 + 0.28 * a)) for c in FLAGGFARG)
+        ton = tuple(int(c * (1 + 0.45 * a)) for c in FLAGGFARG)
         x0 = ox + fl * i / 12
         x1 = ox + fl * (i + 1) / 12
         y0u, y1u = upp[i][1], upp[i + 1][1]
@@ -323,6 +325,12 @@ def _flagga(rot: Image.Image, x: float, y: float, s: float) -> None:
         y1n = t0 + fh - 1.0 * S * (i + 1) / 12 + 1.4 * S * math.sin((i + 1) / 12 * math.pi * 1.6)
         d.polygon([(x0, y0u), (x1, y1u), (x1, y1n), (x0, y0n)], fill=tuple(min(255, c) for c in ton) + (255,))
     d.line([(px_, py_ + 0.6 * S) for px_, py_ in upp], fill=(255, 255, 255, 70), width=max(1, int(0.7 * S)))
+    # TACADA-T:et mitt på duken, i profilens Marcellus med samma halvfeta kontur
+    from PIL import ImageFont
+    f = ImageFont.truetype(str(TYPSNITT_TACADA), int(fh * 0.78))
+    tx, ty = ox + fl * 0.5, t0 + fh * 0.5 + 0.3 * S
+    d.text((tx, ty), "T", font=f, anchor="mm", fill=FLAGGMARKE + (255,),
+           stroke_width=max(1, round(fh * 0.78 * 0.022)), stroke_fill=FLAGGMARKE + (255,))
     lag = lag.resize((w, h), Image.LANCZOS)
     rot.alpha_composite(lag, (int(x - ox / k), int(y - oy / k)))
 
