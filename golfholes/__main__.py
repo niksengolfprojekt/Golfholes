@@ -7,7 +7,7 @@
 
 Stil väljs i klubb.yaml med `stil: 1–4`:  1 Signatur · 2 Klassisk · 3 Arv · 4 Nordisk.
 --stil på kommandoraden går före klubbens val.
-  python -m golfholes halkort  klubbar/<klubb>/halkort/hal-14.yaml [--layout 1-6] → output/<klubb>/halkort/
+  python -m golfholes halkort  klubbar/<klubb>/halkort/hal-14.yaml [--layout 1-7] → output/<klubb>/halkort/
   python -m golfholes layoutprov klubbar/<klubb>/halkort/hal-14.yaml  → samma hål i alla layouter + översikt
 
 Layout väljs i klubb.yaml med `layout: 1` (eller en lista, t.ex. [1, 4]):
@@ -291,7 +291,7 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("stilprov", help="Samma hål i alla fyra stilar – för klubbens val").add_argument("fil")
     hk = sub.add_parser("halkort", help="Hålkort i klubbens layout (PNG)")
     hk.add_argument("fil")
-    hk.add_argument("--layout", default=None, help="1–6 (standard: klubbens val i klubb.yaml)")
+    hk.add_argument("--layout", default=None, help="1–7 (standard: klubbens val i klubb.yaml)")
     sub.add_parser("layoutprov", help="Samma hål i alla layouter – för klubbens val").add_argument("fil")
     sub.add_parser("webb", help="Digital banguide för en klubb").add_argument("klubbmapp")
     u = sub.add_parser("utsnitt", help="Klipp ut banan ur Lantmäteriets ortofoto")

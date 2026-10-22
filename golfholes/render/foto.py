@@ -500,7 +500,16 @@ def rita_tees_och_hinder(rot: Image.Image, hole: Hole, px, marg: float = 0, baga
         box = _tabell(d, tx, ande[1], r["tees"], s, "v" if vanster else "h", upptagna)
         kx = box[2] if vanster else box[0]
         d.line((ande[0], ande[1], kx, (box[1] + box[3]) / 2), fill=(255, 255, 255, 200), width=max(1, round(1.2 * s)))
-    # tees: vit romb med mörk kant och namnet bredvid
+    _rita_tees(d, hole, px, s)
+    if not bagar:
+        return ""
+    delar = (["Mörka bågar: meter kvar till greenens mitt"] if greenbagar(hole) else []) + \
+        (["tabeller: meter från varje tee fram till hindret – över"] if hinderlinjer(hole) else [])
+    return ", ".join(delar)
+
+
+def _rita_tees(d: ImageDraw.ImageDraw, hole: Hole, px, s: float) -> None:
+    """Tees: vit romb med mörk kant och namnet bredvid."""
     f = _font(13 * s)
     for namn, (e, n) in _tee_grupper(hole):
         x, y = px(e, n)
@@ -510,11 +519,6 @@ def rita_tees_och_hinder(rot: Image.Image, hole: Hole, px, marg: float = 0, baga
         tw = d.textlength(namn, font=f)
         d.rounded_rectangle((x + 9 * s, y - 9 * s, x + 17 * s + tw, y + 9 * s), radius=3 * s, fill=(255, 255, 255, 230))
         d.text((x + 13 * s, y), namn, font=f, fill=(22, 30, 25, 255), anchor="lm")
-    if not bagar:
-        return ""
-    delar = (["Mörka bågar: meter kvar till greenens mitt"] if greenbagar(hole) else []) + \
-        (["tabeller: meter från varje tee fram till hindret – över"] if hinderlinjer(hole) else [])
-    return ", ".join(delar)
 
 
 def markera_halbild(hole: Hole, orto: Path, bild: Path, ut: Path, bagar: bool = False) -> tuple[Path, str]:
@@ -538,6 +542,125 @@ def markera_halbild(hole: Hole, orto: Path, bild: Path, ut: Path, bagar: bool = 
     ut.parent.mkdir(parents=True, exist_ok=True)
     im.save(ut)
     return ut, forklaring
+
+
+def _matt_green(hole: Hole) -> dict:
+    """Greenens djup längs inspelslinjen och bredd tvärs den, i meter, plus riktningen."""
+    mitt = _tyngdpunkt(hole.green)
+    a = hole.centerline[-3] if len(hole.centerline) >= 3 else hole.centerline[0]
+    L = math.dist(a, mitt)
+    u = ((mitt[0] - a[0]) / L, (mitt[1] - a[1]) / L)
+    v = (-u[1], u[0])
+    langs = [(p[0] - mitt[0]) * u[0] + (p[1] - mitt[1]) * u[1] for p in hole.green]
+    tvars = [(p[0] - mitt[0]) * v[0] + (p[1] - mitt[1]) * v[1] for p in hole.green]
+    return {"mitt": mitt, "u": u, "v": v, "fram": min(langs), "bak": max(langs),
+            "vanster": max(tvars), "hoger": min(tvars),
+            "djup": round(max(langs) - min(langs)), "bredd": round(max(tvars) - min(tvars))}
+
+
+def _etikett(d: ImageDraw.ImageDraw, x: float, y: float, text: str, s: float, at: str = "h") -> None:
+    """Siffra i en liten mörk ruta bredvid en punkt (at = 'h' höger, 'v' vänster om punkten)."""
+    f = _font(15 * s)
+    tw = d.textlength(text, font=f)
+    x0 = x + 14 * s if at == "h" else x - 14 * s - tw - 12 * s
+    d.rounded_rectangle((x0, y - 11 * s, x0 + tw + 12 * s, y + 11 * s), radius=3 * s, fill=(22, 30, 25, 225))
+    d.text((x0 + 6 * s, y), text, font=f, fill=(255, 255, 255, 255), anchor="lm")
+
+
+def spelarvy(hole: Hole, orto: Path, bild: Path, ut: Path) -> dict:
+    """Spelarversionen av hålbilden (webb/mobil): tees, siffror vid prickarna och vid
+    200 m kvar, och en förstorad green med djup och bredd. Bara mått ur hålfilen –
+    inga lutningspilar (höjdmodellen är för grov för greener).
+    Returnerar filerna och siffrorna som layouten skriver ut."""
+    from .. import geometry as g
+
+    im = Image.open(bild).convert("RGBA")
+    rot, px = fotounderlag(hole, orto, im.height)
+    if rot.size != im.size:
+        raise ValueError(f"{bild.name} passar inte hålfilen ({im.size} mot {rot.size})")
+    d = ImageDraw.Draw(im)
+    s = im.height / 1000
+    gm = _matt_green(hole)
+    linje_x = sum(px(*p)[0] for p in hole.centerline) / len(hole.centerline)
+    if hole.par != 3:
+        for meter in (200, 150, 100):
+            p = _punkt_fore_green(hole.centerline, gm["mitt"], meter)
+            if not p:
+                continue
+            x, y = px(*p)
+            if meter == 200:  # 100 och 150 har redan sina prickar i bilden
+                r = 6 * s
+                d.ellipse((x - r, y - r, x + r, y + r), fill=(255, 255, 255, 255), outline=(22, 30, 25, 255),
+                          width=max(1, round(1.4 * s)))
+            _etikett(d, x, y, str(meter), s, "v" if x > linje_x else "h")
+    _rita_tees(d, hole, px, s)
+
+    # förstorad green, vriden så att inspelet kommer nerifrån: djup uppåt, bredd tvärs
+    M, u, v = gm["mitt"], gm["u"], gm["v"]
+    pt = lambda a, b: (M[0] + a * u[0] + b * v[0], M[1] + a * u[1] + b * v[1])
+    (fx, fy), (bx, by) = px(*pt(gm["fram"], 0)), px(*pt(gm["bak"], 0))
+    vinkel = 90 - math.degrees(math.atan2(-(by - fy), bx - fx))  # moturs så att fram→bak pekar uppåt
+    cx, cy = px(*pt((gm["fram"] + gm["bak"]) / 2, (gm["hoger"] + gm["vanster"]) / 2))
+    m = 16.0
+    halv_m = max(gm["bak"] - gm["fram"], gm["vanster"] - gm["hoger"]) / 2 + m
+    half = halv_m * math.dist((fx, fy), (bx, by)) / (gm["bak"] - gm["fram"])
+    utan = Image.open(bild).convert("RGBA")  # utan siffror, bara målningen med flaggan
+    R = half * 1.5
+    stor = utan.crop((round(cx - R), round(cy - R), round(cx + R), round(cy + R)))
+    stor = stor.rotate(vinkel, resample=Image.BICUBIC, center=(R, R))
+    krop = stor.crop((round(R - half), round(R - half), round(R + half), round(R + half))).resize((1200, 1200), Image.LANCZOS)
+    k = 1200 / (2 * half)
+    a_ = math.radians(vinkel)
+
+    def gp(e, n):
+        x, y = px(e, n)
+        x, y = x - cx, y - cy
+        # PIL roterar moturs i bilden (y nedåt)
+        return (x * math.cos(a_) + y * math.sin(a_)) * k + 600, (-x * math.sin(a_) + y * math.cos(a_)) * k + 600
+
+    dg = ImageDraw.Draw(krop)
+    f = _font(44)
+    vit, mork = (255, 255, 255, 240), (22, 30, 25, 225)
+
+    def matt(p0, p1, text, sida):
+        (x0, y0), (x1, y1) = gp(*p0), gp(*p1)
+        dg.line((x0, y0, x1, y1), fill=(0, 0, 0, 80), width=8)
+        dg.line((x0, y0, x1, y1), fill=vit, width=4)
+        for x, y in ((x0, y0), (x1, y1)):
+            dg.ellipse((x - 8, y - 8, x + 8, y + 8), fill=vit)
+        tx, ty = (x1 + sida[0], y1 + sida[1])  # vid linjens bortre ände
+        tw = dg.textlength(text, font=f)
+        tx = min(max(tx, tw / 2 + 40), 1160 - tw / 2)
+        dg.rounded_rectangle((tx - tw / 2 - 16, ty - 32, tx + tw / 2 + 16, ty + 32), radius=8, fill=mork)
+        dg.text((tx, ty), text, font=f, fill=(255, 255, 255, 255), anchor="mm")
+
+    xm = (gm["hoger"] + gm["vanster"]) / 2
+    am = (gm["fram"] + gm["bak"]) / 2
+    matt(pt(gm["fram"], xm), pt(gm["bak"], xm), f"{gm['djup']} m", (0, -52))
+    matt(pt(am, gm["hoger"]), pt(am, gm["vanster"]), f"{gm['bredd']} m", (0, 58))
+    # rund förstoring med mjuk kant
+    mask = Image.new("L", krop.size, 0)
+    ImageDraw.Draw(mask).ellipse((6, 6, 1194, 1194), fill=255)
+    krop.putalpha(Image.fromarray(np.minimum(np.array(krop.getchannel("A")), np.array(mask))))
+
+    ut = Path(ut)
+    ut.parent.mkdir(parents=True, exist_ok=True)
+    im.save(ut)
+    green_ut = ut.with_name(ut.stem + "-green.png")
+    krop.save(green_ut)
+    grupper = _tee_grupper(hole)
+    fagel = [(namn, round(g.dist(pt_, gm["mitt"]))) for namn, pt_ in grupper]
+    bunkrar = []
+    for h in hole.hazards:
+        if h.kind != "bunker" or min(g.dist(p, gm["mitt"]) for p in h.polygon) > 30:
+            continue
+        langs = [(p[0] - M[0]) * u[0] + (p[1] - M[1]) * u[1] for p in h.polygon]
+        tvars = sum((p[0] - M[0]) * v[0] + (p[1] - M[1]) * v[1] for p in h.polygon) / len(h.polygon)
+        kort = round(gm["fram"] - min(langs))
+        sida = "höger" if tvars < 0 else "vänster"
+        bunkrar.append(f"Bunker {sida}, börjar {kort} m kort om greenen" if kort > 2 else f"Bunker {sida} om greenen")
+    return {"bild": ut, "green": green_ut, "djup": gm["djup"], "bredd": gm["bredd"], "fagelvag": fagel,
+            "bunkrar": bunkrar}
 
 
 def rita_konturer(rot: Image.Image, hole: Hole, px) -> Image.Image:
