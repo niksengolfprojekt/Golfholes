@@ -1,3 +1,5 @@
+# Kamerapunkter för ögonhöjdsvyerna (Glasriket hål 3, 5, 14, 17 + allmänna vyer). Flyttad från tmp-ai/.
+# Kör från repots rot: python verktyg/ogonhojd_vyer.py (kräver data/glasriket/ med ortofoto och höjdmodell).
 import sys
 from pathlib import Path
 from golfholes.hole import Hole

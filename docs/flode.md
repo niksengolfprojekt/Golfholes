@@ -32,9 +32,10 @@
 - [ ] Riktig QR-kod (kräver `segno`, installeras på Macen)
 - [x] Utkast ur ortofoto (`utkast`): trollstav för green/fairway, automatisk skog/vatten/bunker, spellinje genom fairwayns mitt, rättning i ritverktyget – provat på Glasriket hål 3 2026-10-19 (två av tre tees inom ±3 %, tee 44 syns inte på fotot)
 - [x] Sök och hämta direkt från Lantmäteriets STAC-API (`sok`, `hamta`) – testat skarpt 2026-10-19: Glasrikets ortofoto 2025 och markhöjdmodell hämtade med nätverkshemligheten, utsnitt + höjd + reliefbild klara
-- [ ] Testa på Glasriket hål 3 med riktigt ortofoto (Eric har åtkomst sedan 2026-10-19; väntar på inloggningen som nätverkshemlighet i molnmiljön)
+- [x] Testa på Glasriket hål 3 med riktigt ortofoto (gjort 2026-10-19 med inloggningen som nätverkshemlighet). OBS 2026-10-22: molnmiljön nekar nu `api.lantmateriet.se` och `dl1.lantmateriet.se` (403 i proxyn) – båda måste finnas under Allowed domains i miljöns nätverksinställning. `data/` följer inte med till en ny session, så underlaget måste hämtas om.
 - [ ] Höjddata i rapporten (uppför/nedför) – `Elevation` finns, kopplas in när vi har filerna
-- [ ] Signatur med riktigt ortofoto (koden är klar, väntar på Geotorget – visar platshållare tills dess)
+- [ ] Signatur med riktigt ortofoto (koden är klar; visar platshållare när `data/<klubb>/` saknas i sessionen)
+- [ ] Glasriket hål 5 får inte gå till klubben: alla tre tees 3,2–3,4 % korta mot scorekortet (gräns ±3 %), och AI-målningen har breddat fairway åt höger, gjort om greenen och dammen och lagt till gångvägar. Hålfilen rättas i ritverktyget och hålet målas om. Jämförelse: `output/glasriket/hal-05-jamforelse.jpg` (lokal).
 - [x] Texturrendering: Klassisk och Nordisk ritas med texturkit (gräs, vatten, lövverk, penseldrag) klippta efter exakta masker – demo-kit utklippt ur AI-skisserna
 - [ ] Högupplösta texturkit för tryck (genereras som rena texturer, inte hela hål) + kit för Arv och Signatur-ljussättning
 - [ ] Ritverktyget: fler lager som skisserna visar – gångvägar, broar, solitärträd, ruffkant
