@@ -32,9 +32,10 @@
 - [ ] Riktig QR-kod (kräver `segno`, installeras på Macen)
 - [x] Utkast ur ortofoto (`utkast`): trollstav för green/fairway, automatisk skog/vatten/bunker, spellinje genom fairwayns mitt, rättning i ritverktyget – provat på Glasriket hål 3 2026-10-19 (två av tre tees inom ±3 %, tee 44 syns inte på fotot)
 - [x] Sök och hämta direkt från Lantmäteriets STAC-API (`sok`, `hamta`) – testat skarpt 2026-10-19: Glasrikets ortofoto 2025 och markhöjdmodell hämtade med nätverkshemligheten, utsnitt + höjd + reliefbild klara
-- [ ] Testa på Glasriket hål 3 med riktigt ortofoto (Eric har åtkomst sedan 2026-10-19; väntar på inloggningen som nätverkshemlighet i molnmiljön)
+- [x] Testa på Glasriket hål 3 med riktigt ortofoto (gjort 2026-10-19 med inloggningen som nätverkshemlighet). OBS 2026-10-22: molnmiljön nekar nu `api.lantmateriet.se` och `dl1.lantmateriet.se` (403 i proxyn) – båda måste finnas under Allowed domains i miljöns nätverksinställning. `data/` följer inte med till en ny session, så underlaget måste hämtas om.
 - [ ] Höjddata i rapporten (uppför/nedför) – `Elevation` finns, kopplas in när vi har filerna
-- [ ] Signatur med riktigt ortofoto (koden är klar, väntar på Geotorget – visar platshållare tills dess)
+- [ ] Signatur med riktigt ortofoto (koden är klar; visar platshållare när `data/<klubb>/` saknas i sessionen)
+- [ ] Glasriket hål 5 får inte gå till klubben: alla tre tees 3,2–3,4 % korta mot scorekortet (gräns ±3 %), och AI-målningen har breddat fairway åt höger, gjort om greenen och dammen och lagt till gångvägar. Hålfilen rättas i ritverktyget och hålet målas om. Jämförelse: `output/glasriket/hal-05-jamforelse.jpg` (lokal).
 - [x] Texturrendering: Klassisk och Nordisk ritas med texturkit (gräs, vatten, lövverk, penseldrag) klippta efter exakta masker – demo-kit utklippt ur AI-skisserna
 - [ ] Högupplösta texturkit för tryck (genereras som rena texturer, inte hela hål) + kit för Arv och Signatur-ljussättning
 - [ ] Ritverktyget: fler lager som skisserna visar – gångvägar, broar, solitärträd, ruffkant
@@ -44,7 +45,8 @@
 - [ ] Spelinformationen (prickar, flagga, outlinje) ritas av koden ovanpå stilen så den är lika och läsbar i alla stilar
 - [x] Eric spikade fem hålbildsstilar för sajten (2026-10-17): 1 Foto höst, 2 Blå gravyr, 3 Sommarakvarell, 4 Screentryck, 5 Papperssnitt (bäst i mörkt hålkort). Regel i alla: fairway ljusast, ruff mörkare, skog mörkast. Översikt: `/mnt/project-files/hallayouter/stilar/hal-14-SPIKADE-fem-stilar.jpg`
 - [x] Klubbens färger: `verktyg/klubbfarg.py` byter stilens färger mot klubbens tonskala (5 färger, mörk till ljus) och ritar prickar och flagga ovanpå. Mörka hålkortet tar `farg_mork` från hålfilen. Prov i tre paletter: `/mnt/project-files/hallayouter/klubbfarger/`
-- [ ] Koppla de fem stilarna till `stil:` i koden (i dag 1–4 kodritade) med texturkit per stil
+- [x] Stilmenyn spikad 2026-10-22: Akvarell, Sommarakvarell, Gravyr, Mjuk 3D, Arkitektskiss, Papperssnitt. Ersätter Erics fem från 2026-10-17 och kodens fyra.
+- [ ] Koppla de sex stilarna till `stil:` i koden (i dag 1–4 kodritade, ska bort) – stilprov per stil som AI-stilreferens
 - [ ] Webbsidorna i klubbens stil (använder ännu Nordisk)
 - [ ] Klubbmärke (SVG) från klubben till rubriken i stil 1
 - [ ] Tee-vy och flygfilm (3D, Mac Pro)
