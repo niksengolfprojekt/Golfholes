@@ -120,7 +120,7 @@ def bygg_sida(meta, kropp, ordmarke):
     </div>
     <div class="kallor">
       <span>Underlag: Ortofoto och Markhöjdmodell ©Lantmäteriet, bearbetat, CC BY 4.0.</span>
-      <span>Bilder märkta ”AI” är AI-genererade och visar ingen verklig plats. Hålbilderna är målade med AI-stöd på exakta former från Lantmäteriets underlag.</span>
+      <span>Bilder märkta ”AI” är AI-genererade och visar ingen verklig plats. Hålbilderna bygger på Lantmäteriets underlag och är bearbetade med AI-stöd.</span>
       <span>Sajten använder inga kakor för spårning.</span>
     </div>
   </div>
