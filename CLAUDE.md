@@ -18,6 +18,7 @@ Grafiska hålpresentationer och hålsponsorskyltar för svenska golfklubbar. Äg
 - Skylt 70 × 100 cm, tre plattor: rubrik ("[Sponsor]-hålet"), hålguide (byts aldrig), sponsorplatta med logga i en färg + QR-kod. Tillverkas av Ecosign.
 - Pilotklubb: Glasrikets GK, hål 3.
 
+- Stilmenyn på hemsidan (beslut 2026-10-22): klubben väljer stil innan vi gör deras hål bland sex AI-målade stilar: Akvarell, Sommarakvarell, Gravyr, Mjuk 3D, Arkitektskiss, Papperssnitt (prov: `klubbar/glasriket/typbilder/stilar/`). Bort: Blå gravyr, Platt grafisk, Screentryck, Foto höst, Vinterskymning och kodens fyra (Signatur, Klassisk, Arv, Nordisk). `stil:` 1–4 i koden är därmed föråldrat och ska bytas.
 - Hålbilder i målad stil: exakta masker från hålfilen + texturkit i `assets/texturer/<stil>/` (`golfholes/render/texture.py`). AI/skisser får bara leverera texturer, aldrig former.
 
 ## Miljö
