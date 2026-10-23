@@ -20,6 +20,7 @@ def test_klubbens_falt_laeses_ur_klubb_yaml():
     assert k.farger["djup"] == "#10202E" and k.farger["glod"] == "#D9A441"
     assert k.sponsring["pris_per_hal"] == 10000
     assert k.halsida(3) == "https://www.glasriketsgk.se/banan/hal-03/"
+    assert k.qr_lank(3) == "https://www.glasriketsgk.se/banan/hal-03/?q=h03"
     assert all(p.exists() for p in k.loggor.values())
     assert kr(10000) == "10 000"
 

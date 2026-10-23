@@ -33,7 +33,8 @@ sponsring:
   sasong: 2027
   pris_per_hal: 10000       # kr per hål och år (Glasrikets pris i dag)
   pris_villkor: per år      # t.ex. "per år, exkl. moms" – klubben bekräftar momsen
-  halsida: "https://www.glasriketsgk.se/banan/hal-{hal:02d}/"   # QR-koden pekar hit
+  # Hålsidan blir `web` + /banan/hal-NN/ och QR-koden pekar dit med ?q=hNN (golfholes/statistik.py, qr_lank).
+  # Byts domänen: ändra `web` här och DOMAN i hemsidor/glasriket/bygg.py.
   kontakt: info@glasriketsgk.se · 0470-653 20
   ronder_per_ar: null       # klubbens antal ronder per år; tomt = riksgenomsnittet används som uppskattning
 

@@ -12,8 +12,8 @@ Vi skriver aldrig "personer", "besökare" eller "unika". En person kan se hålet
 | Kanal på sponsorns sida | Var siffran kommer ifrån | Vem gör vad |
 | --- | --- | --- |
 | **Tee-skylten** (märkt *uppskattning*) | Klubbens antal ronder under året × andelen ronder som spelar hålet. På en 18-hålsbana spelar alla ronder alla hål, så siffran blir = ronderna. | Klubben lämnar antalet ronder efter säsongen. |
-| **Hålsidan på webben** | Sidvisningar av hålets sida (t.ex. `/hal-03/`) från mätverktyget Plausible. Klick på sponsorns länk räknas också. | Vi sätter upp mätningen, klubben/vi exporterar varje månad. |
-| **varav via QR-koden på skylten** | De sidvisningar som kom via QR-koden på tee-skylten. QR-koden pekar på `…/hal-03/?q=h03`. | Sker automatiskt när QR-koden och mätningen är på plats. |
+| **Hålsidan på webben** | Sidvisningar av hålets sida (t.ex. `/banan/hal-03/`) från mätverktyget Plausible. Klick på sponsorns länk räknas också. | Vi sätter upp mätningen, klubben/vi exporterar varje månad. |
+| **varav via QR-koden på skylten** | De sidvisningar som kom via QR-koden på tee-skylten. QR-koden pekar på `…/banan/hal-03/?q=h03`. | Sker automatiskt när QR-koden och mätningen är på plats. |
 | **Digital partnerkanal** | Visningar och klick per hål och månad från de digitala partnerkanaler där sponsorns logga syns. | Partnern skickar en fil varje månad (se nedan). |
 
 ## Steg för steg
@@ -31,22 +31,30 @@ Vi skriver aldrig "personer", "besökare" eller "unika". En person kan se hålet
    ```
    Då lägger `python -m golfholes webb klubbar/<klubb>` in mätkoden på alla hålsidor
    automatiskt. Byggs hemsidan på annat sätt måste samma mätkod läggas in där – den
-   finns i funktionen `matkod()` i `golfholes/statistik.py`.
-4. **Hålsidorna ska ligga på adresser som slutar på `/hal-01/`, `/hal-02/` … `/hal-18/`.**
+   finns i funktionen `matkod()` i `golfholes/statistik.py`. Glasrikets hemsida
+   (`hemsidor/glasriket/`) har egen kod i `tillgangar/js/site.js` med samma namn: händelsen
+   *QR-besök* med `q` = hNN och *Sponsorklick* med `hal` = hNN. Lägg där också till målet
+   *QR-besök* (Custom event) och sätt `PLAUSIBLE_DOMAN` i `bygg.py`.
+4. **Hålsidorna ska ligga på adresser som slutar på `/hal-01/`, `/hal-02/` … `/hal-18/`**,
+   på klubbhemsidorna under `/banan/` (Glasriket: `https://www.glasriketsgk.se/banan/hal-03/`).
    Det är så koden känner igen vilket hål en sidvisning hör till.
-5. **QR-koden på varje tee-skylt** ska peka på `https://<klubbens-webb>/hal-NN/?q=hNN`
-   (hål 3: `/hal-03/?q=h03`). `python -m golfholes skylt` gör det själv. Det enda som krävs
-   är att `web_base` i `klubb.yaml` är klubbens riktiga webbadress, och att `segno` är installerat
-   så att QR-koden är äkta (annars blir den en platshållare som aldrig får tryckas).
+5. **QR-koden på varje tee-skylt** ska peka på `https://<klubbens-domän>/banan/hal-NN/?q=hNN`
+   (hål 3: `/banan/hal-03/?q=h03`). Adressen bestäms på ett enda ställe, `qr_lank()` i
+   `golfholes/statistik.py`, som skylten (`skylt`), prospektet (`prospekt`) och hemsidans
+   `qr-lankar.csv` använder. Ordningen: `sponsring.halsida` i `klubb.yaml` (mall med `{hal:02d}`)
+   om den finns, annars `web_base` + `/hal-NN/` (sidorna som `webb` bygger), annars
+   `web` + `/banan/hal-NN/`. Det som krävs är att `web` i `klubb.yaml` är klubbens riktiga
+   webbadress, och att `segno` är installerat så att QR-koden är äkta (annars blir den en
+   platshållare som aldrig får tryckas).
 6. **Testa:** skanna QR-koden med mobilen, öppna Plausible och se att besöket syns under
    *Custom properties → q → h03* inom någon minut.
 7. **Skriv in sponsorerna i `klubb.yaml`** (namn, webbadress, logga, avtalsperiod):
    ```yaml
    sponsors:
      3:
-       name: Emtec elinstallationer
-       url: emtec.se
-       logo: loggor/emtec.svg
+       name: Nordvik            # påhittat exempel
+       url: nordvik.se
+       logo: loggor/nordvik.svg
        naming_rights: true
        giltig_fran: 2027-04-01
        giltig_till: 2027-10-31

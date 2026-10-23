@@ -3,8 +3,8 @@
 Tre källor (se docs/statistik.md för hur de samlas in):
 
   a) Plausible – CSV-export per månad från klubbens webbplats.
-     `pages.csv` ger sidvisningar per hålsida (/hal-03/ …).
-     QR-besök: skylten länkar till /hal-NN/?q=hNN. Webbplatsens mätkod skickar `q` som
+     `pages.csv` ger sidvisningar per hålsida (/hal-03/ eller /banan/hal-03/ …).
+     QR-besök: skylten länkar till hålsidan med ?q=hNN (se `qr_lank`). Webbplatsens mätkod skickar `q` som
      egen egenskap, så exporten har en tabell (property, value, visitors, events) med
      raderna q = h03 osv. Saknas den tabellen räknas sidor vars namn innehåller ?q=hNN.
   b) Partnerkanaler – CSV med kolumnerna klubb, bana, hal, manad, visningar, klick.
@@ -41,10 +41,24 @@ Q_VARDE_RE = re.compile(r"^h(\d{1,2})$", re.IGNORECASE)
 
 # ---------------------------------------------------------------- länkar
 
+def halsida(club: dict, hole_nr: int) -> str:
+    """Hålsidans adress. Det enda stället som bestämmer den (skylt, prospekt, inlägg, statistik).
+
+    1. `sponsring.halsida` i klubb.yaml, en mall som "https://www.klubb.se/banan/hal-{hal:02d}/".
+    2. Annars `web_base` + /hal-NN/ (sidorna som `python -m golfholes webb` bygger).
+    3. Annars `web` + /banan/hal-NN/ (klubbhemsidorna i hemsidor/, t.ex. Glasriket).
+    """
+    mall = (club.get("sponsring") or {}).get("halsida")
+    if mall:
+        return str(mall).format(hal=hole_nr)
+    if club.get("web_base"):
+        return f"{str(club['web_base']).rstrip('/')}/hal-{hole_nr:02d}/"
+    return f"{str(club.get('web') or '').rstrip('/')}/banan/hal-{hole_nr:02d}/"
+
+
 def qr_lank(club: dict, hole_nr: int) -> str:
-    """Länken som QR-koden på tee-skylten pekar på: hålsidan med ?q=hNN."""
-    base = str(club.get("web_base") or club.get("web") or "").rstrip("/")
-    return f"{base}/hal-{hole_nr:02d}/?q=h{hole_nr:02d}"
+    """Länken som QR-koden pekar på: hålsidan med ?q=hNN (räknas som QR-besök i sponsorrapporten)."""
+    return f"{halsida(club, hole_nr)}?q=h{hole_nr:02d}"
 
 
 def matkod(club: dict) -> str:

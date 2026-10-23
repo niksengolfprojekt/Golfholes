@@ -16,6 +16,7 @@ from pathlib import Path
 
 import yaml
 
+from .. import statistik
 from .halkort import ATTRIBUTION, Halkort, _font_css, markera
 
 # Uppskattning av ronder när klubben inte har lämnat sin egen siffra.
@@ -71,8 +72,12 @@ class Klubb:
         return int(self.sponsring.get("sasong", 2027))
 
     def halsida(self, hal: int) -> str:
-        mall = self.sponsring.get("halsida") or (self.web.rstrip("/") + "/banan/hal-{hal:02d}/")
-        return mall.format(hal=hal)
+        """Hålsidans adress (som den skrivs ut i text)."""
+        return statistik.halsida({"web": self.web, "sponsring": self.sponsring}, hal)
+
+    def qr_lank(self, hal: int) -> str:
+        """Adressen i QR-koden: hålsidan med ?q=hNN, så att besöket räknas som QR-besök."""
+        return statistik.qr_lank({"web": self.web, "sponsring": self.sponsring}, hal)
 
     def ronder(self) -> tuple[int, str]:
         """(ronder per år, källa). Klubbens egen siffra går före riksgenomsnittet."""

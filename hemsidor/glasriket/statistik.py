@@ -5,11 +5,13 @@ till sponsorrapporten efter säsongen. Siffrorna är besök, inte personer.
 
 Förutsättningar (görs en gång, när sajten har en domän):
   1. Lägg till sajten i Plausible och sätt PLAUSIBLE_DOMAN i bygg.py. Bygg och publicera.
-  2. I Plausible: Site settings → Goals → lägg till Custom event "QR-besök".
-     Site settings → Custom properties → lägg till "hal".
+  2. I Plausible: Site settings → Goals → lägg till Custom event "QR-besök" och "Sponsorklick".
+     Site settings → Custom properties → lägg till "q" (QR-besök, h03 …) och "hal" (sponsorklick).
+     Samma namn som golfholes/statistik.py läser i sponsorrapporten.
   3. Skapa en Stats API-nyckel (Account settings → API keys) och lägg den som hemlighet
      PLAUSIBLE_API_KEY i miljön (aldrig i repot).
-  4. QR-koderna på skyltarna pekar på adresserna i qr-lankar.csv (…/banan/hal-NN/?q=hNN).
+  4. QR-koderna på skyltarna pekar på adresserna i qr-lankar.csv (…/banan/hal-NN/?q=hNN),
+     samma adress som golfholes/statistik.py:qr_lank ger skylten och prospektet.
 
 Kör:  python hemsidor/glasriket/statistik.py 2027-04-01 2027-10-31  > sponsorstatistik-2027.csv
 """
@@ -43,7 +45,7 @@ def main(fran: str, till: str) -> None:
     })
     qr = fraga(nyckel, {
         "site_id": PLAUSIBLE_DOMAN, "date_range": period, "metrics": ["events"],
-        "dimensions": ["event:props:hal"], "filters": [["is", "event:goal", ["QR-besök"]]],
+        "dimensions": ["event:props:q"], "filters": [["is", "event:goal", ["QR-besök"]]],
     })
     per_hal = {n: {"sidvisningar": 0, "besokare": 0, "qr_besok": 0} for n in range(1, 19)}
     for r in sidor:

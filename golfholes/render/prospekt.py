@@ -312,8 +312,8 @@ def s6_erbjudande(k: Klubb, c: Halkort, d: dict, qr_svg: str, url: str) -> str:
 def sidor(k: Klubb, c: Halkort, prospekt: dict | None = None) -> tuple[list[str], bool]:
     """HTML för prospektets sidor (en sträng per sida) och om QR-koden är äkta."""
     d = prospekt or {}
-    url = k.halsida(c.hole)
-    qr_ljus, akta = qr(url, k.farger["djup"])
+    url = k.halsida(c.hole)                      # skrivs ut under QR-koden
+    qr_ljus, akta = qr(k.qr_lank(c.hole), k.farger["djup"])   # QR-koden: samma sida med ?q=hNN
     return [s1_omslag(k, c, d), s2_halet(k, c, d), s3_skylt(k, c, d, qr_ljus), s4_digitalt(k, c, d),
             s5_rapport(k, c, d), s6_erbjudande(k, c, d, qr_ljus, url)], akta
 
@@ -337,7 +337,7 @@ def bygg(halkortfil: Path, ut: Path, wb: Webblasare, forhand: Path | None = None
             Image.open(png).convert("RGB").save(jpg, quality=88)
             png.unlink()
             bilder.append(jpg)
-    return {"hal": c.hole, "pdf": pdf, "qr_akta": akta, "sidor": bilder, "url": k.halsida(c.hole)}
+    return {"hal": c.hole, "pdf": pdf, "qr_akta": akta, "sidor": bilder, "url": k.qr_lank(c.hole)}
 
 
 def bygg_alla(filer: list[Path], ut: Path) -> list[dict]:

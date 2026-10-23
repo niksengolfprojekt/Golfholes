@@ -73,6 +73,10 @@ def test_sida_visar_visningar_testdata_och_aldrig_personer():
 def test_qr_lank_och_matkod():
     club = {"web_base": "https://exempel.se/ekbacka/", "statistik": {"plausible_doman": "exempel.se"}}
     assert qr_lank(club, 3) == "https://exempel.se/ekbacka/hal-03/?q=h03"
+    # klubbhemsidorna: hålsidan under /banan/ (samma adress som hemsidor/glasriket bygger)
+    assert qr_lank({"web": "https://www.glasriketsgk.se"}, 3) == "https://www.glasriketsgk.se/banan/hal-03/?q=h03"
+    mall = {"web": "https://x.se", "sponsring": {"halsida": "https://y.se/hal/{hal}/"}}
+    assert qr_lank(mall, 7) == "https://y.se/hal/7/?q=h07"
     kod = matkod(club)
     assert 'data-domain="exempel.se"' in kod and "props:q?{q:q}" in kod and "Sponsorklick" in kod
     assert matkod({}) == ""
