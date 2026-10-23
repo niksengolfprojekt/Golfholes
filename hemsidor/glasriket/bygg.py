@@ -273,7 +273,7 @@ def sida(meta: dict, kropp: str, f: dict) -> str:
     </div>
     <div class="kallor">
       <span>{ATTRIBUTION}.</span>
-      <span>Bilder märkta ”AI-bild” är AI-genererade utifrån banans verkliga terräng. Hålbilderna är målade med AI-stöd på hålens exakta form.</span>
+      <span>Vissa bilder är visualiseringar.</span>
       <span>Webbplatsen använder inga kakor.</span>
     </div>
   </div>
@@ -345,7 +345,8 @@ def hal_sida(h: dict, hal: list[dict], f: dict, oversikt: str) -> tuple[dict, st
             logga = f'<img src="/img/sponsorer/{mal.name}" alt="{e(sp["name"])}" class="sponsor-logga" loading="lazy">'
         elif kalla:
             varningar.append(f"Hål {n}: sponsorns logga saknas ({kalla}) – namnet visas utan logga")
-        namn = f'<a href="{e(sp["url"])}" rel="noopener">{e(sp["name"])}</a>' if sp.get("url") else e(sp["name"])
+        namn = (f'<a href="{e(sp["url"])}" rel="noopener" data-hal="h{n:02d}">{e(sp["name"])}</a>'
+                if sp.get("url") else e(sp["name"]))
         sponsor = f'<aside class="sponsor"><span class="over">Hålsponsor</span>{logga}<p class="sponsor-namn">{namn}-hålet</p></aside>'
     rad = "".join(f"<li>{e(r)}</li>" for r in h["rad"])
     rad_block = ""
@@ -357,7 +358,7 @@ def hal_sida(h: dict, hal: list[dict], f: dict, oversikt: str) -> tuple[dict, st
         prickar = ('<p class="prickar"><span class="prick prick-rod"></span>100 m kvar till greenens mitt'
                    '<span class="prick prick-gul"></span>150 m</p>') if h["par"] > 3 else ""
         bild = (f'<figure class="hal-bild">{bildtagg(h, lazy=False)}{prickar}'
-                f'<figcaption><span class="ai-tagg">AI-målad hålbild</span> {ATTRIBUTION}</figcaption></figure>')
+                f'<figcaption>{ATTRIBUTION}</figcaption></figure>')
     else:
         bild = (f'<figure class="hal-bild hal-bild-oversikt"><a href="/banan/">{oversikt}</a>'
                 f'<figcaption>Hål {n} på banöversikten. {ATTRIBUTION}</figcaption></figure>')
@@ -529,9 +530,15 @@ def bygg() -> list[str]:
     (UT / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\nSitemap: {DOMAN}/sitemap.xml\n" if LANSERAD else "User-agent: *\nDisallow: /\n",
         encoding="utf-8")
-    # QR-länkarna till teeskyltarna: ?q=hNN räknas som QR-besök när besöksräknaren är på
+    # QR-länkarna till teeskyltarna: ?q=hNN räknas som QR-besök när besöksräknaren är på.
+    # Samma funktion som skylten, prospektet och sponsorstatistiken använder (golfholes/statistik.py).
+    sys.path.insert(0, str(REPO))
+    from golfholes.statistik import qr_lank
+    klubb_web = (las_yaml(KLUBB / "klubb.yaml") or {}).get("web", "").rstrip("/")
+    if klubb_web != DOMAN.rstrip("/"):
+        varningar.append(f"DOMAN ({DOMAN}) och web i klubb.yaml ({klubb_web}) skiljer sig – QR-koderna på skyltarna pekar på klubb.yaml")
     (ROT / "qr-lankar.csv").write_text(
-        "hal,adress\n" + "".join(f"{h['nr']},{DOMAN}/banan/hal-{h['nr']:02d}/?q=h{h['nr']:02d}\n" for h in hal),
+        "hal,adress\n" + "".join(f"{h['nr']},{qr_lank({'web': DOMAN}, h['nr'])}\n" for h in hal),
         encoding="utf-8")
     return adresser
 
@@ -557,9 +564,11 @@ def kontrollera(lansering: bool = False) -> list[str]:
                 vag = bit.strip().split(" ")[0]
                 if vag.startswith("/") and not (UT / vag.lstrip("/")).exists():
                     fel.append(f"{namn}: bild saknas {vag}")
-        for ord_ in ("GameBook", "[FYLL I", "Lorem", "TODO", "{{"):
+        for ord_ in ("GameBook", "Emtec", "[FYLL I", "Lorem", "TODO", "{{"):
             if ord_.lower() in text.lower():
                 fel.append(f"{namn}: innehåller förbjudet ord/platshållare: {ord_}")
+        if re.search(r"\bAI\b", text):
+            fel.append(f"{namn}: ordet AI får inte stå på sajten (inga AI-stämplar)")
         if "Lantmäteriet" not in text:
             fel.append(f"{namn}: saknar Lantmäteriets källtext")
         if lansering and "noindex" in text:

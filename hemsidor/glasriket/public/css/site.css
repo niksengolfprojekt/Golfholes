@@ -94,9 +94,6 @@ address{font-style:normal;margin:0 0 1em}
 .hjalte .over{color:var(--dimma);text-shadow:0 1px 12px rgba(16,32,46,.6)}
 .hjalte .ingress{color:rgba(248,250,246,.92);max-width:36ch}
 .hjalte-lag{min-height:min(70vh,640px)}
-.ai-tagg{display:inline-block;font:600 11px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;padding:6px 9px;border-radius:999px;background:rgba(16,32,46,.72);color:var(--dimma);white-space:nowrap}
-.ai-tagg-bild{position:absolute;right:12px;top:12px;z-index:2}
-.hjalte .ai-tagg-bild{top:auto;bottom:14px}
 @media (min-width:800px){.hjalte-text{padding-bottom:80px}}
 
 /* faktarad */
@@ -146,7 +143,7 @@ address{font-style:normal;margin:0 0 1em}
 .hk{display:flex;flex-direction:column;height:100%;text-decoration:none;color:var(--natt);background:var(--vit);border:1px solid var(--linje);border-radius:var(--radie);overflow:hidden;transition:transform .2s,box-shadow .2s}
 .sek-ljus .hk{background:var(--dimma)}
 .hk:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(16,32,46,.12);color:var(--natt)}
-.hk-bild{aspect-ratio:4/5;min-height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:14px 10px 4px;background:radial-gradient(ellipse at 50% 60%,#fff 0%,rgba(255,255,255,0) 70%)}
+.hk-bild{aspect-ratio:4/5;min-height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:14px 10px 4px;background:radial-gradient(closest-side at 50% 50%,#fff 0%,rgba(255,255,255,.6) 55%,rgba(255,255,255,0) 100%)}
 .hk-bild img{width:100%;height:100%;object-fit:contain}
 .hk-tom{background:radial-gradient(ellipse at 50% 45%,rgba(156,201,195,.35) 0%,rgba(156,201,195,0) 70%);padding:0;border-bottom:1px solid var(--linje)}
 .hk-tom span{font:400 clamp(72px,16vw,120px)/1 var(--serif);color:var(--djup);opacity:.35;letter-spacing:-.03em}
@@ -172,7 +169,6 @@ address{font-style:normal;margin:0 0 1em}
 .hal-text{grid-area:info}
 .hal-bild img{max-height:72vh;width:auto;object-fit:contain}
 .hal-bild figcaption{text-align:center;max-width:40ch}
-.hal-bild .ai-tagg{background:var(--djup)}
 .hal-bild-oversikt a{display:block;max-width:420px;background:#FAF6EE;border-radius:var(--radie);padding:10px}
 .prickar{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 8px;font-size:13px;color:var(--text-2);margin:12px 0 0}
 .prick{width:11px;height:11px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 0 0 1px rgba(16,32,46,.2)}

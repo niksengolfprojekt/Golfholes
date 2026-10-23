@@ -28,7 +28,7 @@ TYPSNITT = {
 # Latin + svenska tecken, typografiska citattecken, tankstreck, punkt, pil, euro, minus
 TECKEN = "U+0000-00FF,U+0131,U+0152-0153,U+2013-2014,U+2018-201E,U+2022,U+2026,U+2032-2033,U+2039-203A,U+20AC,U+2122,U+2190-2193,U+2212,U+00A0"
 
-# Ögonhöjdsbilder (AI, märks på sajten). Bara godkända vyer på riktiga hål + en allmän.
+# Ögonhöjdsbilder (visualiseringar). Bara godkända vyer på riktiga hål + en allmän.
 FOTON = {
     "hal-03-inspel": "ogonhojd/v2/h03-inspel.jpg",
     "hal-05-inspel": "ogonhojd/v2/h05-inspel.jpg",

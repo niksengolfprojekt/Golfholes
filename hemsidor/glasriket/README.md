@@ -40,13 +40,16 @@ Sponsor läggs in per hål i `data/hal.yaml` (eller hålkortet):
 `klubbar/glasriket/`, i en färg). Då visas "Företag AB-hålet" överst på hålsidan. Utan sponsor: inget fält.
 
 ## Sponsorstatistik
-QR-koden på skylten pekar på `…/banan/hal-NN/?q=hNN`. Med Plausible påslaget registreras ett
-"QR-besök" med hålets nummer. `statistik.py` hämtar sidvisningar och QR-besök per hål för en
+QR-koden på skylten pekar på `…/banan/hal-NN/?q=hNN` (adressen bestäms på ett ställe:
+`golfholes/statistik.py`, `qr_lank`, som skylten, prospektet och `qr-lankar.csv` använder).
+Med Plausible påslaget registreras ett "QR-besök" med egenskapen `q` = hNN och klick på
+sponsorns länk som "Sponsorklick" med `hal` = hNN – samma namn som sponsorrapporten läser. `statistik.py` hämtar sidvisningar och QR-besök per hål för en
 period till en CSV (se instruktionerna överst i filen).
 
 ## Regler för innehållet
 - Riktiga uppgifter från klubben, aldrig platshållare. Saknas något: fråga klubben.
-- Inga personer på bilder. AI-bilder märks på bilden. Lantmäteriets källtext i sidfoten och vid varje hålbild.
+- Inga personer på bilder. Inga märkningar på eller vid bilder; sidfoten säger bara "Vissa bilder är visualiseringar."
+  Lantmäteriets källtext i sidfoten och vid varje hålbild.
 - Klubbens texter i klubbens röst. Inga löften om fler rundor eller medlemmar.
 
 ## Publicering
