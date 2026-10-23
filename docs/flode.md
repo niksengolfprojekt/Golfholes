@@ -52,3 +52,4 @@
 - [ ] Tee-vy och flygfilm (3D, Mac Pro)
 - [x] Ögonhöjdsvy ur data (`golfholes/render/perspektiv.py`): höjdmodell + ortofoto + skogsmassa, spellinjen hålls öppen. AI (OpenArt) målar vyn till foto. Glasriket hål 3, 5, 14: `/mnt/project-files/glasriket/ogonhojd/` – väntar på Erics godkännande. Visas som "Visualisering", aldrig som foto.
 - [ ] Ecosigns tryckspecifikation in i `SignSpec` (mått, utfall, PDF/X)
+- [x] Glasrikets grafiska manual v1 (2026-10-23): 18 sidor A4 liggande i profilen Glas och skog med sigillet Småland, `verktyg/grafisk_manual/glasriket_manual.py` (HTML till PDF via Chromium, riktig QR med segno). Leverans `/mnt/project-files/glasriket/grafisk-manual-v1/`. CMYK/Pantone väntar på tryckprov.
