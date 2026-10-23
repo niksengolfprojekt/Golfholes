@@ -1,5 +1,8 @@
 # UTKAST – genererat 2026-10-20 av `python -m golfholes utkast klubbar/glasriket/utkast/hal-05.yaml`.
 # Granska mot klubbens hålkarta och kontrollbilden innan det godkänns.
+# Rättat för hand 2026-10-23: falsk vattenyta vid ca 491690, 6305494 (bakom hål 4:s högra greenbunker)
+#   borttagen. Laserdata (mars 2026): markpunkter med jämn lutning, granar i västkanten, ingen
+#   vattenreturn och inga luckor – det är trädskugga över ruff, ingen damm. Klubbens karta har ingen damm där.
 club: Glasrikets Golfklubb
 hole: 5
 par: 4
@@ -260,26 +263,6 @@ hazards:
   - [491802.3, 6305511.3]
   - [491806.5, 6305513.1]
   - [491809.2, 6305513.6]
-- kind: water
-  name: ''
-  polygon:
-  - [491690.9, 6305498.0]
-  - [491692.1, 6305497.6]
-  - [491693.0, 6305496.9]
-  - [491693.6, 6305496.0]
-  - [491693.9, 6305494.9]
-  - [491693.7, 6305492.4]
-  - [491693.3, 6305491.3]
-  - [491691.9, 6305489.7]
-  - [491690.5, 6305488.9]
-  - [491689.3, 6305488.8]
-  - [491688.3, 6305489.5]
-  - [491687.5, 6305491.0]
-  - [491687.0, 6305492.9]
-  - [491687.1, 6305495.2]
-  - [491687.5, 6305497.0]
-  - [491688.4, 6305498.0]
-  - [491689.1, 6305498.2]
 fairways:
 - - [492035.6, 6305483.3]
   - [492036.0, 6305483.1]
