@@ -1,4 +1,8 @@
-"""Hålbilden i klubbens valda stil, 1–4.
+"""Kodritade ritmotorer 1–4 för hålbilden (reserv, INTE klubbens stilval).
+
+Klubbens stil är sedan 2026-10-22 en av sex AI-målade stilar (golfholes/stilar.py).
+Ritmotorerna här används bara där ingen målad hålbild finns än (skylt, halbild, webb),
+och väljs då efter stilen (`Stil.ritmotor`):
 
   1 Signatur  – fotorealistiskt ovanifrån (Lantmäteriets ortofoto), mörk träram
   2 Klassisk  – akvarell, ljus ekram

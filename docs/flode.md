@@ -8,12 +8,12 @@
 | 3b. Rätta | Öppna `verktyg/ritverktyg.html`, ladda `orto.jpg` + `.jgw` + `hal-NN_ritverktyg.json`. Dra hörnpunkter, Alt+klick tar bort falska ytor (grus vid tee, skuggor längs vägar), rita till det som saknas. Kontrollrutan visar längd mot scorekort direkt. | Ritverktyget | `hal-NN.yaml` sparad i `klubbar/<klubb>/` |
 | 4. Kontrollera | Avstånd, längd mot scorekort (±3 %), kamera för tee-vy. | `python -m golfholes rapport klubbar/<klubb>/hal-NN.yaml` | Alla tees "ok" |
 | 5. "Så spelar du hålet" | Skriv Säkert/Chansa i hålfilen utifrån avstånden. Granskas av en golfare. | Text i `strategy:` | Granskad |
-| 5b. Stilval | Klubben ser samma hål i alla fyra stilar och väljer 1–4. Valet skrivs in som `stil:` i `klubb.yaml`. | `python -m golfholes stilprov klubbar/<klubb>/hal-NN.yaml` | `stil:` satt |
+| 5b. Stilval | Klubben ser samma hål i de sex stilarna (Akvarell, Sommarakvarell, Gravyr, Mjuk 3D, Arkitektskiss, Papperssnitt) och väljer en. Namnet skrivs in som `stil:` i `klubb.yaml`. `aiunderlag`/`aiprompt` ger stilens AI-prompt, `aibild` sparar målningen som `halbilder/hal-NN-malad-<stil>.webp`, hålkort och webb tar den automatiskt. | `python -m golfholes stilprov klubbar/<klubb>` | `stil:` satt |
 | 5c. Layoutval | Klubben ser samma hål i alla layouter och väljer. Valet skrivs in som `layout:` i `klubb.yaml` (en siffra eller en lista). Texterna per hål ligger i `klubbar/<klubb>/halkort/hal-NN.yaml`; mallen säger till om en text är för lång. | `python -m golfholes layoutprov klubbar/<klubb>/halkort/hal-NN.yaml` | `layout:` satt |
 | 6. Klubbkontroll | Skicka hålbild + avstånd till klubben. | `python -m golfholes halbild …` | Skriftligt godkänt |
 | 7. Skylt | Förhandsvisning + tryck-PDF per platta till Ecosign. | `python -m golfholes skylt …` | Malin har granskat, QR-kod äkta |
 | 8. Webb | Digital banguide, sidan QR-koden pekar på. | `python -m golfholes webb klubbar/<klubb>` | Publicerad på klubbens/vår domän |
-| 9. Film | Tee-vy och flygfilm i 3D. | (kommer – Blender på Mac Pro) | Filmer per tee och hål |
+| 9. Film | Rå flygfilm ur data (5 m höjd längs mittlinjen, slutar rakt ovanifrån), sedan AI video-till-video som bara byter yta. | `python -m golfholes flygfilm klubbar/<klubb>/hal-NN.yaml` | Rå film godkänd, AI-yta testad |
 
 ## Status
 - [x] Geometri, avstånd, tee-kamera, längdkontroll
@@ -48,10 +48,12 @@
 - [x] Eric spikade fem hålbildsstilar för sajten (2026-10-17): 1 Foto höst, 2 Blå gravyr, 3 Sommarakvarell, 4 Screentryck, 5 Papperssnitt (bäst i mörkt hålkort). Regel i alla: fairway ljusast, ruff mörkare, skog mörkast. Översikt: `/mnt/project-files/hallayouter/stilar/hal-14-SPIKADE-fem-stilar.jpg`
 - [x] Klubbens färger: `verktyg/klubbfarg.py` byter stilens färger mot klubbens tonskala (5 färger, mörk till ljus) och ritar prickar och flagga ovanpå. Mörka hålkortet tar `farg_mork` från hålfilen. Prov i tre paletter: `/mnt/project-files/hallayouter/klubbfarger/`
 - [x] Stilmenyn spikad 2026-10-22: Akvarell, Sommarakvarell, Gravyr, Mjuk 3D, Arkitektskiss, Papperssnitt. Ersätter Erics fem från 2026-10-17 och kodens fyra.
-- [ ] Koppla de sex stilarna till `stil:` i koden (i dag 1–4 kodritade, ska bort) – stilprov per stil som AI-stilreferens
-- [ ] Webbsidorna i klubbens stil (använder ännu Nordisk)
+- [x] De sex stilarna inkopplade (2026-10-23): `stil:` i `klubb.yaml` = ett av namnen, tabell `STILAR` i `golfholes/stilar.py` (AI-prompt byggd på standardpromptens regler + stilprovets bildfil), `stilprov` visar de sex lika stora + `stilar.md` med promptarna, `aiprompt` skriver ut prompten, `aibild --stil`, hålkort utan `bild:` tar klubbens målade bild. Gamla 1–4 läses med varning. Glasriket = `stil: foto`.
+- [x] Webbsidorna visar den målade hålbilden i klubbens stil (utan AI-märkning, Erics beslut 2026-10-23; Lantmäteriets källtext står i sidfoten); kodritad reserv tills hålet är målat
 - [ ] Klubbmärke (SVG) från klubben till rubriken i stil 1
-- [ ] Tee-vy och flygfilm (3D, Mac Pro)
+- [x] Rå flygfilm ur Lantmäteriets data (2026-10-23): `flygfilm` – höjdmodell + ortofoto + Laserdata Skog, kamera 5 m över mittlinjen med blicken 60 m fram, mjuk kurva, stiger och tippar till vy rakt ovanifrån där allt utanför hålet tonas till papper. 1280×720, 24 fps. Test Glasriket hål 14 och 17: `/mnt/project-files/glasriket/flygfilm-test/` (plan för AI-yta i `plan.md`)
+- [ ] Flygfilm med AI-yta (video-till-video) – väntar på Erics val av verktyg och krediter
+- [ ] Tee-vy i 3D (Mac Pro)
 - [x] Ögonhöjdsvy ur data (`golfholes/render/perspektiv.py`): höjdmodell + ortofoto + skogsmassa, spellinjen hålls öppen. AI (OpenArt) målar vyn till foto. Glasriket hål 3, 5, 14: `/mnt/project-files/glasriket/ogonhojd/` – väntar på Erics godkännande. Visas som "Visualisering", aldrig som foto.
 - [ ] Ecosigns tryckspecifikation in i `SignSpec` (mått, utfall, PDF/X)
 - [x] Glasrikets grafiska manual v1 (2026-10-23): 18 sidor A4 liggande i profilen Glas och skog med sigillet Småland, `verktyg/grafisk_manual/glasriket_manual.py` (HTML till PDF via Chromium, riktig QR med segno). Leverans `/mnt/project-files/glasriket/grafisk-manual-v1/`. CMYK/Pantone väntar på tryckprov.
