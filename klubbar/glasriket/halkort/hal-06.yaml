@@ -1,0 +1,25 @@
+# Hålkort för Glasriket hål 6. Hålbilden är AI-målad på hålets exakta form ur Lantmäteriets
+# ortofoto; träd ur Laserdata Skog (python -m golfholes aiunderlag / aibild).
+# Råden är klubbens egna "Råd från PRO:n" (glasriketsgk.se/haloversikt, hämtad 2026-10-20),
+# lätt redigerade. Beskrivning och strategi är Claudes utkast ur hålfilen – klubben godkänner.
+# Tee 60 ligger under träden och syns inte på fotot – placerad "+30" bakom 56/52 som på kartan.
+club: Glasrikets Golfklubb
+bana: Fylleryd
+hole: 6
+par: 4
+index: 2
+tees: [["60", 331], ["56 · 52", 301], ["49 · 44", 245]]
+bild: ../halbilder/hal-06-malad.webp
+typbild: false
+rubrik: Håll vänster från tee
+beskrivning: >-
+  Banans näst svåraste hål. Fairway går mot nordväst med träd längs hela högersidan och
+  svänger sedan höger upp mot en stor green. Dammen ligger till vänster om tee 49/44.
+rad_rubrik: Råd från pro:n
+rad:
+  - Håll vänster på ditt utslag, träden på höger sida är mycket svåra att slå över.
+  - Inspelet bör placeras på rätt platå för att undvika treputtar.
+slutrad: Greenen är stor – läs platåerna.
+strategi:
+  sakert: Utslag mot vänstra halvan av fairway, där svängen öppnar upp för inspelet.
+  chansa: Ett utslag nära träden till höger kortar hålet, men en boll i träden kostar slag.
