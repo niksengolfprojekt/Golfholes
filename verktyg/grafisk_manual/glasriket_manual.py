@@ -60,7 +60,9 @@ def prep(out):
         Image.open(f'{SIGILL}/Glasriket_sigill-smaland_{n}-broderad.png').convert('RGB').save(f'{out}/img/keps-{n}.jpg', quality=90)
     # Riktig QR-kod till klubbens webbplats (segno). Ingen reserv: hellre stopp än låtsas-QR.
     import segno
-    segno.make('https://glasriketsgk.se', error='m').save(f'{out}/img/qr.svg', dark=DJUP, light=None, border=0)
+    sys.path.insert(0, REPO)
+    from golfholes.statistik import qr_lank  # samma adress som skylten: hålsidan med ?q=hNN
+    segno.make(qr_lank({'web': 'https://www.glasriketsgk.se'}, 14), error='m').save(f'{out}/img/qr.svg', dark=DJUP, light=None, border=0)
 
 
 # ---------------------------------------------------------------- hjälp
@@ -130,11 +132,11 @@ p{{font:400 12.5px/1.6 Hanken;margin:0 0 10px}}
 P = []
 
 
-def page(body, n=None, dark=False, lm=False, ai=None):
+def page(body, n=None, dark=False, lm=False, ft_text=None):
     hd = '' if n is None else f'<div class="hd"><span>Glasrikets Golfklubb · Grafisk manual</span><span>{n:02d}</span></div>'
     ft = ''
-    if lm or ai:
-        parts = [x for x in (ai, LM if lm else None) if x]
+    if lm or ft_text:
+        parts = [x for x in (ft_text, LM if lm else None) if x]
         ft = f'<div class="ft">{" · ".join(parts)}</div>'
     return f'<section class="pg{" dark" if dark else ""}">{hd}{body}{ft}</section>'
 
@@ -236,7 +238,7 @@ def build_pages():
         tiles += f'<div class="tile" style="left:{x}px;top:{y}px;width:{tw}px;height:{th}px;{bgs}{b}">{inner}</div>'
         tiles += f'<div class="abs" style="left:{x}px;top:{y + th + 10}px;width:{tw}px"><div class="sm b">{t}</div><div class="sm mut">{d}</div></div>'
     P.append(page(f'''{title('Logotyp', 'Färgversioner', w=600)}
-{txt(640, 94, 423, '<p class="sm mut">Använd den färgade versionen när det går. Enfärgsversionerna är för tekniker som bara klarar en färg. Välj alltid den version som ger störst kontrast mot botten.</p>')}{tiles}''', 5, ai='Kepsen är en AI-bild med sigillet inlagt'))
+{txt(640, 94, 423, '<p class="sm mut">Använd den färgade versionen när det går. Enfärgsversionerna är för tekniker som bara klarar en färg. Välj alltid den version som ger störst kontrast mot botten.</p>')}{tiles}''', 5))
 
     # 6 Så gör vi inte -------------------------------------------
     wrongs = [('Sträck eller tryck inte ihop', KRIST, seal('ljus', 140, 'transform:scaleX(1.4)')),
@@ -306,7 +308,7 @@ def build_pages():
                   f'</div><div class="abs xs" style="left:{x}px;top:{y + 120}px;width:192px"><span class="b">Kontrast {c:.1f}:1</span><br><span class="mut">{ok}</span></div>')
     P.append(page(f'''{title('Färger', 'Färger i bruk', w=600)}
 {txt(640, 94, 423, '<p class="sm mut">Kristall och Djupglas bär profilen. Sjöglas och Glasgrön ger djup, Isglas och Glöd är detaljer. Proportionerna nedan är en riktlinje för en hel trycksak eller ett flöde, inte för varje enskild yta.</p>')}
-{bar}<div class="abs" style="left:{M}px;top:296px"><h3 style="color:{GRON}">Text på färg</h3></div>{cards}''', 8, ai='Kontrast enligt WCAG 2.1. Löptext kräver minst 4,5:1, stor text och etiketter minst 3:1.'))
+{bar}<div class="abs" style="left:{M}px;top:296px"><h3 style="color:{GRON}">Text på färg</h3></div>{cards}''', 8, ft_text='Kontrast enligt WCAG 2.1. Löptext kräver minst 4,5:1, stor text och etiketter minst 3:1.'))
 
     # 9 Typsnitt -------------------------------------------------
     P.append(page(f'''{title('Typografi', 'Två typsnitt', w=600)}
@@ -354,8 +356,8 @@ def build_pages():
 <div class="abs" style="left:{M}px;top:650px;width:{W - 2 * M}px;display:flex;gap:30px">
  <div style="flex:1"><h3 style="color:{GRON}">Alltid</h3><div class="sm" style="margin-top:6px">Hela hålet i bild, från tee till green. Samma storlek när flera hål visas tillsammans.</div></div>
  <div style="flex:1"><h3 style="color:{GRON}">Aldrig</h3><div class="sm" style="margin-top:6px">Påhittade hinder, flyttade green eller bilder från en annan bana.</div></div>
- <div style="flex:1"><h3 style="color:{GRON}">Märkning</h3><div class="sm" style="margin-top:6px">Publika bilder har upphovsraden från Lantmäteriet och märks som AI-målade.</div></div>
-</div>''', 11, lm=True, ai='Hålbilderna är AI-målade på Lantmäteriets underlag'))
+ <div style="flex:1"><h3 style="color:{GRON}">Märkning</h3><div class="sm" style="margin-top:6px">Publika hålbilder har Lantmäteriets upphovsrad. Ingen annan märkning på eller vid bilderna.</div></div>
+</div>''', 11, lm=True))
 
     # 12 Ögonhöjd ------------------------------------------------
     P.append(page(f'''{title('Bildspråk', 'I ögonhöjd', w=560)}
@@ -365,7 +367,7 @@ def build_pages():
 <div class="abs" style="left:{M + 616}px;top:388px;width:387px;height:192px;background:url(img/oh-h03-inspel.jpg) 50% 45%/cover"></div>
 <div class="abs cap" style="left:{M}px;top:588px">Hål 14 från tee</div>
 <div class="abs cap" style="left:{M + 616}px;top:588px">Hål 5, inspel · Hål 3, inspel</div>
-{txt(M, 640, 1000, '<p class="sm">Använd ögonhöjdsbilder som stämning på webb, i inlägg och i presentationer. Lägg text på en lugn del av himlen eller på en tonad yta i Djupglas, aldrig rakt över fairway eller green.</p>')}''', 12, lm=True, ai='Visualiseringar (AI) på Lantmäteriets underlag'))
+{txt(M, 640, 1000, '<p class="sm">Använd ögonhöjdsbilder som stämning på webb, i inlägg och i presentationer. Lägg text på en lugn del av himlen eller på en tonad yta i Djupglas, aldrig rakt över fairway eller green.</p>')}''', 12, lm=True))
 
     # 13 Hålkort -------------------------------------------------
     cw, ch = 315, 470
@@ -375,7 +377,7 @@ def build_pages():
     sp = ''.join(f'<div class="rule" style="padding:9px 0;width:236px"><div class="sm b">{a}</div><div class="sm mut">{b}</div></div>' for a, b in spec)
     P.append(page(f'''{title('Tillämpningar', 'Hålkort', w=560)}
 {kort}<div class="abs" style="left:{M}px;top:640px;width:1003px;display:flex;gap:20px">{sp}</div>
-{txt(640, 94, 423, '<p class="sm mut">Hålkorten för hål 3, 14 och 17 som de ser ut i dag. Alla 18 hål följer samma uppställning. Före tryck sätts korten med profilens typsnitt och godkänns av klubben hål för hål.</p>')}''', 13, lm=True, ai='Hålbilderna är AI-målade på Lantmäteriets underlag'))
+{txt(640, 94, 423, '<p class="sm mut">Hålkorten för hål 3, 14 och 17 som de ser ut i dag. Alla 18 hål följer samma uppställning. Före tryck sätts korten med profilens typsnitt och godkänns av klubben hål för hål.</p>')}''', 13, lm=True))
 
     # 14 Hålskylt ------------------------------------------------
     s = 0.56  # px per cm*10 -> skylt 700 x 1000 mm = 392 x 560 px
@@ -407,13 +409,13 @@ def build_pages():
     sp = ''.join(f'<div class="rule" style="padding:8px 0"><div class="sm b">{a}</div><div class="sm mut">{b}</div></div>' for a, b in spec)
     P.append(page(f'''{title('Tillämpningar', 'Hålskylt', w=560)}
 {sign}<div class="abs" style="left:560px;top:150px;width:503px">{sp}</div>
-{txt(560, 540, 503, '<p class="xs mut">Nordvik är en påhittad exempelsponsor. Hålguiden visar riktiga uppgifter för hål 14. QR-koden leder till klubbens webbplats; när hålsidorna finns pekas den om till respektive hål.</p>')}''', 14, ai='Hålbilden är AI-målad på Lantmäteriets underlag'))
+{txt(560, 540, 503, '<p class="xs mut">Nordvik är en påhittad exempelsponsor. Hålguiden visar riktiga uppgifter för hål 14. QR-koden leder till hålets sida på klubbens webbplats.</p>')}''', 14, lm=True))
 
     # 15 Sociala medier ------------------------------------------
     pw, ph = 264, 330
     def post(x, inner, bg):
         return f'<div class="abs" style="left:{x}px;top:150px;width:{pw}px;height:{ph}px;background:{bg};overflow:hidden;box-shadow:0 10px 26px rgba(16,32,46,.16)">{inner}</div>'
-    lmline = f'<div class="abs" style="left:12px;right:12px;bottom:8px;font:400 4.6px/1.3 Hanken;opacity:.6">AI-målad hålbild · {LM}</div>'
+    lmline = f'<div class="abs" style="left:12px;right:12px;bottom:8px;font:400 4.6px/1.3 Hanken;opacity:.6">{LM}</div>'
     p1 = post(M, f'''<div class="abs" style="left:10px;top:10px;width:110px;bottom:18px;background:url(img/hal-14-malad.png) 50% 50%/contain no-repeat"></div>
 <div class="abs" style="left:132px;top:24px;right:12px;color:{DJUP}"><div style="font:600 6.5px Hanken;letter-spacing:.2em;color:{GLOD_D}">VECKANS HÅL</div>
 <div style="font:400 70px/.9 Spectral;margin-top:8px">14</div><div style="font:600 6.5px Hanken;letter-spacing:.14em;margin-top:8px;color:{GRON}">PAR 4 · INDEX 1</div>
@@ -437,7 +439,7 @@ def build_pages():
     P.append(page(f'''{title('Tillämpningar', 'Sociala medier', w=560)}
 {txt(640, 94, 423, '<p class="sm mut">Inlägg i 4:5 som visar hela hålet. Tre fästa inlägg överst i flödet och höjdpunkter i klubbens färger.</p>')}
 {p1}{p2}{p3}
-<div class="abs" style="left:{M}px;top:494px;width:{3 * pw + 36}px"><div class="cap">Fästa inlägg: veckans hål, sigillet och spela banan. Bildtexten med upphov och AI-märkning följer med varje publik hålbild.</div></div>
+<div class="abs" style="left:{M}px;top:494px;width:{3 * pw + 36}px"><div class="cap">Fästa inlägg: veckans hål, sigillet och spela banan. Lantmäteriets upphovsrad följer med varje publik hålbild.</div></div>
 <div class="abs" style="left:906px;top:150px;width:157px"><h3 style="color:{GRON}">Profilbild</h3>
 <div style="margin-top:12px;width:120px;height:120px;border-radius:50%;background:{DJUP};display:flex;align-items:center;justify-content:center">{seal('mork', 104)}</div>
 <div class="xs mut" style="margin-top:8px">Färgad version på Djupglas, beskuren rund.</div></div>
@@ -455,7 +457,7 @@ def build_pages():
                 for i, (f, pos, sz, t, d) in enumerate(pr))
     P.append(page(f'''{title('Tillämpningar', 'Profilprodukter', w=560)}
 {txt(640, 94, 423, '<p class="sm mut">Kläder broderas med den färgade mörka versionen på mörka plagg och enfärg Djupglas på ljusa. Sigillet placeras på vänster bröst eller mitt fram, aldrig på ärmen.</p>')}{g}
-{txt(M, 560, 1000, '<p class="sm">Minsta storlek för brodyr är 50 mm. Ringtexten är den känsligaste delen, så beställ alltid en provbrodyr och godkänn den innan en hel serie syrs. Trådfärger väljs mot provet, nära Glöd, Kristall och Djupglas.</p>')}''', 16, ai='Produktbilderna är AI-bilder med sigillet inlagt för att visa placering'))
+{txt(M, 560, 1000, '<p class="sm">Minsta storlek för brodyr är 50 mm. Ringtexten är den känsligaste delen, så beställ alltid en provbrodyr och godkänn den innan en hel serie syrs. Trådfärger väljs mot provet, nära Glöd, Kristall och Djupglas.</p>')}''', 16, ft_text='Produktbilderna är visualiseringar som visar placeringen'))
 
     # 17 Filpaket och märkning -----------------------------------
     files = [('Sigillet', 'Färgad ljus botten, färgad mörk botten, enfärg Djupglas, brons och vit. SVG, PDF och PNG.'),
@@ -471,8 +473,8 @@ def build_pages():
  <h3 style="color:{GLOD}">Upphov</h3>
  <p class="sm" style="margin-top:8px">Hålbilder, hålkort och visualiseringar bygger på Lantmäteriets öppna data. Allt publikt material som visar dem har raden:</p>
  <div style="font:400 15px/1.4 Spectral;margin:12px 0 26px;padding-left:14px;border-left:2px solid {GLOD}">{LM}</div>
- <h3 style="color:{GLOD}">AI-märkning</h3>
- <p class="sm" style="margin-top:8px">Bilder som är målade eller skapade med AI märks i bildtexten, till exempel ”AI-målad hålbild” eller ”Visualisering (AI)”.</p>
+ <h3 style="color:{GLOD}">Märkning</h3>
+ <p class="sm" style="margin-top:8px">Bilder märks aldrig med hur de är gjorda, varken i bildtext, alt-text eller sidfot. Där det behövs räcker en diskret rad i sidfoten: ”Vissa bilder är visualiseringar.”</p>
  <h3 style="color:{GLOD};margin-top:26px">Frågor om profilen</h3>
  <p class="sm" style="margin-top:8px">Klubbens kansli äger profilen. Behövs en ny variant eller tillämpning, utgå från manualen och fråga hellre än gissa.</p>
 </div>''', 17, dark=True))
