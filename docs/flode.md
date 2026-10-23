@@ -58,7 +58,8 @@
 - [x] Webbsidorna visar den målade hålbilden i klubbens stil (utan AI-märkning, Erics beslut 2026-10-23; Lantmäteriets källtext står i sidfoten); kodritad reserv tills hålet är målat
 - [ ] Klubbmärke (SVG) från klubben till rubriken i stil 1
 - [x] Rå flygfilm ur Lantmäteriets data (2026-10-23): `flygfilm` – höjdmodell + ortofoto + Laserdata Skog, kamera 5 m över mittlinjen med blicken 60 m fram, mjuk kurva, stiger och tippar till vy rakt ovanifrån där allt utanför hålet tonas till papper. 1280×720, 24 fps. Test Glasriket hål 14 och 17: `/mnt/project-files/glasriket/flygfilm-test/` (plan för AI-yta i `plan.md`)
-- [ ] Flygfilm med AI-yta (video-till-video) – väntar på Erics val av verktyg och krediter
+- [x] AI-test flygfilm hål 14 (2026-10-23, 952 krediter): Wan 3.0 element-till-video med rå film som förlaga håller formen i flygningen; övergången till hålbilden görs av koden. Formkontroll: `python -m golfholes.render.flygfilm_kontroll` (kamerabana, hålbild i filmens sista ruta, konturer på rutor). Resultat: `/mnt/project-files/glasriket/flygfilm-test/ai-test/resultat.md`
+- [ ] Flygfilm med AI-yta för fler hål – 720p, två klipp per hål, cirka 1 300 krediter per hål; väntar på Erics beslut
 - [ ] Tee-vy i 3D (Mac Pro)
 - [x] Ögonhöjdsvy ur data (`golfholes/render/perspektiv.py`): höjdmodell + ortofoto + skogsmassa, spellinjen hålls öppen. AI (OpenArt) målar vyn till foto. Glasriket hål 3, 5, 14: `/mnt/project-files/glasriket/ogonhojd/` – väntar på Erics godkännande. Visas som "Visualisering", aldrig som foto.
 - [ ] Ecosigns tryckspecifikation in i `SignSpec` (mått, utfall, PDF/X)
