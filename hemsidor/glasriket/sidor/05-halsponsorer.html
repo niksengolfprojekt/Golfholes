@@ -1,0 +1,95 @@
+<!--
+titel: Hålsponsorer · Ge ert företag ett eget hål · Glasrikets GK
+beskrivning: Bli hålsponsor på Glasrikets GK i Växjö. Ert företag på teeskylten, ett eget hål på hemsidan och synlighet i klubbens kanaler hela säsongen.
+sokvag: halsponsorer/
+bild: img/hal-05-tee-1600.webp
+-->
+<section class="hjalte hjalte-lag">
+  <picture>
+    <source media="(min-width: 800px)" srcset="/img/hal-05-tee-1600.webp">
+    <img src="/img/hal-05-tee-800.webp" width="800" height="537" alt="Utsikten från tee på hål 5 över fairway mot skogen" fetchpriority="high" decoding="async">
+  </picture>
+  <span class="ai-tagg ai-tagg-bild">AI-bild · hål 5</span>
+  <div class="inne hjalte-text">
+    <p class="over">För företag</p>
+    <h1>Ge ert företag ett eget hål</h1>
+    <p class="ingress">Varje runda på Glasriket passerar ert hål. Som hålsponsor blir ni en del av banan – på teeskylten, på hålets egen sida och i klubbens kanaler.</p>
+    <div class="knappar">
+      <a class="knapp knapp-glod" href="#intresse">Anmäl intresse</a>
+    </div>
+  </div>
+</section>
+
+<section class="sek">
+  <div class="inne">
+    <div class="sek-huvud">
+      <div>
+        <p class="over">Det här ingår</p>
+        <h2>Ert namn på hålet, hela säsongen</h2>
+      </div>
+      <p class="ingress">Ett hålsponsorskap är reklam som syns där era kunder redan är – ute på banan, i mobilen och i klubbens flöden.</p>
+    </div>
+    <ul class="ingar">
+      <li><span class="ingar-nr">01</span><h3>Teeskylt vid hålet</h3><p>En skylt i klubbens profil med hålets guide och er logotyp. Den möter varje spelare på tee.</p></li>
+      <li><span class="ingar-nr">02</span><h3>Hålet bär ert namn</h3><p>Hålet presenteras som ”ert företag”-hålet på hemsidan, med er logotyp och länk till er.</p></li>
+      <li><span class="ingar-nr">03</span><h3>QR-kod till hålets sida</h3><p>Spelarna skannar koden på skylten och får hålets guide i mobilen – med er som sponsor.</p></li>
+      <li><span class="ingar-nr">04</span><h3>Synlighet i klubbens kanaler</h3><p>Ert hål lyfts fram i klubbens sociala medier under säsongen.</p></li>
+      <li><span class="ingar-nr">05</span><h3>Siffror efter säsongen</h3><p>Ni får veta hur många som besökt hålets sida och hur många som kommit dit via QR-koden.</p></li>
+    </ul>
+  </div>
+</section>
+
+<section class="sek sek-djup">
+  <div class="inne tva">
+    <div class="text">
+      <p class="over">Så syns det</p>
+      <h2>Hålets sida, med er överst</h2>
+      <p>Varje hål har en egen sida med hålbild, tees, längder och pro:ns råd. Som sponsor står ni överst – där spelarna tittar innan de slår ut.</p>
+      <p><a class="pil pil-ljus" href="/banan/hal-{{exempel_nr2}}/">Se hur en hålsida ser ut</a></p>
+    </div>
+    <div class="exempel" aria-label="Exempel på hur sponsorn visas på en hålsida">
+      <span class="exempel-etikett">Exempel</span>
+      <div class="exempel-grid">
+        {{exempel_bild}}
+        <div>
+          <div class="sponsor sponsor-exempel"><span class="over">Hålsponsor</span><p class="sponsor-namn">Ert företag-hålet</p></div>
+          <p class="hal-nr hal-nr-liten">{{exempel_nr}}</p>
+          <p class="hal-par">Par {{exempel_par}} · Index {{exempel_index}}</p>
+          <p class="exempel-rubrik">{{exempel_rubrik}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sek">
+  <div class="inne tva">
+    <div class="text">
+      <h2>Prata med oss</h2>
+      <p class="ingress">Berätta vilket hål ni är intresserade av, så återkommer vi med pris och vilka hål som är lediga inför nästa säsong.</p>
+      <dl class="kontakt-dl">
+        <div><dt>E-post</dt><dd><a href="mailto:{{epost}}">{{epost}}</a></dd></div>
+        <div><dt>Telefon</dt><dd><a href="tel:{{telefon_lank}}">{{telefon}}</a></dd></div>
+      </dl>
+    </div>
+    <form class="formular" id="intresse" name="halsponsor" method="POST" action="/tack/" data-netlify="true" netlify-honeypot="bot-falt">
+      <h2>Anmäl intresse</h2>
+      <input type="hidden" name="form-name" value="halsponsor">
+      <p class="visuellt-dold"><label>Fyll inte i detta fält <input name="bot-falt" tabindex="-1" autocomplete="off"></label></p>
+      <div class="rad">
+        <label for="s-foretag">Företag<input id="s-foretag" name="foretag" autocomplete="organization" required></label>
+        <label for="s-namn">Kontaktperson<input id="s-namn" name="namn" autocomplete="name" required></label>
+      </div>
+      <div class="rad">
+        <label for="s-epost">E-post<input id="s-epost" name="epost" type="email" autocomplete="email" required></label>
+        <label for="s-telefon">Telefon<input id="s-telefon" name="telefon" type="tel" autocomplete="tel"></label>
+      </div>
+      <label for="s-hal">Önskat hål
+        <select id="s-hal" name="hal"><option>Inget särskilt</option>{{hal_val}}</select>
+      </label>
+      <label for="s-medd">Meddelande (valfritt)<textarea id="s-medd" name="meddelande" rows="3"></textarea></label>
+      <p class="liten">Vi använder uppgifterna bara för att svara er. Läs mer i vår <a href="/integritet/">integritetspolicy</a>.</p>
+      <button class="knapp knapp-glod" type="submit">Skicka</button>
+    </form>
+  </div>
+</section>
