@@ -1,0 +1,48 @@
+# Fröpunkter för hål 8 (SWEREF 99 TM, meter). Satta 2026-10-23 mot ortofoto 2025-07-01 (rutnät 5–10 m),
+# klubbens hålkarta H08-1 (banguide 2025) och översiktskartan. Par 4 rakt norrut: tees i en smal klippt
+# gata i skogen öster om hål 7:s green, fairway rakt norrut, fairwaybunker vänster (ca 190 m från tee 56)
+# och höger (ca 215 m), avlång green med bunker höger fram. Som kartan.
+# Tees: 56 = bakre klippta teeboxen i gatan, 52/49 = främre teeboxen 27 m framför (båda syns svagt som
+# rundade rutor). 44 = liten rund teeyta öster om fairwayns början – längden stämmer exakt, men kartan
+# ritar 44 vid gångvägen till vänster: klubben bekräftar. 60 (+33 m) ligger i skogen och syns inte.
+club: Glasrikets Golfklubb
+hole: 8
+par: 4
+index: 6
+orto: data/glasriket/orto/o63050_4900_25_mr25.tif
+tees:
+- {name: '60', point: [491955.0, 6305715.0], length_m: 380}  # beräknad, syns inte på fotot
+- {name: '56', point: [491955.0, 6305748.0], length_m: 347}
+- {name: 52/49, point: [491956.0, 6305775.0], length_m: 318}
+- {name: '44', point: [491977.0, 6305853.0], length_m: 243}
+centerline:
+- [491955.0, 6305715.0]
+- [491955.0, 6305748.0]
+- [491953.0, 6305950.0]
+- [491967.0, 6306092.0]
+green: [491967.0, 6306092.0]
+# Green inritad ur fotot (rutnät 5 m): trollstaven tog bara västra halvan + förgreenen.
+green_polygon:
+- [491950.0, 6306090.0]
+- [491950.3, 6306082.6]
+- [491954.9, 6306079.7]
+- [491960.6, 6306078.3]
+- [491966.3, 6306078.9]
+- [491972.0, 6306082.6]
+- [491977.7, 6306086.6]
+- [491983.4, 6306090.0]
+- [491985.7, 6306095.7]
+- [491984.6, 6306101.5]
+- [491980.6, 6306106.0]
+- [491974.9, 6306106.9]
+- [491969.7, 6306104.9]
+- [491965.1, 6306099.7]
+- [491959.4, 6306096.9]
+- [491953.7, 6306095.7]
+- [491950.9, 6306093.5]
+fairway:
+- [491955.0, 6305880.0]
+- [491952.0, 6305950.0]
+- [491957.0, 6306030.0]
+laser: data/glasriket/laser/y26a023-63050_4900_25.copc.laz
+hojd: data/glasriket/hojd/m630_49.tif

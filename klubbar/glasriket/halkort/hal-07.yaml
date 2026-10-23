@@ -1,0 +1,26 @@
+# Hålkort för Glasriket hål 7. Hålbilden är AI-målad på hålets exakta form ur Lantmäteriets
+# ortofoto; träd ur Laserdata Skog (python -m golfholes aiunderlag / aibild).
+# Råden är klubbens egna "Råd från PRO:n" (glasriketsgk.se/haloversikt, hämtad 2026-10-20),
+# lätt redigerade. Beskrivning och strategi är Claudes utkast ur hålfilen – klubben godkänner.
+# Teeytan är en sammanhängande klippt yta: var 56/60 och 52/49/44 står bekräftas av klubben.
+# Ny bunkerlayout 2025 enligt klubben – fotot är från juli 2025, klubben bekräftar bunkrarna.
+club: Glasrikets Golfklubb
+bana: Fylleryd
+hole: 7
+par: 3
+index: 18
+tees: [["56 · 60", 116], ["52 · 49 · 44", 105]]
+bild: ../halbilder/hal-07-malad.webp
+typbild: false
+rubrik: Inbunkrad rund green
+beskrivning: >-
+  Ett kort par 3 mot östsydost till en rund green. Bunkrar till vänster, höger fram
+  och bakom till höger fångar upp det mesta som missar greenen.
+rad_rubrik: Råd från pro:n
+rad:
+  - Bunkrarna fångar upp det mesta utanför green.
+  - Om du besöker bunkrarna – var snäll och gå inte ner och ur dem i de höga slänterna. Då blir de lösa och risken för pluggad boll ökar.
+slutrad: Ett bra birdiehål.
+strategi:
+  sakert: Sikta mitt på greenen – den är rund och bunkrarna ligger runt kanterna.
+  chansa: Gå på flaggan när den står nära en bunker – kort eller snett blir ett bunkerslag.
