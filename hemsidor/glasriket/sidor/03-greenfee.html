@@ -1,0 +1,65 @@
+<!--
+titel: Greenfee och bokning · Glasrikets GK
+beskrivning: Greenfee på Glasrikets 18-hålsbana och 12-hålsbanan i Växjö. Boka starttid, se priser, rabatter för samarbetsklubbar och hur du betalar.
+sokvag: greenfee/
+bild: img/hal-14-inspel-1600.webp
+-->
+<section class="sek sek-topp">
+  <div class="inne tva">
+    <div class="text">
+      <p class="over">Välkommen som gäst</p>
+      <h1>Greenfee och bokning</h1>
+      <p class="ingress">Boka din starttid online och betala i receptionen eller med Swish. Medlemmar i våra samarbetsklubbar får 20 % rabatt.</p>
+      <div class="knappar">
+        <a class="knapp knapp-glod" href="{{bokning_url}}" rel="noopener">Boka starttid</a>
+      </div>
+      <p class="liten">{{bokning_period}} 12-hålsbanan har ingen tidsbokning.</p>
+    </div>
+    <figure class="bild-ram">
+      <img src="/img/hal-14-inspel-800.webp" srcset="/img/hal-14-inspel-800.webp 800w, /img/hal-14-inspel-1600.webp 1600w" sizes="(min-width: 900px) 46vw, 92vw" width="800" height="537" alt="Inspelet på hål 14 mellan granar och björkar, med bunkern vid greenen" decoding="async">
+      <span class="ai-tagg ai-tagg-bild">AI-bild · hål 14</span>
+    </figure>
+  </div>
+</section>
+
+<section class="sek sek-ljus">
+  <div class="inne">
+    <div class="pris-grid">
+      <div class="pris-kort">
+        <h2>18-hålsbanan</h2>
+        <p class="liten">Ordinarie greenfee {{gf_ar}}. {{gf_krav}}</p>
+        {{gf_stora}}
+      </div>
+      <div class="pris-kort">
+        <h2>9 hål</h2>
+        <p class="liten">{{gf_nio_not}}</p>
+        {{gf_nio}}
+      </div>
+      <div class="pris-kort">
+        <h2>12-hålsbanan</h2>
+        <p class="liten">Pay &amp; Play. {{gf_pp_not}}</p>
+        {{gf_pp}}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sek">
+  <div class="inne tre">
+    <div class="text">
+      <h2>Betala</h2>
+      <p>{{gf_betalning}}</p>
+      <p class="stor-siffra">Swish {{swish}}</p>
+    </div>
+    <div class="text">
+      <h2>Rabatter</h2>
+      <p>{{gf_rabatt}} för medlemmar i {{gf_klubbar}}. Gäller inte 12-hålsbanan.</p>
+      <p>{{gf_golfhaftet}}</p>
+    </div>
+    <div class="text">
+      <h2>Bra att veta</h2>
+      <ul class="punkter">{{bokning_regler}}</ul>
+      <p><a href="mailto:{{epost}}">{{epost}}</a></p>
+    </div>
+  </div>
+</section>
