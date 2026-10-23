@@ -7,8 +7,8 @@ Inga kakor, ingen databas. Bygget skriver allt till `public/`, som publiceras so
 - `sidor/` – innehållet på de fasta sidorna (start, banan, greenfee, bli medlem, hålsponsorer, kontakt,
   integritet, tack, 404). Huvudet överst säger titel, beskrivning och adress. `{{namn}}` fylls i av bygget.
 - Hålsidorna 1–18 skapas av bygget ur `klubbar/glasriket/klubb.yaml` (par, index, tees, längder),
-  hålkorten i `klubbar/glasriket/halkort/` och texterna i `data/hal.yaml`.
-- `data/klubbfakta.yaml` – priser, öppettider, adress och kontakt (från glasriketsgk.se 2026-10-23).
+  hålkorten i `klubbar/glasriket/halkort/` och texterna i `innehall/hal.yaml`.
+- `innehall/klubbfakta.yaml` – priser, öppettider, adress och kontakt (från glasriketsgk.se 2026-10-23).
 - `tillgangar/` – css, js, typsnitt (woff2), sigill och foton i webbstorlek. Görs om med `forbered.py`.
 - `cache/` – hålbilderna med inritade tees, så att bygget fungerar utan Lantmäteriets data.
 - `public/` – det som publiceras. `qr-lankar.csv` – adresserna till QR-koderna på teeskyltarna.
@@ -35,7 +35,7 @@ utan inritade tees (varning).
 - `VARD`, `ORGNR` – står i integritetspolicyn.
 
 ## Hålsponsorer
-Sponsor läggs in per hål i `data/hal.yaml` (eller hålkortet):
+Sponsor läggs in per hål i `innehall/hal.yaml` (eller hålkortet):
 `sponsor: {name: "Företag AB", url: "https://…", logo: "sponsorer/foretag.svg"}` (loggan relativt
 `klubbar/glasriket/`, i en färg). Då visas "Företag AB-hålet" överst på hålsidan. Utan sponsor: inget fält.
 

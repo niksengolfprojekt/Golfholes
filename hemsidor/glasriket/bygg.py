@@ -1,8 +1,8 @@
-"""Bygger Glasrikets GK:s hemsida: läser sidorna i sidor/, klubbens data (klubbar/glasriket/ och data/)
+"""Bygger Glasrikets GK:s hemsida: läser sidorna i sidor/, klubbens data (klubbar/glasriket/ och innehall/)
 och skriver en färdig statisk sajt till public/ (det är den mappen som publiceras).
 
 Hålsidorna 1–18 byggs ur klubb.yaml (par, index, tees och längder), hålkorten i
-klubbar/glasriket/halkort/ och texterna i data/hal.yaml. Finns en färdig hålbild i
+klubbar/glasriket/halkort/ och texterna i innehall/hal.yaml. Finns en färdig hålbild i
 klubbar/glasriket/halbilder/hal-NN-malad.webp kommer den med automatiskt, med tees inritade.
 Saknas bilden byggs hålsidan ändå – utan hålbild, med en varning. Aldrig en trasig bild.
 
@@ -28,7 +28,7 @@ ROT = Path(__file__).resolve().parent
 REPO = ROT.parents[1]
 KLUBB = REPO / "klubbar" / "glasriket"
 SIDOR = ROT / "sidor"
-DATA = ROT / "data"
+DATA = ROT / "innehall"
 TILLG = ROT / "tillgangar"
 CACHE = ROT / "cache"
 UT = ROT / "public"

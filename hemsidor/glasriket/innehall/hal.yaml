@@ -1,0 +1,78 @@
+# Texter per hål till hålsidorna på Glasrikets hemsida.
+# Källa: klubbens egna "Råd från PRO:n" i banguiden 2025 (glasriketsgk.se/haloversikt, hämtad 2026-10-20,
+# ordagrant i /mnt/project-files/glasriket/banguide-2025/pro-rad.md), lätt redigerade. Klubben godkänner.
+#
+# Hål som har ett hålkort (klubbar/glasriket/halkort/hal-NN.yaml) tar rubrik, beskrivning och råd därifrån;
+# det som står här för samma hål används bara om hålkortet saknar fältet.
+#
+# Fält:  rubrik, beskrivning, rad (lista), slutrad, obs (regler och säkerhet, visas i en egen ruta)
+#        sponsor: {name: "Företag AB", url: "https://…", logo: "sökväg till logga i en färg (SVG/PNG)"}
+#        Sponsorn kan också stå i hålkortet. Utan sponsor visas inget sponsorfält.
+1:
+  rubrik: Ett bra öppningshål
+  rad:
+    - Relativt kort par 5 med out både på vänster- och högersidan.
+    - Lägg andra slaget på högersidan, så får du ett ganska kort inspel mot en svagt ifrånsluttande green.
+  slutrad: Vänsterkanten ger medstuds.
+2:
+  rubrik: Dammen 220 meter bort
+  rad:
+    - En fyrkantig damm ligger cirka 220 meter från tee 56.
+    - Lägg utslaget kort om dammen, så återstår cirka 120 meter till en högersluttande green.
+  obs: Oändligt rött pliktområde på högersidan fram till dammen.
+4:
+  rubrik: Ett fint korthål
+  rad:
+    - Här gäller det bara att spela rakt.
+    - Bunkern till höger fångar upp de flesta bollar som går åt höger – så slipper du leta.
+6:
+  rubrik: Håll vänster
+  rad:
+    - Håll vänster på utslaget. Träden på högersidan är mycket svåra att slå över.
+    - Placera inspelet på rätt platå, så undviker du treputtar.
+7:
+  rubrik: Ett bra birdiehål
+  rad:
+    - Bunkrarna fångar upp det mesta utanför greenen.
+  obs: Hamnar du i en bunker – gå inte ner eller upp via de höga slänterna. Då blir de lösa och risken för pluggade bollar ökar.
+8:
+  rubrik: Banans snabbaste green
+  rad:
+    - Ganska smalt utslag, med out längs vänstersidan och tjock ruff till höger.
+    - Placera utslaget på fairway, så blir hålet lättspelat.
+10:
+  rubrik: Ett bra korthål
+  rad:
+    - Ta reda på var pinnen står och hur vinden rör sig.
+  slutrad: Greenen är väl inbunkrad.
+12:
+  rubrik: En lång par femma
+  rad:
+    - Hålet kräver ett bra utslag.
+    - Ta gärna ett lite längre tredjeslag – framme vid greenen är det väldigt smalt.
+  slutrad: Stor och snäll green.
+13:
+  rubrik: Håll höger från tee
+  rad:
+    - Fairway lutar mot vänster och bunkern. Håll utslaget mot högersidan, så hamnar du mitt i med bästa vinkeln in mot greenen.
+    - Stor bunker till höger, med höga kanter på sina ställen.
+  obs: Oändligt rött pliktområde på vänstersidan fram till bunkern. Gå aldrig ner eller upp ur bunkern via slänterna.
+15:
+  rubrik: Över den vänstra björken
+  rad:
+    - Bästa linjen är rakt över den vänstra björken – då hamnar du mitt i fairway.
+    - Undvik högersidan, där är det out.
+    - Håll inspelet högt. Granen före greenen fungerar som ett plank.
+  slutrad: Liten green.
+16:
+  rubrik: En lätt fade från tee
+  rad:
+    - En lätt fade på cirka 170 meter från tee ger ett kort inspel.
+    - Se upp när flaggan står till vänster – då krävs längdkontroll.
+  slutrad: Snäll green.
+  obs: >-
+    Säkerhet: slå ut bara när blixtlampan framme till höger är släckt. Tänd lampan när du lämnat tee – den
+    sitter på högersidan cirka 110 meter från tee 49. Släck den med knappen innan du går in på greenen;
+    knappen sitter före vägen mot hål 17.
+17:
+  obs: Oändligt rött pliktområde bakom greenen.
