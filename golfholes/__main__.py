@@ -1,11 +1,14 @@
 """Kommandon:
 
   python -m golfholes rapport  klubbar/<klubb>/hal-07.yaml [--tee 58]
-  python -m golfholes halbild  klubbar/<klubb>/hal-07.yaml [--stil 1-4]  → output/<klubb>/hal-07-<stil>.png
-  python -m golfholes skylt    klubbar/<klubb>/hal-07.yaml [--stil 1-4]  → output/<klubb>/skylt/
-  python -m golfholes stilprov klubbar/<klubb>/hal-07.yaml          → output/<klubb>/stilprov/ (alla fyra att välja från)
+  python -m golfholes halbild  klubbar/<klubb>/hal-07.yaml [--stil Gravyr] → output/<klubb>/hal-07-<stil>.png
+  python -m golfholes skylt    klubbar/<klubb>/hal-07.yaml [--stil Gravyr] → output/<klubb>/skylt/
+  python -m golfholes stilprov klubbar/<klubb>                      → output/<klubb>/stilprov/ (de sex att välja från)
+  python -m golfholes aiprompt klubbar/<klubb>/hal-07.yaml [--stil Gravyr] → AI-prompten för klubbens stil
 
-Stil väljs i klubb.yaml med `stil: 1–4`:  1 Signatur · 2 Klassisk · 3 Arv · 4 Nordisk.
+Stil väljs i klubb.yaml med `stil:` och ett av de sex namnen (beslut 2026-10-22):
+  Akvarell · Sommarakvarell · Gravyr · Mjuk 3D · Arkitektskiss · Papperssnitt
+(Glasriket har sin egen fotostil `stil: foto`.) Gamla `stil: 1–4` läses med en varning.
 --stil på kommandoraden går före klubbens val.
   python -m golfholes halkort  klubbar/<klubb>/halkort/hal-14.yaml [--layout 1-6] → output/<klubb>/halkort/
   python -m golfholes layoutprov klubbar/<klubb>/halkort/hal-14.yaml  → samma hål i alla layouter + översikt
@@ -14,6 +17,8 @@ Layout väljs i klubb.yaml med `layout: 1` (eller en lista, t.ex. [1, 4]):
   1 Hålkort (spikad) · 2 Poster · 3 Mörk · 4 Skärm · 5 Banguide · 6 Sponsorhål
   python -m golfholes webb     klubbar/<klubb>                      → output/<klubb>/webb/
   python -m golfholes utsnitt  klubbar/<klubb> data/<klubb>/orto/*.tif  → data/<klubb>/utsnitt/orto.jpg + .jgw
+  python -m golfholes flygfilm klubbar/<klubb>/hal-14.yaml [--data data/<klubb>] [--sek 12]
+                                                                    → output/<klubb>/flygfilm/ (rå MP4 + nyckelbilder)
 """
 from __future__ import annotations
 
@@ -58,26 +63,26 @@ def _club_slug(path: Path) -> str:
     return (path if path.is_dir() else path.parent).name
 
 
-def _style_for(p: Path, stil: str | None) -> int:
-    from .render.styles import parse_style
+def _stil_for(p: Path, stil: str | None):
+    from .stilar import klubbens_stil
 
-    if stil is not None:
-        return parse_style(stil)
-    club_file = (p if p.is_dir() else p.parent) / "klubb.yaml"
-    club = yaml.safe_load(club_file.read_text(encoding="utf-8")) if club_file.exists() else {}
-    return parse_style(club.get("stil", club.get("style")))
+    return klubbens_stil(p if p.is_dir() else _club_dir(p), stil)
 
 
 def halbild(path: str, stil: str | None) -> int:
     from .render.export import to_png
-    from .render.styles import STYLE_NAMES, render_hole
+    from .render.styles import render_hole
+    from .stilar import malad_bild
 
     p = Path(path)
     hole = Hole.from_yaml(p)
-    st = _style_for(p, stil)
-    svg = render_hole(hole, st, width_px=600, fit=False)
+    stil = _stil_for(p, stil)
+    malad = malad_bild(_club_dir(p), hole.number, stil)
+    if malad.exists():
+        print(f"Målad hålbild i {stil.namn} finns: {malad} (används i hålkort och webb).")
+    svg = render_hole(hole, stil.ritmotor, width_px=600, fit=False)
     w, h = (float(v) for v in re.search(r'viewBox="0 0 (\S+) (\S+)"', svg).groups())
-    out = Path("output") / _club_slug(p) / f"hal-{hole.number:02d}-{STYLE_NAMES[st].lower()}.png"
+    out = Path("output") / _club_slug(p) / f"hal-{hole.number:02d}-{stil.nyckel}-kodritad.png"
     to_png(svg, out, w, h)
     out.with_suffix(".svg").write_text(svg, encoding="utf-8")
     print(f"Sparat: {out} och {out.with_suffix('.svg')}")
@@ -99,13 +104,22 @@ def skylt(path: str, stil: str | None) -> int:
 
 
 def stilprov(path: str) -> int:
-    from .render.sign import build_style_samples
+    from .stilar import MENY, stilprov as bygg
 
     p = Path(path)
-    files = build_style_samples(p, Path("output") / _club_slug(p) / "stilprov")
+    files = bygg(Path("output") / _club_slug(p) / "stilprov")
     for k, v in files.items():
         print(f"  {k}: {v}")
-    print("Klubben väljer 1–4 och skriver in det som `stil:` i klubb.yaml.")
+    print("Klubben väljer en av: " + ", ".join(s.namn for s in MENY)
+          + ". Skriv namnet som `stil:` i klubb.yaml, t.ex. `stil: Gravyr`.")
+    return 0
+
+
+def aiprompt(path: str, stil: str | None) -> int:
+    p = Path(path)
+    s = _stil_for(p, stil)
+    print(f"Stil: {s.namn}\n")
+    print(s.prompt)
     return 0
 
 
@@ -253,20 +267,25 @@ def aiunderlag(path: str) -> int:
     club_dir = _club_dir(p)
     ut = club_dir / "typbilder" / "ai-underlag" / f"hal-{hole.number:02d}-underlag.jpg"
     ai_underlag(hole, orto_for(Path("data") / club_dir.name), ut, hojd_px=4096, bredd=2304)
+    s = _stil_for(p, None)
     print(f"Sparat: {ut} – ge den till AI:n (9:16). Den får bara byta yta, aldrig form.")
+    print(f"Klubbens stil: {s.namn}. Prompt (bara underlaget som referens, aldrig stilprovet):\n{s.prompt}")
     return 0
 
 
 AI_GRANS = 0.7  # under detta har AI:n ritat om hålet (provat: trogna 0,80–0,88, omritade 0,38)
 
 
-def aibild(path: str, malningar: list[str]) -> int:
+def aibild(path: str, malningar: list[str], stil: str | None = None) -> int:
     from .render.foto import ai_tillbaka, orto_for
+    from .stilar import malad_bild
 
     p = Path(path)
     hole = Hole.from_yaml(p)
     club_dir = _club_dir(p)
-    ut = club_dir / "halbilder" / f"hal-{hole.number:02d}-malad.webp"
+    s = _stil_for(p, stil)
+    ut = malad_bild(club_dir, hole.number, s)
+    print(f"Stil: {s.namn}")
     kontroll = Path("data") / club_dir.name / "utkast" / f"hal-{hole.number:02d}_ai_kontroll.jpg"
     _, poang = ai_tillbaka(hole, orto_for(Path("data") / club_dir.name), [Path(m) for m in malningar], ut, kontroll)
     for i, r in enumerate(poang):
@@ -274,6 +293,24 @@ def aibild(path: str, malningar: list[str]) -> int:
     if poang[0]["poang"] < AI_GRANS:
         print(f"VARNING: bästa formpoängen {poang[0]['poang']:.2f} är under {AI_GRANS} – AI:n har flyttat formen. Använd inte bilden, måla om.")
     print(f"Sparat: {ut}\nKontrollera {kontroll}: hålfilens linjer måste ligga på målningens kanter.")
+    return 0
+
+
+def flygfilm(path: str, data: str | None, ut: str | None, sek: float, slut: float) -> int:
+    from .render.flygfilm import ATTRIBUTION, flygfilm as rendera
+
+    p = Path(path)
+    hole = Hole.from_yaml(p)
+    club_dir = _club_dir(p)
+    data_dir = Path(data) if data else Path("data") / club_dir.name
+    ut_dir = Path(ut) if ut else Path("output") / club_dir.name / "flygfilm"
+    r = rendera(hole, data_dir, ut_dir, sekunder=sek, slut_s=slut)
+    for k, v in r["filer"].items():
+        print(f"  {k}: {v}")
+    print("  " + ", ".join(f"{k}={v}" for k, v in r["info"].items()))
+    if r["info"]["lyft_for_trad_vid_m"]:
+        print(f"OBS: kameran lyftes över träd vid {r['info']['lyft_for_trad_vid_m']} m från tee.")
+    print(f"Rå film ur Lantmäteriets data, ingen AI. Märk publikt material: {ATTRIBUTION}")
     return 0
 
 
@@ -287,8 +324,13 @@ def main(argv: list[str] | None = None) -> int:
                         ("skylt", "Skylt 70 × 100 cm: förhandsvisning + tryck-PDF per platta")):
         sp = sub.add_parser(name, help=hjalp)
         sp.add_argument("fil")
-        sp.add_argument("--stil", default=None, help="1 Signatur, 2 Klassisk, 3 Arv, 4 Nordisk (standard: klubbens val)")
-    sub.add_parser("stilprov", help="Samma hål i alla fyra stilar – för klubbens val").add_argument("fil")
+        sp.add_argument("--stil", default=None, help="Akvarell, Sommarakvarell, Gravyr, Mjuk 3D, Arkitektskiss, "
+                        "Papperssnitt (standard: klubbens val)")
+    sub.add_parser("stilprov", help="De sex stilarna sida vid sida + AI-prompt per stil – för klubbens val"
+                   ).add_argument("fil", help="klubbmapp eller hålfil")
+    ap = sub.add_parser("aiprompt", help="AI-prompten för klubbens stil (OpenArt, bara ytan byts)")
+    ap.add_argument("fil")
+    ap.add_argument("--stil", default=None)
     hk = sub.add_parser("halkort", help="Hålkort i klubbens layout (PNG)")
     hk.add_argument("fil")
     hk.add_argument("--layout", default=None, help="1–6 (standard: klubbens val i klubb.yaml)")
@@ -309,11 +351,20 @@ def main(argv: list[str] | None = None) -> int:
     ai = sub.add_parser("aibild", help="Lägg AI-målningen på hålets exakta form + prickar och flagga")
     ai.add_argument("fil")
     ai.add_argument("malning", nargs="+", help="AI-bilder gjorda på aiunderlag; den med bäst formpoäng väljs")
+    ai.add_argument("--stil", default=None, help="stilen målningen är gjord i (standard: klubbens val)")
+    ff = sub.add_parser("flygfilm", help="Rå flygfilm 5 m över hålet ur Lantmäteriets data (MP4 + nyckelbilder)")
+    ff.add_argument("fil")
+    ff.add_argument("--data", default=None, help="mapp med orto/, hojd/, laser/ (standard: data/<klubb>)")
+    ff.add_argument("--ut", default=None, help="utmapp (standard: output/<klubb>/flygfilm)")
+    ff.add_argument("--sek", type=float, default=12.0, help="filmens längd i sekunder (standard 12)")
+    ff.add_argument("--slut", type=float, default=4.0, help="sekunder för stigning till vy ovanifrån (standard 4)")
     a = p.parse_args(argv)
+    if a.cmd == "flygfilm":
+        return flygfilm(a.fil, a.data, a.ut, a.sek, a.slut)
     if a.cmd == "aiunderlag":
         return aiunderlag(a.fil)
     if a.cmd == "aibild":
-        return aibild(a.fil, a.malning)
+        return aibild(a.fil, a.malning, a.stil)
     if a.cmd == "fotobild":
         return fotobild(a.fil)
     if a.cmd == "utkast":
@@ -328,6 +379,8 @@ def main(argv: list[str] | None = None) -> int:
         return halbild(a.fil, a.stil)
     if a.cmd == "skylt":
         return skylt(a.fil, a.stil)
+    if a.cmd == "aiprompt":
+        return aiprompt(a.fil, a.stil)
     if a.cmd == "stilprov":
         return stilprov(a.fil)
     if a.cmd == "halkort":

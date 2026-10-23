@@ -1,4 +1,7 @@
-"""Hålsponsorskylt 70 × 100 cm i tre plattor – i klubbens valda stil 1–4.
+"""Hålsponsorskylt 70 × 100 cm i tre plattor – i klubbens stil (golfholes/stilar.py).
+
+Skylten ritas tills vidare med en av de fyra kodritade ritmotorerna (THEMES 1–4), vald efter
+klubbens stil (`Stil.ritmotor`). De är inte längre ett val för klubben.
 
 1. Rubrikplatta  – "[Sponsor]-hålet" + hål och klubb. Byts när sponsorn byts.
 2. Hålguide      – hålbild, längder, avstånd, "Så spelar du hålet". Byts aldrig.
@@ -25,7 +28,7 @@ import yaml
 
 from ..hole import Hole
 from ..qr import qr_svg
-from .styles import STYLE_NAMES, make_view, parse_style, render_green, render_hole, scope_ids
+from .styles import make_view, render_green, render_hole, scope_ids
 
 ATTRIBUTION = "Underlag: Ortofoto och Markhöjdmodell ©Lantmäteriet, bearbetat, CC BY 4.0"
 
@@ -249,17 +252,20 @@ def _sponsor(hole: Hole, club: dict, sponsor: dict | None, base: Path, t: Theme)
     return _wrap(t, "sponsor", inner, 3), real
 
 
-def club_style(club: dict) -> int:
-    """Klubbens val i klubb.yaml: `stil: 1–4` (eller namnet)."""
-    return parse_style(club.get("stil", club.get("style")))
+def club_style(club: dict):
+    """Klubbens stil i klubb.yaml (ett av de sex namnen; gamla 1–4 läses med varning)."""
+    from ..stilar import las_stil
+
+    return las_stil(club.get("stil", club.get("style")))
 
 
 def build_sign(hole_file: str | Path, out_dir: str | Path, spec: SignSpec | None = None, pdf: bool = True,
                style: int | str | None = None) -> dict:
     """Bygger förhandsvisning (PNG) och tryckfiler (PDF per platta) i vald stil.
 
-    `style` = None → klubbens val i klubb.yaml. Annars 1–4 (används för stilprov).
+    `style` = None → klubbens val i klubb.yaml. Annars ett stilnamn (t.ex. "Gravyr").
     """
+    from ..stilar import las_stil
     from .export import to_pdf, to_png
 
     spec = spec or SignSpec()
@@ -267,7 +273,8 @@ def build_sign(hole_file: str | Path, out_dir: str | Path, spec: SignSpec | None
     base = hole_file.parent
     hole = Hole.from_yaml(hole_file)
     club = yaml.safe_load((base / "klubb.yaml").read_text(encoding="utf-8"))
-    st = parse_style(style) if style is not None else club_style(club)
+    stil = las_stil(style) if style is not None else club_style(club)
+    st = stil.ritmotor
     t = THEMES[st]
     sponsor = (club.get("sponsors") or {}).get(hole.number)
     out = Path(out_dir)
@@ -286,8 +293,8 @@ def build_sign(hole_file: str | Path, out_dir: str | Path, spec: SignSpec | None
       </style></head><body class="{body_cls}"><div class="stack">{header}{guide}{sponsor_html}</div></body></html>"""
     total_mm = spec.header_mm + spec.guide_mm + spec.sponsor_mm + 2 * spec.gap_mm + 2 * f
     css_px_per_mm = 96 / 25.4  # så räknar webbläsaren mm
-    name = STYLE_NAMES[st].lower()
-    files = {"stil": f"{st} {STYLE_NAMES[st]}",
+    name = stil.nyckel
+    files = {"stil": stil.namn,
              "forhandsvisning": to_png(preview, out / f"skylt-hal-{hole.number:02d}-{name}.png",
                                        (spec.width_mm + 2 * f) * css_px_per_mm, total_mm * css_px_per_mm,
                                        scale=0.35)}  # ca 1 000 px bred förhandsvisning
@@ -302,35 +309,3 @@ def build_sign(hole_file: str | Path, out_dir: str | Path, spec: SignSpec | None
             files[pname] = to_pdf(page, out / f"hal-{hole.number:02d}-{name}-{pname}.pdf", spec.width_mm + 2 * b, h + 2 * b)
     files["qr_akta"] = qr_real
     return files
-
-
-def build_style_samples(hole_file: str | Path, out_dir: str | Path) -> dict:
-    """Alla fyra stilarna på samma hål, sida vid sida – det klubben väljer från."""
-    from PIL import Image, ImageDraw, ImageFont
-
-    out = Path(out_dir)
-    paths = {}
-    for st in STYLE_NAMES:
-        paths[st] = build_sign(hole_file, out, pdf=False, style=st)["forhandsvisning"]
-    ims = {st: Image.open(p).convert("RGB") for st, p in paths.items()}
-    h = 900
-    ims = {st: im.resize((round(im.width * h / im.height), h)) for st, im in ims.items()}
-    pad, label = 40, 70
-    W = sum(im.width for im in ims.values()) + pad * 5
-    sheet = Image.new("RGB", (W, h + label + pad * 2), "#f3f1ec")
-    d = ImageDraw.Draw(sheet)
-    try:
-        font = ImageFont.truetype("Inter-SemiBold.ttf", 30)
-    except OSError:
-        try:
-            font = ImageFont.truetype("DejaVuSans.ttf", 28)
-        except OSError:
-            font = ImageFont.load_default()
-    x = pad
-    for st, im in ims.items():
-        d.text((x + im.width / 2, pad + 20), f"{st}  {STYLE_NAMES[st]}", fill="#2b2a27", font=font, anchor="mm")
-        sheet.paste(im, (x, pad + label))
-        x += im.width + pad
-    all_path = out / "alla-fyra-stilar.png"
-    sheet.save(all_path)
-    return {"alla": all_path, **{f"stil {st}": p for st, p in paths.items()}}

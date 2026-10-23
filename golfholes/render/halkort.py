@@ -75,10 +75,15 @@ class Halkort:
         halfil = path.parent.parent / f"hal-{int(d['hole']):02d}.yaml"
         if typsnitt is None and klubb.exists():
             typsnitt = (yaml.safe_load(klubb.read_text(encoding="utf-8")) or {}).get("typsnitt")
+        if d.get("bild"):
+            bild = (path.parent / d["bild"]).resolve()
+        else:  # ingen bild angiven: den målade hålbilden i klubbens stil
+            from ..stilar import klubbens_stil, malad_bild
+            bild = malad_bild(path.parent.parent, int(d["hole"]), klubbens_stil(path.parent.parent)).resolve()
         return cls(
             club=d["club"], hole=int(d["hole"]), par=int(d["par"]), index=int(d["index"]),
             tees=[(str(t[0]), int(t[1])) for t in d["tees"]],
-            image=(path.parent / d["bild"]).resolve(),
+            image=bild,
             bana=d.get("bana", ""), rubrik=d.get("rubrik", ""), beskrivning=d.get("beskrivning", ""),
             rad_rubrik=d.get("rad_rubrik", "Råd från pro:n"), rad=list(d.get("rad", [])),
             slutrad=d.get("slutrad", ""), sakert=d.get("strategi", {}).get("sakert", ""),

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import html
 import json
+import shutil
 from pathlib import Path
 
 import yaml
@@ -34,7 +35,7 @@ h1{font-family:'Cormorant Garamond',Lora,Georgia,serif;font-style:italic;font-we
 .film video{width:100%;height:100%;object-fit:cover}
 .grid{display:grid;grid-template-columns:1fr;gap:18px}
 @media(min-width:560px){.grid{grid-template-columns:45% 1fr}}
-.hole svg{width:100%;height:auto;max-height:70vh;display:block}
+.hole svg,.hole img{width:100%;height:auto;max-height:70vh;display:block;object-fit:contain}
 table{width:100%;border-collapse:collapse;font-size:15px}
 td{padding:7px 0;border-bottom:1px solid var(--line)}
 td:last-child{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -70,7 +71,9 @@ def _tee_rows(hole: Hole, tee_name: str) -> list[list[str]]:
     return rows
 
 
-def hole_page(hole: Hole, club: dict) -> str:
+def hole_page(hole: Hole, club: dict, bild: str | None = None) -> str:
+    """bild: den målade hålbilden i klubbens stil (fil i hålets mapp). Saknas den ritas
+    hålet med stilens kodritade ritmotor."""
     sponsor = (club.get("sponsors") or {}).get(hole.number)
     back = hole.tee()
     tees = sorted(hole.tees, key=lambda t: -(t.length_m or 0))
@@ -85,6 +88,10 @@ def hole_page(hole: Hole, club: dict) -> str:
     tips = "".join(f'<p class="tip"><b><i>{_e(k.capitalize())}</i></b> – {_e(v)}</p>' for k, v in hole.strategy.items())
     tee_buttons = "".join(f'<button data-t="{_e(t.name)}">Tee {_e(t.name)} · {_e(t.length_m)} m</button>' for t in tees)
     index = f" · Index {hole.index}" if hole.index else ""
+    if bild:
+        bildhtml = f'<img src="{_e(bild)}" alt="Hål {hole.number} ovanifrån">'
+    else:
+        bildhtml = _kodritad(hole, club)
     return f"""<!doctype html><html lang="sv"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{_e(title)} – {_e(club['club'])}</title><style>{CSS}</style></head><body><main>
@@ -92,11 +99,21 @@ def hole_page(hole: Hole, club: dict) -> str:
 <h1>{_e(title)}</h1><div class="meta">Hål {hole.number} · Par {hole.par}{index} · {_e(club['club'])}</div>
 <div class="tees" role="group" aria-label="Välj tee">{tee_buttons}</div>
 <div class="film" id="film"></div>
-<div class="grid"><div class="hole">{render_flat(hole, width_px=420, fit=True, fade=True)}</div>
+<div class="grid"><div class="hole">{bildhtml}</div>
 <div><h2>Avstånd från tee <span id="lbl"></span></h2><table id="rows"></table>
 {'<h2>Så spelar du hålet</h2>' + tips if tips else ''}</div></div>
 <footer><nav><a href="../">← Alla hål</a></nav><p style="margin-top:8px">{_e(ATTRIBUTION)}</p></footer>
 </main><script type="application/json" id="d">{json.dumps(data, ensure_ascii=False)}</script><script>{JS}</script></body></html>"""
+
+
+def _kodritad(hole: Hole, club: dict) -> str:
+    from ..stilar import las_stil
+
+    st = las_stil(club.get("stil"), varna=False).ritmotor
+    if st == 4:
+        return render_flat(hole, width_px=420, fit=True, fade=True)
+    from .styles import render_hole
+    return render_hole(hole, st, width_px=420, fit=True, texture=False)
 
 
 def club_page(club: dict, holes: list[Hole]) -> str:
@@ -114,11 +131,17 @@ def build_site(club_dir: str | Path, out_dir: str | Path) -> list[Path]:
     club_dir, out = Path(club_dir), Path(out_dir)
     club = yaml.safe_load((club_dir / "klubb.yaml").read_text(encoding="utf-8"))
     holes = [Hole.from_yaml(p) for p in sorted(club_dir.glob("hal-*.yaml"))]
+    from ..stilar import las_stil, malad_bild
+    stil = las_stil(club.get("stil"))
     written = []
     for h in holes:
         d = out / f"hal-{h.number:02d}"
         d.mkdir(parents=True, exist_ok=True)
-        (d / "index.html").write_text(hole_page(h, club), encoding="utf-8")
+        malad, bild = malad_bild(club_dir, h.number, stil), None
+        if malad.exists():
+            shutil.copyfile(malad, d / "halbild.webp")
+            bild = "halbild.webp"
+        (d / "index.html").write_text(hole_page(h, club, bild), encoding="utf-8")
         written.append(d / "index.html")
     out.mkdir(parents=True, exist_ok=True)
     (out / "index.html").write_text(club_page(club, holes), encoding="utf-8")
