@@ -1,0 +1,1 @@
+Påhittade testsiffror. Allt som byggs från den här mappen märks TESTDATA.

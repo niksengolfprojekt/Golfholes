@@ -52,3 +52,6 @@
 - [ ] Tee-vy och flygfilm (3D, Mac Pro)
 - [x] Ögonhöjdsvy ur data (`golfholes/render/perspektiv.py`): höjdmodell + ortofoto + skogsmassa, spellinjen hålls öppen. AI (OpenArt) målar vyn till foto. Glasriket hål 3, 5, 14: `/mnt/project-files/glasriket/ogonhojd/` – väntar på Erics godkännande. Visas som "Visualisering", aldrig som foto.
 - [ ] Ecosigns tryckspecifikation in i `SignSpec` (mått, utfall, PDF/X)
+- [x] Sponsorstatistik (2026-10-23): `python -m golfholes sponsorrapport klubbar/<klubb> --sasong 2027` – en sida per sponsor (PNG + PDF) med visningar per kanal: tee-skylten (ronder × andel, uppskattning), hålsidan (Plausible), varav QR (`?q=hNN`), digitala partnerkanaler (CSV). QR-koden på skylten pekar nu på `/hal-NN/?q=hNN` och `webb` lägger in Plausible-mätkoden när `statistik.plausible_doman` finns. Insamlingen steg för steg: `docs/statistik.md`. Testat med TESTDATA i `tests/fixtures/testklubb/`.
+- [x] Partnerexport (2026-10-23): `python -m golfholes partnerexport klubbar/<klubb>` – JSON per hål + loggor i en färg + zip, inga hålbilder eller geometri. Format: `docs/partnerexport.md`.
+- [ ] Glasriket: sponsorer (namn, url, logga, avtalsperiod), `bana`, `ronder_per_ar` och `statistik.plausible_doman` in i `klubb.yaml`
