@@ -112,7 +112,7 @@ def bygg_sida(meta, kropp, ordmarke):
     <div class="topp">
       <div style="display:grid;gap:14px;align-content:start">
         <a class="ordmarke" href="/" aria-label="TACADA, till startsidan">{ordmarke}</a>
-        <p>Varje hål har ett värde. Form för klubbar och företag.</p>
+        <p>Varje hål visar sitt värde.</p>
       </div>
       <div><h2>Områden</h2><ul><li><a href="/golfklubbar/">Courses</a></li><li><a href="/halsponsorer/">Partners</a></li><li><a href="/studio/">Studio</a></li><li><a href="/editions/">Editions</a></li></ul></div>
       <div><h2>Kontakt</h2><ul><li>{{{{epost}}}}</li><li>{{{{telefon}}}}</li><li><a href="/kontakt/">Boka en visning</a></li></ul></div>
