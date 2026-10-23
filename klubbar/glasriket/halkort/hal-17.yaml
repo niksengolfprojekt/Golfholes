@@ -20,6 +20,7 @@ rad:
   - Rätt längd och riktning, så gör du ett säkert par.
   - Slår du vänster, kort eller långt blir det blött.
 slutrad: Bakom greenen är det rött pliktområde hela vägen.
+kortrad: "Rätt längd och riktning ger ett säkert par. Vänster, kort eller långt blir blött."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Sikta mot högra halvan av greenen – där finns gräs att landa på.
   chansa: Flaggan till vänster kräver exakt längd över vattnet.

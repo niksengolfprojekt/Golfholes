@@ -19,6 +19,7 @@ rad:
   - Väldigt smalt från tee, men det finns mycket plats efter dungarna på båda sidor.
   - Placera ditt transportslag med precision, för inspelet kräver längdkontroll.
 slutrad: Greenen är liten och upphöjd.
+kortrad: "Placera transportslaget med precision. Inspelet kräver längdkontroll."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Rakt ut ur rännan, sedan ett transportslag som lämnar en bekväm längd in.
   chansa: Ett långt andra slag nära greenen kräver exakt längd mot den upphöjda greenen.

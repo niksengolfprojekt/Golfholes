@@ -14,8 +14,11 @@
 | 7. Skylt | Förhandsvisning + tryck-PDF per platta till Ecosign. | `python -m golfholes skylt …` | Malin har granskat, QR-kod äkta |
 | 8. Webb | Digital banguide, sidan QR-koden pekar på. | `python -m golfholes webb klubbar/<klubb>` | Publicerad på klubbens/vår domän |
 | 9. Film | Tee-vy och flygfilm i 3D. | (kommer – Blender på Mac Pro) | Filmer per tee och hål |
+| 10. Hålsponsorprospekt | En PDF per hål med klubben som avsändare: omslag, hålet, skylten vid tee (uppskattade visningar), mobil och flöde, sponsorrapport, det här ingår + pris och QR-kod till hålsidan. Pris, färger, loggor och hålsidans adress ur `klubb.yaml` (`profil`, `sponsring`), pro:ns råd ur hålkortets `kortrad`. | `python -m golfholes prospekt klubbar/<klubb> --alla [--ut mapp]` | PDF per hål + `översikt.jpg` |
+| 11. Inlägg | Social Media Kit 4:5 ur `klubbar/<klubb>/some/inlagg.yaml` (fästa inlägg, hål för hål, bli hålsponsor). Hål utan hålbild hoppas över och kommer med nästa körning. | `python -m golfholes inlagg klubbar/<klubb> [--ut mapp]` | PNG per inlägg + `texter.md` + `översikt.jpg` |
 
 ## Status
+- [x] Hålsponsorprospekt och Social Media Kit som mallar (2026-10-23): `prospekt` och `inlagg`, Glasriket 16 hål + 20 inlägg i projektmappen (`glasriket/halsponsorprospekt/v2/`, `glasriket/some-kit/v2/`). Hål 2 och 4 kommer med när hålbilderna finns.
 - [x] Geometri, avstånd, tee-kamera, längdkontroll
 - [x] Grafisk hålbild från vektorer (grund för stilen Nordisk)
 - [x] Fyra stilar att välja 1–4 (Signatur, Klassisk, Arv, Nordisk) – hålbild, greenförstoring och hel skylt i varje stil, plus `stilprov` som visar alla fyra sida vid sida
@@ -29,7 +32,7 @@
 - [x] AI-målad hålbild i förlagans stil (2026-10-19): `aiunderlag` gör fotounderlaget (9:16, utan markeringar), AI:n målar om ytan (OpenArt Nano Banana 2.1, bara bilden som referens – med förlagan som andra bild flyttade AI:n green och ritade nya tees), `aibild` lägger målningen på hålets exakta siluett, ritar prickar och flagga och gör en kontrollbild med hålfilens konturer. Ge `aibild` flera målningar så väljer koden den med bäst formpoäng (likhet med fotot + tydliga fairwaykanter); under 0,7 varnar den – då har AI:n ritat om hålet. Underlag och målning i 4K. Nästa hål målas med hål 3 som stilprov (`typbilder/ai-underlag/stilprov-hal-03.png`) så att alla hål ser lika ut. Glasriket hål 3: `klubbar/glasriket/halbilder/hal-03-malad.webp`
 - [x] Spelkorridoren: `utkast` ritar aldrig skog i bandet längs spellinjen och från varje tee (`spelfri_m`, 12 m)
 - [ ] Tryck-PDF av hålkorten (mått bestäms när klubben valt format)
-- [ ] Riktig QR-kod (kräver `segno`, installeras på Macen)
+- [x] Riktig QR-kod med `segno` (pip install segno fungerar i molnet, 2026-10-23)
 - [x] Utkast ur ortofoto (`utkast`): trollstav för green/fairway, automatisk skog/vatten/bunker, spellinje genom fairwayns mitt, rättning i ritverktyget – provat på Glasriket hål 3 2026-10-19 (två av tre tees inom ±3 %, tee 44 syns inte på fotot)
 - [x] Sök och hämta direkt från Lantmäteriets STAC-API (`sok`, `hamta`) – testat skarpt 2026-10-19: Glasrikets ortofoto 2025 och markhöjdmodell hämtade med nätverkshemligheten, utsnitt + höjd + reliefbild klara
 - [x] Testa på Glasriket hål 3 med riktigt ortofoto (gjort 2026-10-19 med inloggningen som nätverkshemlighet). OBS 2026-10-22: molnmiljön nekar nu `api.lantmateriet.se` och `dl1.lantmateriet.se` (403 i proxyn) – båda måste finnas under Allowed domains i miljöns nätverksinställning. `data/` följer inte med till en ny session, så underlaget måste hämtas om.

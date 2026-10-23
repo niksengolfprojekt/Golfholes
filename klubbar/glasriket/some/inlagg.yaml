@@ -1,0 +1,263 @@
+# Glasrikets GK – Social Media Kit, inlägg 4:5 (1080 × 1350).
+# Bygg: python -m golfholes inlagg klubbar/glasriket  →  PNG per inlägg + texter.md + översikt.jpg
+#
+# Typer:
+#   nystart     – fäst inlägg: tre hela hål sida vid sida (hal: [..])
+#   serie       – fäst inlägg: alla hål som har hålbild, i ett rutnät
+#   sponsorer   – fäst inlägg: tack till hålsponsorerna, 18 nummer
+#   hal         – ett helt hål med rubrik, kort text och pro:ns råd (rad, annars hålkortets kortrad)
+#   bli_sponsor – för företag: ert namn på ett hål, logotypfält och kontakt
+# Fält: id, typ, hal, etikett (liten rad överst), rubrik, text (på bilden), rad, mork (mörk botten),
+#       bildtext (texten under inlägget), hashtags (utöver klubbens i klubb.yaml).
+# Ett hål utan hålbild hoppas över och kommer med när kommandot körs igen (hål 2 och 4).
+# Publiceras först efter styrelsens beslut 8 december 2026, och varje hål först när klubben godkänt det.
+
+inlagg:
+  - id: fast-nystart
+    typ: nystart
+    hal: [14, 17, 9]
+    etikett: Nystart 2027
+    rubrik: Samma skog. Ny blick på varje hål.
+    text: Nya hålguider och en ny profil för Glasrikets GK. Följ banan här, hål för hål.
+    bildtext: >-
+      Samma skog, samma bana. Men inför säsongen 2027 får varje hål en egen hålguide och klubben en
+      ny profil. Hela hålet ovanifrån, längden från varje tee och pro:ns bästa råd. Följ med här,
+      hål för hål, och spela dem sedan själv. Vi ses på första tee.
+    hashtags: ["#nystart"]
+
+  - id: fast-hal-for-hal
+    typ: serie
+    etikett: Hål för hål
+    rubrik: 18 hål. Ett i taget.
+    text: Formen, längderna och pro:ns råd. Spara inlägget och spela smartare nästa runda.
+    bildtext: >-
+      Spara det här inlägget. Hela säsongen lyfter vi ett hål i taget på Fylleryd: hela hålet
+      ovanifrån, längden från varje tee och ett råd från pro:n som sparar slag. Först ut är hål 1.
+      Banans svåraste utslag kommer också. Du vet vilket.
+    hashtags: ["#hålförhål"]
+
+  - id: fast-halsponsorer
+    typ: sponsorer
+    etikett: Våra hålsponsorer
+    rubrik: 18 hål. 18 lokala företag.
+    text: Varje hål på Fylleryd bär ett företags namn. Tack för att ni gör banan till vad den är.
+    bildtext: >-
+      Bakom varje hål på Fylleryd står ett företag från trakten. De syns vid tee, på hålets sida
+      och här i flödet, säsong efter säsong. Tack till alla 18. Under höjdpunkten Sponsorer ser du
+      vem som står bakom ditt favorithål.
+    hashtags: ["#hålsponsor", "#lokalaföretag"]
+
+  - id: hal-01
+    typ: hal
+    hal: 1
+    etikett: Säsongsstart 2027
+    rubrik: Första utslaget väntar.
+    text: En par 5 från klubbhuset som svänger vänster runt två dammar. Ett bra öppningshål, om du håller dig på fairway.
+    bildtext: >-
+      Nu öppnar Fylleryd. Flaggorna är på plats och första tee väntar. Hål 1 är en par 5 som
+      svänger vänster runt två dammar, med out på båda sidor. Pro:ns råd: lägg andra slaget på
+      högersidan, så får du ett kort inspel mot en green som sluttar svagt ifrån dig. Boka din
+      första runda i Min Golf.
+    hashtags: ["#säsongsstart", "#hålförhål"]
+
+  # hal-02 och hal-04: UTKAST ur scorekortets anteckningar – skriv om när hålkorten finns.
+  - id: hal-02
+    typ: hal
+    hal: 2
+    text: En par 4 med en fyrkantig damm cirka 220 meter ut och rött pliktområde till höger.
+    bildtext: >-
+      Hål 2 på Fylleryd. Dammen ligger cirka 220 meter från tee 56, och till höger löper rött
+      pliktområde hela vägen fram. Välj klubba efter dammen, inte efter egot.
+    hashtags: ["#hålförhål"]
+
+  - id: hal-03
+    typ: hal
+    hal: 3
+    rubrik: Genvägen kräver 240 meter.
+    text: Ett kort par 4 som svänger höger mot en liten green. Frestande nära, och out hela vägen till höger.
+    bildtext: >-
+      Hål 3 ser oskyldigt ut från tee. Greenen ligger nära, genvägen lockar och högersidan är out
+      hela vägen. Pro:ns råd: genvägen kräver cirka 240 meter carry. Når du inte dit, slå 170 meter
+      rakt fram och spela in med en wedge. Vilken väg tar du?
+    hashtags: ["#hålförhål"]
+
+  - id: hal-04
+    typ: hal
+    hal: 4
+    text: Ett par 3 med ny bunkerlayout från 2025.
+    bildtext: >-
+      Hål 4 på Fylleryd, med nya bunkrar sedan 2025. Ett korthål där klubbvalet avgör.
+    hashtags: ["#hålförhål", "#par3"]
+
+  - id: hal-05
+    typ: hal
+    hal: 5
+    rubrik: Mer plats än det ser ut.
+    text: Ett rakt par 4 österut mot en stor, lätträffad green. Dammen är det första du ser från tee.
+    bildtext: >-
+      Från tee på hål 5 ser du dammen först. Glöm den. Fairway är bredare än den ser ut, särskilt
+      på högersidan, och greenen är stor och lätträffad. Pro:ns råd: sikta höger om mitten och lita
+      på svingen.
+    hashtags: ["#hålförhål"]
+
+  - id: hal-06
+    typ: hal
+    hal: 6
+    rubrik: Banans näst svåraste.
+    text: En sen sväng upp mot en stor green i platåer. Index 2 av en anledning.
+    bildtext: >-
+      Index 2. Hål 6 går mot nordväst med träd längs hela högersidan och svänger sedan upp mot en
+      stor green i platåer. Pro:ns råd: håll utslaget till vänster, träden till höger går inte att
+      slå över. Placera sedan inspelet på rätt platå, så slipper du treputten.
+    hashtags: ["#hålförhål"]
+
+  - id: hal-07
+    typ: hal
+    hal: 7
+    rubrik: 116 meter till birdie.
+    text: Ett kort par 3 mot en rund green, med bunkrar till vänster, höger fram och bakom.
+    bildtext: >-
+      Kort, rund och väl bevakad. Hål 7 är 116 meter från tee 56/60 till en rund green med bunkrar
+      till vänster, höger fram och bakom. Pro:n kallar det ett bra birdiehål. Den som missar
+      greenen får öva bunkerslag. Hur många birdies har du gjort här?
+    hashtags: ["#hålförhål", "#par3"]
+
+  - id: bli-halsponsor
+    typ: bli_sponsor
+    hal: 5
+    etikett: Hålsponsor 2027
+    rubrik: Ert namn på ett hål.
+    text: Vid tee, på hålets sida och här i flödet. Hela säsongen.
+    bildtext: >-
+      Till er som driver företag i Växjötrakten. Tänk er ert namn på ett hål som golfarna pratar
+      om hela säsongen. Som hålsponsor syns ni på skylten vid tee, på hålets egen sida och här i
+      flödet, och efter säsongen ser ni hur många gånger hålet och er logotyp har visats. Alla 18
+      hål har sponsorer i dag. Vill ni stå först i kön när ett hål blir ledigt? Mejla
+      info@glasriketsgk.se.
+    hashtags: ["#hålsponsor", "#företagivaxjo", "#sponsring"]
+
+  - id: hal-08
+    typ: hal
+    hal: 8
+    rubrik: Banans snabbaste green.
+    text: Ett smalt utslag ur skogsgatan, med out till vänster och tjock ruff till höger.
+    bildtext: >-
+      Hål 8 börjar i en smal gata genom skogen, med out längs vänstersidan och tjock ruff till
+      höger. Placera utslaget på fairway, så blir resten enkelt. Nästan. Här väntar banans
+      snabbaste green. Putta försiktigt.
+    hashtags: ["#hålförhål"]
+
+  - id: hal-09
+    typ: hal
+    hal: 9
+    rubrik: Gott om plats. Till en början.
+    text: En lång par 5 rakt norrut, med gott om plats från tee och två fairwaybunkrar långt ut.
+    bildtext: >-
+      Hål 9 ger dig gott om plats från tee. Två fairwaybunkrar ligger 215 till 260 meter ut, sedan
+      smalnar hålet av mot en snäll green med bunker till vänster. Pro:ns råd: placera
+      transportslaget med precision. Spelar du den på två eller tre?
+    hashtags: ["#hålförhål", "#par5"]
+
+  - id: hal-10
+    typ: hal
+    hal: 10
+    rubrik: Pinne och vind avgör.
+    text: Ett långt par 3 söderut ur skogsgatan, mot en smal green som är över 40 meter lång.
+    bildtext: >-
+      Upp till 175 meter, och greenen är över 40 meter från fram till bak. Var flaggan står kan
+      skilja flera klubbor. Pro:ns råd: se var pinnen står och känn efter vinden innan du väljer
+      klubba. Greenen är väl inbunkrad, så det lönar sig att tänka efter.
+    hashtags: ["#hålförhål", "#par3"]
+
+  - id: hal-11
+    typ: hal
+    hal: 11
+    rubrik: Rakt ut ur rännan.
+    text: En par 5 söderut som börjar i en smal ränna mellan träden och öppnar sig efter dungarna.
+    bildtext: >-
+      Hål 11 börjar trångt. Utslaget ska rakt ut ur en ränna mellan träden, sedan öppnar fairway
+      upp sig på båda sidor. Pro:ns råd: placera transportslaget med precision, för greenen är
+      liten och upphöjd och inspelet kräver rätt längd.
+    hashtags: ["#hålförhål", "#par5"]
+
+  - id: hal-12
+    typ: hal
+    hal: 12
+    rubrik: Banans längsta hål.
+    text: 527 meter från tee 60. En par 5 i en skogsgata som smalnar av de sista 100 metrarna.
+    bildtext: >-
+      527 meter från tee 60 och index 3. Hål 12 kräver ett bra utslag och tålamod hela vägen fram,
+      för de sista 100 metrarna smalnar fairway av mot en stor, snäll green. Pro:ns råd: hellre
+      ett lite längre tredjeslag än att pressa in bollen genom det smala.
+    hashtags: ["#hålförhål", "#par5"]
+
+  - id: hal-13
+    typ: hal
+    hal: 13
+    rubrik: Håll utslaget till höger.
+    text: En rak par 4 genom en smal skogsgata, med rött pliktområde till vänster och bunkrar runt greenen.
+    bildtext: >-
+      På hål 13 jobbar marken mot dig. Fairway lutar mot vänster, mot den stora bunkern och det
+      röda pliktområdet. Pro:ns råd: håll utslaget mot högersidan, så rullar bollen ner mitt i
+      fairway och du får bästa vinkeln in. Index 17, för den som lyssnar.
+    hashtags: ["#hålförhål"]
+
+  - id: hal-14
+    typ: hal
+    hal: 14
+    etikett: Index 1
+    mork: true
+    rubrik: Banans svåraste utslag.
+    text: Out längs hela vänstersidan, granskog till höger. Här vinns och förloras rundan.
+    bildtext: >-
+      Det här är hålet ni pratar om i bilen hem. Hål 14 är ett smalt dogleg höger genom
+      granskogen, med out längs hela vänstersidan och skog till höger. Index 1. Pro:ns råd: spela
+      det som ett par 5. Den som vågar gena över skogen får ett kort inspel, men det kostar om det
+      går snett. Hur spelar du 14?
+    hashtags: ["#hålförhål", "#index1"]
+
+  - id: hal-15
+    typ: hal
+    hal: 15
+    rubrik: Över den vänstra björken.
+    text: En par 4 mot nordväst. Bred i mitten, smal mellan granarna och out till höger.
+    bildtext: >-
+      Pro:n har en exakt sikt för hål 15: rakt över den vänstra björken. Då hamnar du mitt i
+      fairway, långt från out till höger. Inspelet ska högt, för granen före greenen står som ett
+      plank. Liten green utan bunkrar. Träffa den.
+    hashtags: ["#hålförhål"]
+
+  - id: hal-16
+    typ: hal
+    hal: 16
+    rubrik: Vänta på lampan.
+    text: En kort par 4 som svänger höger mot en green med vatten till vänster och en damm bakom.
+    bildtext: >-
+      Hål 16 börjar med lite tålamod: slå bara ut när blixtlampan framme till höger är släckt.
+      Sedan går det fort. En lätt fade på 170 meter ger ett kort inspel, men står flaggan till
+      vänster väntar vattnet. Snäll green, om du når den torr.
+    hashtags: ["#hålförhål"]
+
+  - id: hal-17
+    typ: hal
+    hal: 17
+    etikett: Signaturhålet
+    rubrik: 128 meter över vatten.
+    text: Greenen ligger omgiven av vatten, med en trädö närmast tee. Kort på scorekortet, långt i minnet.
+    bildtext: >-
+      Bara 128 meter. Ändå är det hål 17 alla minns. Greenen omges av dammar till vänster, framför
+      och bakom, med en trädö närmast tee. Pro:ns råd: rätt längd och riktning, så gör du ett
+      säkert par. Vänster, kort eller långt blir blött. Tagga någon som är skyldig dig en boll
+      härifrån.
+    hashtags: ["#hålförhål", "#par3", "#signaturhål"]
+
+  - id: hal-18
+    typ: hal
+    hal: 18
+    rubrik: Hem mot klubbhuset.
+    text: Ett par 4 norrut med två fairwaybunkrar och en green som lutar svagt ifrån dig.
+    bildtext: >-
+      Sista hålet hem. Hål 18 går norrut mot klubbhuset, med två fairwaybunkrar cirka 225 till 250
+      meter från tee 60. Pro:ns råd: lägg utslaget före bunkrarna och avsluta med ett lugnt
+      inspel. Se upp med flyern från ruffen, bakom greenen är marken hård. Tack för rundan.
+    hashtags: ["#hålförhål"]

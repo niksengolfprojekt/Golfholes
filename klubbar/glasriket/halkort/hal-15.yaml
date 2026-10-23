@@ -20,6 +20,7 @@ rad:
   - Undvik höger sida, där det är out of bounds.
   - Håll ditt inspel högt, eftersom granen före greenen fungerar som ett plank.
 slutrad: Liten green.
+kortrad: "Undvik högersidan, där är det out. Håll inspelet högt över granen."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Utslag mot vänstra halvan av fairway, sedan ett högt inspel över granen mot mitten av greenen.
   chansa: Ett långt utslag ger ett kort inspel – men ett slag ut till höger är out.

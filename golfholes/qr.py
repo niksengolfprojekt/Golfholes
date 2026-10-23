@@ -8,7 +8,7 @@ from __future__ import annotations
 import io
 
 
-def qr_svg(url: str) -> tuple[str, bool]:
+def qr_svg(url: str, dark: str = "#2f3a2d") -> tuple[str, bool]:
     """Returnerar (svg, äkta). äkta=False betyder platshållare."""
     try:
         import segno  # type: ignore
@@ -22,6 +22,6 @@ def qr_svg(url: str) -> tuple[str, bool]:
         )
         return svg, False
     buf = io.BytesIO()
-    segno.make(url, error="m").save(buf, kind="svg", border=0, dark="#2f3a2d", xmldecl=False, svgns=True, nl=False)
+    segno.make(url, error="m").save(buf, kind="svg", border=0, dark=dark, xmldecl=False, svgns=True, nl=False)
     svg = buf.getvalue().decode("utf-8")
     return svg, True
