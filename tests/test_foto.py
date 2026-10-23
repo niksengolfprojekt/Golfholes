@@ -1,4 +1,6 @@
 """Formpoängen för AI-målningar: en trogen målning ska slå en som flyttat formen."""
+from pathlib import Path
+
 import numpy as np
 from PIL import Image
 
@@ -26,3 +28,13 @@ def test_formpoang_skiljer_trogen_fran_flyttad():
     flyttad = formpoang(bas, _bild(dx=30), _Hal(), px)
     assert trogen["likhet"] > 0.99
     assert trogen["poang"] > 0.8 > flyttad["poang"] + 0.2
+
+
+def test_greenens_matt_ur_halfilen():
+    """Spelarvyns green: djup längs inspelet och bredd tvärs det, i hela meter."""
+    from golfholes.hole import Hole
+    from golfholes.render.foto import _matt_green
+
+    m = _matt_green(Hole.from_yaml(Path(__file__).parent.parent / "klubbar" / "glasriket" / "hal-14.yaml"))
+    assert (m["djup"], m["bredd"]) == (33, 31)
+    assert m["fram"] < 0 < m["bak"] and m["hoger"] < 0 < m["vanster"]
