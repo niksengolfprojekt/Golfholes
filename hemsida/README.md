@@ -22,7 +22,7 @@ python hemsida/bygg.py --forhandsvisning <mapp>   # kopia med relativa länkar, 
 
 ## Regler för innehållet
 - Inga TACADA-priser på sajten (Eric 2026-10-22). Kalkylatorn visar bara klubbens egna sponsorintäkter, märkt "inte ett löfte".
-- Inga personer på bilder. Alla AI-bilder märks på bilden. Lantmäteriets källtext står i sidfoten och vid hålbilden.
+- Inga personer på bilder. Bilder märks aldrig med AI-stämpel (Erics beslut 2026-10-23); sidfoten har en rad "Miljö- och produktbilder är visualiseringar.". Lantmäteriets källtext (CC BY 4.0) står alltid i sidfoten och vid hålbilden, den är ett licenskrav.
 - Lova aldrig fler medlemmar, rundor eller högre sponsorpriser.
 - Riktiga sponsorer och klubbar nämns bara med tillstånd. Exempelföretaget är Nordvik (påhittat).
 

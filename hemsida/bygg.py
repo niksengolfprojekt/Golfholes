@@ -112,15 +112,15 @@ def bygg_sida(meta, kropp, ordmarke):
     <div class="topp">
       <div style="display:grid;gap:14px;align-content:start">
         <a class="ordmarke" href="/" aria-label="TACADA, till startsidan">{ordmarke}</a>
-        <p>Golfbanor, hål för hål. Grafisk form för klubbar och företag.</p>
+        <p>Golfbanor, hål för hål. Form för klubbar och företag.</p>
       </div>
       <div><h2>Områden</h2><ul><li><a href="/golfklubbar/">Courses</a></li><li><a href="/halsponsorer/">Partners</a></li><li><a href="/studio/">Studio</a></li><li><a href="/editions/">Editions</a></li></ul></div>
-      <div><h2>Kontakt</h2><ul><li>{{{{epost}}}}</li><li>{{{{telefon}}}}</li><li><a href="/kontakt/">Boka ett möte</a></li></ul></div>
+      <div><h2>Kontakt</h2><ul><li>{{{{epost}}}}</li><li>{{{{telefon}}}}</li><li><a href="/kontakt/">Boka en visning</a></li></ul></div>
       <div><h2>Bolag</h2><ul><li>{{{{bolag}}}}</li><li>Org.nr {{{{orgnr}}}}</li><li><a href="/integritet/">Integritetspolicy</a></li></ul></div>
     </div>
     <div class="kallor">
       <span>Underlag: Ortofoto och Markhöjdmodell ©Lantmäteriet, bearbetat, CC BY 4.0.</span>
-      <span>Bilder märkta ”AI” är AI-genererade och visar ingen verklig plats. Hålbilderna bygger på Lantmäteriets underlag och är bearbetade med AI-stöd.</span>
+      <span>Miljö- och produktbilder är visualiseringar.</span>
       <span>Sajten använder inga kakor för spårning.</span>
     </div>
   </div>

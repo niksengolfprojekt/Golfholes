@@ -28,3 +28,13 @@ def test_inga_priser_fran_tacada():
         text = html.read_text(encoding="utf-8")
         for pris in ("99 990", "224 945", "79 990", "39 990", "19 995"):
             assert pris not in text, (html, pris)
+
+
+def test_inga_ai_stamplar():
+    import re
+    from pathlib import Path
+    publik = Path(__file__).resolve().parents[1] / "hemsida" / "public"
+    for fil in publik.rglob("*.html"):
+        text = fil.read_text(encoding="utf-8")
+        assert not re.search(r"\bAI\b", text), f"AI-stämpel i {fil}"
+        assert 'class="ai"' not in text, f"AI-etikett i {fil}"
