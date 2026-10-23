@@ -1,0 +1,25 @@
+# Hålkort för Glasriket hål 13. Hålbilden är AI-målad på hålets exakta form ur Lantmäteriets
+# ortofoto; träd ur Laserdata Skog (python -m golfholes aiunderlag / aibild).
+# Råden är klubbens egna "Råd från PRO:n" ur banguiden 2025 (glasriketsgk.se/haloversikt),
+# lätt redigerade. Beskrivning och strategi är Claudes utkast ur hålfilen – klubben godkänner.
+# Bunkrarna är som på ortofotot juli 2025; klubben har ny bunkerlayout 2025 – kontrolleras av klubben.
+club: Glasrikets Golfklubb
+bana: Fylleryd
+hole: 13
+par: 4
+index: 17
+tees: [["60", 359], ["56 · 52", 320], ["49 · 44", 270]]
+bild: ../halbilder/hal-13-malad.webp
+typbild: false
+rubrik: Håll utslaget till höger
+beskrivning: >-
+  En rak par 4 genom en smal skogsgata. Fairway lutar mot vänster och den stora bunkern
+  cirka 195–245 m från tee 56/52. Greenen vaktas av bunkrar på båda sidor.
+rad_rubrik: Råd från pro:n
+rad:
+  - Fairway lutar mot vänster och bunkern – håll utslaget mot högersidan, så hamnar du mitt i och får bästa vinkeln in mot greenen.
+  - Stor bunker till höger med höga kanter på en del ställen. Gå aldrig ner i eller ur bunkern i slänterna!
+slutrad: Oändligt rött pliktområde på vänster sida fram till bunkern.
+strategi:
+  sakert: Utslag mot högra kanten av fairway kort om bunkern, sedan ett kort inspel mitt på greenen.
+  chansa: Ett långt utslag förbi bunkern ger en wedge in – men vänster väntar plikt och bunker.

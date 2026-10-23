@@ -1,0 +1,35 @@
+# Fröpunkter för hål 13 (SWEREF 99 TM, meter). Satta 2026-10-23 mot ortofoto 2025-07-01 (rutnät 10 m),
+# Lantmäteriets höjdmodell (skuggning 1 m), klubbens hålkarta H13-1 (banguide 2025) och översiktskartan.
+# Par 4 söderut i skogsgatan öster om hål 12: tees i en smal gata öster om hål 12:s green, fairway rakt
+# söderut, stor slingrande fairwaybunker vänster (öster, ca 492250,6305915), green med två runda bunkrar
+# vänster (öster) och en bunker höger fram + en lång bunker höger (väster) före green.
+# Klubbens kompasspil säger norrut uppåt – fel: hålet går söderut (längderna och hål 12/14 bekräftar).
+# Klubben har ny bunkerlayout 2025 (efter fotot) – bunkrarna här är som på fotot juli 2025.
+# Tee 56/52: upphöjd teeplatta i höjdmodellen (ca 492168–492182, 6306105–6306130), i trädskugga på fotot.
+# Tee 49/44: klippt oval teebox i gatans början, syns på fotot. Liten damm öster om den (kartan: vänster).
+# Tee 60 (+39 m enligt kartan) syns varken på fotot eller i höjdmodellen – placerad bakom 56 på spelvägen.
+club: Glasrikets Golfklubb
+hole: 13
+par: 4
+index: 17
+orto: data/glasriket/orto/o63050_4900_25_mr25.tif
+tees:
+- {name: '60', point: [492176.0, 6306149.0], length_m: 359}  # beräknad, syns inte på fotot
+- {name: 56/52, point: [492176.0, 6306115.0], length_m: 320}
+- {name: 49/44, point: [492192.0, 6306063.0], length_m: 270}
+centerline:
+- [492176.0, 6306149.0]
+- [492176.0, 6306115.0]
+- [492190.0, 6306070.0]
+- [492205.0, 6306000.0]
+- [492225.0, 6305920.0]
+- [492238.0, 6305850.0]
+- [492238.0, 6305797.0]
+- [492238.0, 6305784.0]
+green: [492238.0, 6305797.0]
+fairway:
+- [492205.0, 6306000.0]
+- [492222.0, 6305930.0]
+- [492236.0, 6305860.0]
+laser: data/glasriket/laser/y26a023-63050_4900_25.copc.laz
+hojd: data/glasriket/hojd/m630_49.tif
