@@ -120,7 +120,6 @@ def bygg_sida(meta, kropp, ordmarke):
     </div>
     <div class="kallor">
       <span>Underlag: Ortofoto och Markhöjdmodell ©Lantmäteriet, bearbetat, CC BY 4.0.</span>
-      <span>Miljö- och produktbilder är visualiseringar.</span>
       <span>Sajten använder inga kakor för spårning.</span>
     </div>
   </div>
