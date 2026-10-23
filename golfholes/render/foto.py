@@ -274,11 +274,21 @@ def rita_spel(rot: Image.Image, hole: Hole, px) -> None:
             r = 9 * s
             d.ellipse((x - r, y - r, x + r, y + r), fill=farg + (255,), outline=(255, 255, 255, 230), width=max(1, int(1.6 * s)))
     # flagga i greenens mitt
-    x, y = px(*mitt)
+    rita_flagga(d, *px(*mitt), s)
+
+
+FLAGGA = (94, 30, 44)  # vinröd duk med vitt T (godkänd av Eric i hålkort v3)
+
+
+def rita_flagga(d: ImageDraw.ImageDraw, x: float, y: float, s: float) -> None:
+    """Flaggstång med vinröd duk och vitt T. Duken täcker också den gula flaggan som äldre
+    målade hålbilder har inbränd på samma plats, så kortet alltid visar samma flagga."""
     stang = 30 * s
-    d.line((x, y, x, y - stang), fill=(30, 30, 30, 255), width=max(2, int(2 * s)))
-    d.polygon([(x, y - stang), (x + 17 * s, y - stang + 5 * s), (x, y - stang + 11 * s)], fill=(247, 197, 24, 255))
     d.ellipse((x - 2.5 * s, y - 1.5 * s, x + 2.5 * s, y + 1.5 * s), fill=(30, 30, 30, 255))
+    d.rectangle((x - 1.5 * s, y - stang - 1.5 * s, x + 21 * s, y - stang + 14 * s), fill=FLAGGA + (255,))
+    d.line((x, y, x, y - stang - 1.5 * s), fill=(30, 30, 30, 255), width=max(2, int(2 * s)))
+    f = _font(11 * s)
+    d.text((x + 10.5 * s, y - stang + 6.5 * s), "T", font=f, fill=(255, 255, 255, 255), anchor="mm")
 
 
 TYPSNITT_MARK = Path(__file__).resolve().parent.parent.parent / "assets" / "typsnitt" / "HankenGrotesk-SemiBold.ttf"
@@ -356,7 +366,7 @@ def _tabell(d: ImageDraw.ImageDraw, x: float, y: float, rader: list[tuple[str, i
     return (x0, y0, x0 + W, y0 + H)
 
 
-def rita_tees_och_hinder(rot: Image.Image, hole: Hole, px, marg: float = 0) -> str:
+def rita_tees_och_hinder(rot: Image.Image, hole: Hole, px, marg: float = 0, hinder: bool = True) -> str:
     """Yardage-book-markeringar: tees som vita romber med namn, och för varje hinder i
     spelzonen en tunn båge tvärs över hålet på hindrets framkant (avstånd från bakre tee)
     med en tabell: varje tee, meter fram till hindret – över det. Fågelväg, som laser.
@@ -368,7 +378,7 @@ def rita_tees_och_hinder(rot: Image.Image, hole: Hole, px, marg: float = 0) -> s
     bak = max(hole.tees, key=lambda t: t.length_m or 0)
     W = rot.size[0]
     linje = [px(*p) for p in hole.centerline]
-    for r in hinderlinjer(hole):
+    for r in (hinderlinjer(hole) if hinder else []):
         R = r["fram"]
         # bågen: konstant avstånd från bakre tee, över hindren och fairway
         hpts = [p for h in r["hinder"] for p in h.polygon]
@@ -399,24 +409,26 @@ def rita_tees_och_hinder(rot: Image.Image, hole: Hole, px, marg: float = 0) -> s
         tw = d.textlength(namn, font=f)
         d.rounded_rectangle((x + 9 * s, y - 9 * s, x + 17 * s + tw, y + 9 * s), radius=3 * s, fill=(255, 255, 255, 230))
         d.text((x + 13 * s, y), namn, font=f, fill=(22, 30, 25, 255), anchor="lm")
-    return "Avstånd i meter fågelväg från varje tee: fram till hindret – över" if hinderlinjer(hole) else ""
+    return "Avstånd i meter fågelväg från varje tee: fram till hindret – över" if hinder and hinderlinjer(hole) else ""
 
 
-def markera_halbild(hole: Hole, orto: Path, bild: Path, ut: Path) -> tuple[Path, str]:
-    """Färdig hålbild (målad eller foto) + tees och hinderavstånd, för hålkortet.
+def markera_halbild(hole: Hole, orto: Path, bild: Path, ut: Path, hinder: bool = False) -> tuple[Path, str]:
+    """Färdig hålbild (målad eller foto) + alla tees, för hålkortet. hinder=True ritar även
+    avståndsbågar och tabeller vid fairwayhindren (Eric 2026-10: kort utan avståndslinjer).
     Placeringen räknas om ur fotounderlaget i bildens höjd, samma som när bilden gjordes."""
     im = Image.open(bild).convert("RGBA")
     rot, px = fotounderlag(hole, orto, im.height)
     if rot.size != im.size:  # bilden gjord på en äldre hålfil: rita inget hellre än fel
         print(f"VARNING: {bild.name} passar inte hålfilen ({im.size} mot {rot.size}) – inga tees/hinder ritade")
         return bild, ""
-    marg = round(im.height * 0.16) if hinderlinjer(hole) else 0  # plats för tabellerna, beskärs sedan
+    marg = round(im.height * 0.16) if hinder and hinderlinjer(hole) else 0  # plats för tabellerna, beskärs sedan
     if marg:
         stor = Image.new("RGBA", (im.width + 2 * marg, im.height), (0, 0, 0, 0))
         stor.paste(im, (marg, 0))
         im, px0 = stor, px
         px = lambda e, n: (px0(e, n)[0] + marg, px0(e, n)[1])
-    forklaring = rita_tees_och_hinder(im, hole, px, marg)
+    rita_flagga(ImageDraw.Draw(im), *px(*_tyngdpunkt(hole.green)), im.height / 1000)
+    forklaring = rita_tees_och_hinder(im, hole, px, marg, hinder)
     if marg:  # bara så mycket kant som tabellerna behöver
         x0, _, x1, _ = im.getchannel("A").point(lambda v: 255 if v > 6 else 0).getbbox()
         im = im.crop((max(0, x0 - 4), 0, min(im.width, x1 + 4), im.height))

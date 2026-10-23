@@ -63,6 +63,7 @@ class Halkort:
     typbild: bool = False
     farg_mork: str = "#142219"   # bakgrund i mörk layout; klubbens mörkaste färg
     halfil: Path | None = None   # hålfilen: tees och hinderavstånd ritas på bilden ur den
+    avstandslinjer: bool = False  # avståndsbågar vid fairwayhinder (standard av, Erics beslut)
     forklaring: str = ""         # t.ex. "Hinder: meter från tee 60, till – över"
 
     @classmethod
@@ -85,6 +86,7 @@ class Halkort:
             chansa=d.get("strategi", {}).get("chansa", ""),
             sponsor=Sponsor(**sp) if sp else None, typbild=bool(d.get("typbild", False)),
             farg_mork=d.get("farg_mork", "#142219"), typsnitt=typsnitt,
+            avstandslinjer=bool(d.get("avstandslinjer", False)),
             halfil=(halfil if d.get("markera", True) and halfil.exists() and not d.get("typbild") else None),
         )
 
@@ -112,17 +114,20 @@ def _e(s) -> str:
 
 
 def _font_css() -> str:
-    f = FONTS.as_uri()
+    import base64
+
+    # inbäddade: file://-typsnitt laddas inte via Playwright, och då föll kortet tillbaka på Arial
+    f = {p.name: "data:font/ttf;base64," + base64.b64encode(p.read_bytes()).decode() for p in FONTS.glob("*.ttf")}
     return f"""
-@font-face{{font-family:'Cormorant Garamond';src:url('{f}/CormorantGaramond.ttf');font-weight:300 700}}
-@font-face{{font-family:'Cormorant Garamond';src:url('{f}/CormorantGaramond-Italic.ttf');font-weight:300 700;font-style:italic}}
-@font-face{{font-family:'DM Sans';src:url('{f}/DMSans.ttf');font-weight:100 1000}}
-@font-face{{font-family:'Spectral';src:url('{f}/Spectral-Regular.ttf');font-weight:400}}
-@font-face{{font-family:'Spectral';src:url('{f}/Spectral-Medium.ttf');font-weight:500 700}}
-@font-face{{font-family:'Spectral';src:url('{f}/Spectral-Italic.ttf');font-weight:400;font-style:italic}}
-@font-face{{font-family:'Hanken Grotesk';src:url('{f}/HankenGrotesk-Regular.ttf');font-weight:400}}
-@font-face{{font-family:'Hanken Grotesk';src:url('{f}/HankenGrotesk-Medium.ttf');font-weight:500}}
-@font-face{{font-family:'Hanken Grotesk';src:url('{f}/HankenGrotesk-SemiBold.ttf');font-weight:600 800}}
+@font-face{{font-family:'Cormorant Garamond';src:url('{f["CormorantGaramond.ttf"]}');font-weight:300 700}}
+@font-face{{font-family:'Cormorant Garamond';src:url('{f["CormorantGaramond-Italic.ttf"]}');font-weight:300 700;font-style:italic}}
+@font-face{{font-family:'DM Sans';src:url('{f["DMSans.ttf"]}');font-weight:100 1000}}
+@font-face{{font-family:'Spectral';src:url('{f["Spectral-Regular.ttf"]}');font-weight:400}}
+@font-face{{font-family:'Spectral';src:url('{f["Spectral-Medium.ttf"]}');font-weight:500 700}}
+@font-face{{font-family:'Spectral';src:url('{f["Spectral-Italic.ttf"]}');font-weight:400;font-style:italic}}
+@font-face{{font-family:'Hanken Grotesk';src:url('{f["HankenGrotesk-Regular.ttf"]}');font-weight:400}}
+@font-face{{font-family:'Hanken Grotesk';src:url('{f["HankenGrotesk-Medium.ttf"]}');font-weight:500}}
+@font-face{{font-family:'Hanken Grotesk';src:url('{f["HankenGrotesk-SemiBold.ttf"]}');font-weight:600 800}}
 *{{margin:0;padding:0;box-sizing:border-box}}
 html,body{{overflow:hidden}}
 body{{-webkit-font-smoothing:antialiased;font-kerning:normal;text-rendering:geometricPrecision}}
@@ -153,7 +158,17 @@ def _hole(c: Halkort, x: int, y: int, w: int, h: int, pos: str = "left top", fea
         g = "linear-gradient(to right,transparent 0,#000 14%,#000 86%,transparent 100%)"
         mask = f"-webkit-mask-image:{g};mask-image:{g};"
     return (f"<div class='hole' style='left:{fx:.1f}px;top:{fy:.1f}px;width:{fw:.1f}px;height:{fh:.1f}px;{mask}"
-            f"background-image:url(\"{c.image.as_uri()}\");background-size:100% 100%'></div>")
+            f"background-image:url(\"{_data_uri(c.image)}\");background-size:100% 100%'></div>")
+
+
+def _data_uri(p: Path) -> str:
+    """Bilden inbäddad i sidan: Playwright (set_content) och headless Chromium laddar inte
+    alltid file://-bilder i tid, och då blev kortet utan hålbild."""
+    import base64
+    import mimetypes
+
+    typ = mimetypes.guess_type(p.name)[0] or "image/png"
+    return f"data:{typ};base64," + base64.b64encode(Path(p).read_bytes()).decode()
 
 
 def _smal(c: Halkort, kvot: float) -> bool:
@@ -431,7 +446,8 @@ def markera(c: Halkort) -> Halkort:
 
     hole = Hole.from_yaml(c.halfil)
     ut = ROOT / "output" / c.halfil.parent.name / "halbilder" / f"{c.image.stem}-markerad.png"
-    bild, forklaring = markera_halbild(hole, orto_for(ROOT / "data" / c.halfil.parent.name), c.image, ut)
+    bild, forklaring = markera_halbild(hole, orto_for(ROOT / "data" / c.halfil.parent.name), c.image, ut,
+                                       hinder=c.avstandslinjer)
     return replace(c, image=bild, forklaring=forklaring, halfil=None)
 
 
