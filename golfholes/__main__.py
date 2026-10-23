@@ -14,6 +14,8 @@ Layout väljs i klubb.yaml med `layout: 1` (eller en lista, t.ex. [1, 4]):
   1 Hålkort (spikad) · 2 Poster · 3 Mörk · 4 Skärm · 5 Banguide · 6 Sponsorhål
   python -m golfholes webb     klubbar/<klubb>                      → output/<klubb>/webb/
   python -m golfholes utsnitt  klubbar/<klubb> data/<klubb>/orto/*.tif  → data/<klubb>/utsnitt/orto.jpg + .jgw
+  python -m golfholes sponsorrapport klubbar/<klubb> --sasong 2027 [--kalla mapp] → output/<klubb>/sponsorrapport/2027/
+  python -m golfholes partnerexport  klubbar/<klubb>                  → output/<klubb>/partner/ (JSON per hål + zip)
 """
 from __future__ import annotations
 
@@ -277,6 +279,36 @@ def aibild(path: str, malningar: list[str]) -> int:
     return 0
 
 
+def sponsorrapport(club_dir: str, sasong: int, kalla: str | None, pdf: bool) -> int:
+    from .statistik import bygg_rapport
+
+    p = Path(club_dir)
+    r, filer = bygg_rapport(p, sasong, Path("output") / p.name / "sponsorrapport" / str(sasong), kalla, pdf)
+    for v in r.varningar:
+        print(f"OBS: {v}")
+    if r.testdata:
+        print("TESTDATA: källan är testsiffror – rapporten är märkt TESTDATA och får inte gå till en sponsor.")
+    for h in r.hal:
+        delar = ", ".join(f"{k.namn} {'≈' if k.uppskattning else ''}{k.visningar}" for k in h.kanaler)
+        print(f"  Hål {h.hal} · {h.sponsor.get('name')}: {delar or 'inga siffror'}")
+    for f in filer:
+        print(f"  {f}")
+    return 0 if r.hal else 1
+
+
+def partnerexport(club_dir: str) -> int:
+    from .partnerexport import exportera
+
+    p = Path(club_dir)
+    filer, varningar = exportera(p, Path("output") / p.name / "partner")
+    for v in varningar:
+        print(f"OBS: {v}")
+    print(f"{len(filer) - 1} hål exporterade:")
+    for f in filer:
+        print(f"  {f}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="golfholes")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -309,7 +341,18 @@ def main(argv: list[str] | None = None) -> int:
     ai = sub.add_parser("aibild", help="Lägg AI-målningen på hålets exakta form + prickar och flagga")
     ai.add_argument("fil")
     ai.add_argument("malning", nargs="+", help="AI-bilder gjorda på aiunderlag; den med bäst formpoäng väljs")
+    sr = sub.add_parser("sponsorrapport", help="Visningar per sponsor och kanal för en säsong (PNG + PDF per sponsor)")
+    sr.add_argument("klubbmapp")
+    sr.add_argument("--sasong", type=int, required=True)
+    sr.add_argument("--kalla", default=None, help="mapp med säsongens exporter (standard: data/<klubb>/statistik/<säsong>/)")
+    sr.add_argument("--utan-pdf", action="store_true", help="bara PNG")
+    sub.add_parser("partnerexport", help="Sponsorer per hål som JSON + zip till digitala partnerkanaler"
+                   ).add_argument("klubbmapp")
     a = p.parse_args(argv)
+    if a.cmd == "sponsorrapport":
+        return sponsorrapport(a.klubbmapp, a.sasong, a.kalla, not a.utan_pdf)
+    if a.cmd == "partnerexport":
+        return partnerexport(a.klubbmapp)
     if a.cmd == "aiunderlag":
         return aiunderlag(a.fil)
     if a.cmd == "aibild":

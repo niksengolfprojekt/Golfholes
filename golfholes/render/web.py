@@ -14,6 +14,7 @@ import yaml
 
 from ..hole import Hole
 from .flat import render_flat
+from ..statistik import matkod
 from .sign import ATTRIBUTION
 
 CSS = """
@@ -78,7 +79,8 @@ def hole_page(hole: Hole, club: dict) -> str:
     sp = ""
     if sponsor:
         url = sponsor.get("url", "")
-        link = f'<a href="https://{_e(url)}" rel="sponsored">Besök →</a>' if url else ""
+        link = (f'<a href="https://{_e(url)}" rel="sponsored" data-hal="h{hole.number:02d}">Besök →</a>'
+                if url else "")
         sp = (f'<div class="sponsor"><div><small>Hål {hole.number} sponsras av</small><br>'
               f'<strong>{_e(sponsor["name"])}</strong></div>{link}</div>')
     title = f'{sponsor["name"]}-hålet' if sponsor and sponsor.get("naming_rights") else f"Hål {hole.number}"
@@ -87,7 +89,7 @@ def hole_page(hole: Hole, club: dict) -> str:
     index = f" · Index {hole.index}" if hole.index else ""
     return f"""<!doctype html><html lang="sv"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{_e(title)} – {_e(club['club'])}</title><style>{CSS}</style></head><body><main>
+<title>{_e(title)} – {_e(club['club'])}</title><style>{CSS}</style>{matkod(club)}</head><body><main>
 {sp}
 <h1>{_e(title)}</h1><div class="meta">Hål {hole.number} · Par {hole.par}{index} · {_e(club['club'])}</div>
 <div class="tees" role="group" aria-label="Välj tee">{tee_buttons}</div>

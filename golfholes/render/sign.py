@@ -25,6 +25,7 @@ import yaml
 
 from ..hole import Hole
 from ..qr import qr_svg
+from ..statistik import qr_lank
 from .styles import STYLE_NAMES, make_view, parse_style, render_green, render_hole, scope_ids
 
 ATTRIBUTION = "Underlag: Ortofoto och Markhöjdmodell ©Lantmäteriet, bearbetat, CC BY 4.0"
@@ -234,7 +235,7 @@ def _guide(hole: Hole, t: Theme) -> str:
 
 
 def _sponsor(hole: Hole, club: dict, sponsor: dict | None, base: Path, t: Theme) -> tuple[str, bool]:
-    url = f"{club.get('web_base', '').rstrip('/')}/hal-{hole.number:02d}"
+    url = qr_lank(club, hole.number)  # /hal-NN/?q=hNN – räknas som QR-besök i sponsorrapporten
     qr, real = qr_svg(url)
     if sponsor and sponsor.get("logo"):
         logo = (base / sponsor["logo"]).read_text(encoding="utf-8")
