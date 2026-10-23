@@ -6,14 +6,18 @@ hole: 5
 par: 4
 index: 8
 orto: data/glasriket/orto/o63050_4900_25_mr25.tif
-# 49/44 = den klippta ytan där gångvägen slutar (syns på fotot).
-# 56/52 = trolig: ljus gräsyta vid stigen 44 m bakom (scorekortet säger 43 m). Bekräftas.
-# 60 syns INTE på fotot (skog): punkten är en gissning 35 m bakom längs stigen, som på
-# klubbens karta. Måste bekräftas av klubben.
+# Tees kontrollerade igen 2026-10-23 med rutnätsutsnitt mot fotot, Lantmäteriets höjdskuggning
+# (utsnitt/hojd_skuggning.png, teeplattorna syns som plana rektanglar) och klubbens karta H05-1:
+#  49/44 = mitten av den rundade klippta teeboxen öster om gångvägens slut; plan platta ca
+#          491780–491803 E, 6305407–6305419 N. Förra punkten låg i boxens norra kant.
+#  56/52 = mitten av den plana plattan i höjdskuggningen, ca 491732–491758 E, 6305431–6305441 N
+#          (östra delen klippt och solbelyst på fotot, västra delen i trädskugga).
+#  60    = syns INTE på fotot (skog). Placerad på spelvägen 35 m bakom 56/52, som klubbens karta
+#          ("60 +35") och scorekortet (355 − 320). Måste bekräftas av klubben.
 tees:
-- {name: '60', point: [491722.0, 6305444.0], length_m: 355}
-- {name: 56/52, point: [491755.0, 6305432.0], length_m: 320}
-- {name: 49/44, point: [491797.0, 6305418.0], length_m: 277}
+- {name: '60', point: [491710.0, 6305434.3], length_m: 355}  # beräknad, syns inte på fotot
+- {name: 56/52, point: [491745.0, 6305435.5], length_m: 320}
+- {name: 49/44, point: [491793.0, 6305413.0], length_m: 277}
 centerline: auto
 green: [492055.0, 6305487.0]
 fairway:

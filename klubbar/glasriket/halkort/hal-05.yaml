@@ -1,7 +1,8 @@
 # Hålkort för Glasriket hål 5. Hålbilden är AI-målad på hålets exakta form ur Lantmäteriets
 # ortofoto (python -m golfholes aiunderlag / aibild). Råden är klubbens egna "Råd från PRO:n"
 # ur banguiden 2025 (glasriketsgk.se/haloversikt), lätt redigerade – klubben godkänner.
-# Tees: bara 49/44 syns på fotot; längdkontrollen ligger 3,2–3,4 % kort – klubben markerar tees.
+# Tees: 49/44 och 56/52 syns som teeplattor (foto + höjdskuggning); 60 är beräknad 35 m bakom 56/52.
+# Längdkontroll 2026-10-23: −0,8 / −0,9 / −2,5 % (inom ±3 %). Klubben bekräftar tee 60.
 club: Glasrikets Golfklubb
 bana: Fylleryd
 hole: 5
