@@ -1,7 +1,10 @@
 # UTKAST – genererat 2026-10-23 av `python -m golfholes utkast klubbar/glasriket/utkast/hal-01.yaml`.
 # Granska mot klubbens hålkarta och kontrollbilden innan det godkänns.
 # Rättat för hand: falskt vatten vid klubbhuset (skugga/tak) borttaget.
-# Rättat för hand: greenbunkern till höger om green ligger i skugga och ritades in ur fotot (syns på klubbens karta).
+# Rättat för hand 2026-10-23 (granskning): greenbunkern ritad efter den synliga sanden på ortofotot
+#   (rutnät 2 m): E 491484,6–491494,8, N 6306152,3–6306164,8, till höger om/bakom green i spelriktningen.
+#   Den tidigare polygonen låg ca 6 m för långt västerut, inne i trädskuggan. Västkanten ligger delvis
+#   i trädskugga (±1 m). Greenens kant vid bunkern följer nu bunkerns kant (de överlappade).
 club: Glasrikets Golfklubb
 hole: 1
 par: 5
@@ -34,7 +37,11 @@ green:
 - [491491.2, 6306177.9]
 - [491488.7, 6306171.3]
 - [491488.6, 6306162.7]
-- [491491.0, 6306154.4]
+- [491490.6, 6306161.2]
+- [491492.0, 6306159.2]
+- [491494.0, 6306157.4]
+- [491495.5, 6306155.2]
+- [491495.6, 6306152.5]
 - [491495.3, 6306148.8]
 - [491500.4, 6306147.2]
 - [491504.8, 6306150.1]
@@ -160,15 +167,21 @@ hazards:
 - kind: bunker
   name: ''
   polygon:
-  - [491476.5, 6306169.0]
-  - [491480.0, 6306170.5]
-  - [491482.0, 6306166.0]
-  - [491485.0, 6306161.0]
-  - [491487.0, 6306157.0]
-  - [491485.5, 6306154.0]
-  - [491481.0, 6306153.0]
-  - [491478.5, 6306157.5]
-  - [491476.5, 6306163.5]
+  - [491485.5, 6306164.6]
+  - [491487.5, 6306164.8]
+  - [491488.8, 6306163.8]
+  - [491490.0, 6306161.0]
+  - [491491.5, 6306158.8]
+  - [491493.5, 6306157.0]
+  - [491494.8, 6306155.0]
+  - [491494.5, 6306153.2]
+  - [491493.0, 6306152.3]
+  - [491490.5, 6306152.4]
+  - [491488.0, 6306153.5]
+  - [491486.5, 6306155.5]
+  - [491485.5, 6306158.5]
+  - [491484.8, 6306161.5]
+  - [491484.6, 6306163.5]
 fairways:
 - - [491604.6, 6306438.2]
   - [491605.4, 6306438.2]
