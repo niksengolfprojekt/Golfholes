@@ -1,0 +1,26 @@
+# Hålkort för Glasriket hål 2. Hålbilden är AI-målad på hålets exakta form ur Lantmäteriets
+# ortofoto (python -m golfholes aiunderlag / aibild). Stenarna i ruffen (klubbens karta) är
+# retuscherade till ruffgräs i AI-underlaget så att målningen inte gör bunkrar av dem.
+# Råden är klubbens egna "Råd från PRO:n" ur banguiden 2025 (glasriketsgk.se/haloversikt),
+# lätt redigerade. Beskrivning och strategi är Claudes utkast ur hålfilen – klubben godkänner.
+# Tee 60 syns inte på fotot: placerad 37 m bakom tee 56/52 enligt klubbens karta (beräknad).
+club: Glasrikets Golfklubb
+bana: Fylleryd
+hole: 2
+par: 4
+index: 4
+tees: [["60", 355], ["56 · 52", 318], ["49", 284], ["44", 248]]
+bild: ../halbilder/hal-02-malad.webp
+typbild: false
+rubrik: Kort om dammen
+beskrivning: >-
+  Ett rakt par 4 söderut. Den fyrkantiga dammen ligger tvärs över hålet cirka 220 m från
+  tee 56/52, och greenen har en liten bunker till höger.
+rad_rubrik: Råd från pro:n
+rad:
+  - En fyrkantig damm ligger ca 220 m från tee 56.
+  - Placera utslaget kort om dammen, då får du ett inspel på ca 120 m till en högersluttande green.
+slutrad: Oändligt rött pliktområde på höger sida fram till dammen.
+strategi:
+  sakert: Ett utslag på 180–200 m från tee 56 stannar kort om dammen – kvar blir ca 120 m in.
+  chansa: Att bära dammen ger ett kort inspel, men ett slag till höger hamnar i pliktområdet.
