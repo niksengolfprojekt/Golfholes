@@ -8,6 +8,40 @@ layout: 1            # hålkortets layout: 1 Hålkort (spikad), 2 Poster, 3 Mör
 typsnitt: {siffror: Spectral, text: Hanken Grotesk}   # Glasrikets profil "Glas och skog" (förslag v0)
 caddee: false   # finns inte på caddee.se/anslutna-klubbar (2026-10-11)
 
+# Klubbens grafiska profil "Glas och skog" (förslag v0, 2026-10-18). Används av prospekt och inlägg.
+kortnamn: Glasrikets GK
+filnamn: Glasriket          # början på filnamnen i leveranserna
+bana: Fylleryd
+profil:
+  namn: Glas och skog
+  farger:
+    djup: "#10202E"         # mörka ytor, bär hålbilderna
+    sjo: "#1D4756"
+    glas: "#3F7F86"
+    is: "#9CC9C3"           # text på mörkt
+    kristall: "#EEF3EC"     # ljusa ytor
+    glod: "#D9A441"         # accent, bara på mörkt
+    glod_mork: "#8A6220"    # accent på ljust
+  rubrik: Spectral
+  brodtext: Hanken Grotesk
+  logga_pa_ljust: profil/sigill-marinbla.png
+  logga_pa_morkt: profil/sigill-vit.png
+  logga_farg: profil/sigill-fargad-mork.png   # sigillet "Småland" i färg på mörk botten
+
+# Hålsponsring: klubbens egna villkor. Prospektet läser allt härifrån.
+sponsring:
+  sasong: 2027
+  pris_per_hal: 10000       # kr per hål och år (Glasrikets pris i dag)
+  pris_villkor: per år      # t.ex. "per år, exkl. moms" – klubben bekräftar momsen
+  halsida: "https://www.glasriketsgk.se/banan/hal-{hal:02d}/"   # QR-koden pekar hit
+  kontakt: info@glasriketsgk.se · 0470-653 20
+  ronder_per_ar: null       # klubbens antal ronder per år; tomt = riksgenomsnittet används som uppskattning
+
+# Sociala medier: kontonamn och hashtaggar som följer med alla inlägg (some/inlagg.yaml)
+some:
+  konto: glasriketsgk
+  hashtags: ["#glasriketsgk", "#fylleryd", "#golfvaxjo", "#golfismaland", "#smaland", "#golf"]
+
 # Banans yta med 100 m marginal, SWEREF 99 TM (EPSG:3006).
 # Underlag från OpenStreetMap (relation 2715292). Ladda ner detta område från Geotorget.
 bbox_sweref99tm:

@@ -18,6 +18,7 @@ rad:
   - Den långtslående genar över skogen mot greenen och får ett kort inspel.
   - Medelgolfaren ska inte utmana här – det är out till vänster och skog till höger.
 slutrad: Spela hålet som ett par fem för säkerhets skull.
+kortrad: "Spela hålet som ett par 5. Att gena över skogen är för den långtslående."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Spela hålet som ett par fem – utslag till fairway, fram mot greenen och ett kort inspel förbi bunkern.
   chansa: Gena över skogen till höger mot greenen. Out längs hela vänstersidan om det går snett.

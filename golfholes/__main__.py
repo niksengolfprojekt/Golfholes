@@ -16,6 +16,9 @@ Stil väljs i klubb.yaml med `stil:` och ett av de sex namnen (beslut 2026-10-22
 Layout väljs i klubb.yaml med `layout: 1` (eller en lista, t.ex. [1, 4]):
   1 Hålkort (spikad) · 2 Poster · 3 Mörk · 4 Skärm · 5 Banguide · 6 Sponsorhål
   python -m golfholes webb     klubbar/<klubb>                      → output/<klubb>/webb/
+  python -m golfholes prospekt klubbar/<klubb>/halkort/hal-14.yaml  → output/<klubb>/prospekt/ (PDF + översikt)
+  python -m golfholes prospekt klubbar/<klubb> --alla               → ett prospekt per hål som har hålbild
+  python -m golfholes inlagg   klubbar/<klubb>                      → output/<klubb>/inlagg/ (PNG 4:5 + texter.md)
   python -m golfholes utsnitt  klubbar/<klubb> data/<klubb>/orto/*.tif  → data/<klubb>/utsnitt/orto.jpg + .jgw
   python -m golfholes sponsorrapport klubbar/<klubb> --sasong 2027 [--kalla mapp] → output/<klubb>/sponsorrapport/2027/
   python -m golfholes partnerexport  klubbar/<klubb>                  → output/<klubb>/partner/ (JSON per hål + zip)
@@ -170,6 +173,34 @@ def webb(club_dir: str) -> int:
     p = Path(club_dir)
     for f in build_site(p, Path("output") / p.name / "webb"):
         print(f"  {f}")
+    return 0
+
+
+def prospekt(path: str, alla: bool, ut: str | None) -> int:
+    from .render.klubbmaterial import Klubb
+    from .render.prospekt import bygg_alla
+
+    p = Path(path)
+    if alla or p.is_dir():
+        k = Klubb.from_dir(p if p.is_dir() else _club_dir(p))
+        filer = list(k.halkort().values())
+        saknas = sorted(set(range(1, 19)) - set(k.halkort()))
+        if saknas:
+            print(f"Hål utan hålbild (hoppas över): {', '.join(map(str, saknas))}")
+    else:
+        k = Klubb.from_dir(_club_dir(p))
+        filer = [p]
+    res = bygg_alla(filer, Path(ut) if ut else Path("output") / k.mapp.name / "prospekt")
+    if not all(r["qr_akta"] for r in res):
+        print("OBS: QR-koden är en platshållare. Installera 'segno' (pip install segno) och kör igen.")
+    return 0
+
+
+def inlagg(club_dir: str, ut: str | None) -> int:
+    from .render.inlagg import bygg_kit
+
+    p = Path(club_dir)
+    bygg_kit(p, Path(ut) if ut else Path("output") / p.name / "inlagg")
     return 0
 
 
@@ -368,6 +399,13 @@ def main(argv: list[str] | None = None) -> int:
     hk.add_argument("--layout", default=None, help="1–7 (standard: klubbens val i klubb.yaml)")
     sub.add_parser("layoutprov", help="Samma hål i alla layouter – för klubbens val").add_argument("fil")
     sub.add_parser("webb", help="Digital banguide för en klubb").add_argument("klubbmapp")
+    pr = sub.add_parser("prospekt", help="Hålsponsorprospekt (PDF) per hål, med klubben som avsändare")
+    pr.add_argument("fil", help="halkort/hal-NN.yaml, eller klubbmappen tillsammans med --alla")
+    pr.add_argument("--alla", action="store_true", help="alla hål i klubben som har en hålbild")
+    pr.add_argument("--ut", default=None, help="mapp för PDF:erna (standard: output/<klubb>/prospekt)")
+    il = sub.add_parser("inlagg", help="Inlägg för sociala medier (4:5) ur some/inlagg.yaml")
+    il.add_argument("klubbmapp")
+    il.add_argument("--ut", default=None, help="mapp för inläggen (standard: output/<klubb>/inlagg)")
     u = sub.add_parser("utsnitt", help="Klipp ut banan ur Lantmäteriets ortofoto")
     u.add_argument("klubbmapp")
     u.add_argument("tiffar", nargs="+")
@@ -430,6 +468,10 @@ def main(argv: list[str] | None = None) -> int:
         return halkort(a.fil, a.layout)
     if a.cmd == "layoutprov":
         return layoutprov(a.fil)
+    if a.cmd == "prospekt":
+        return prospekt(a.fil, a.alla, a.ut)
+    if a.cmd == "inlagg":
+        return inlagg(a.klubbmapp, a.ut)
     if a.cmd == "webb":
         return webb(a.klubbmapp)
     if a.cmd == "utsnitt":
