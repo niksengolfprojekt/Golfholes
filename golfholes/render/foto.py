@@ -149,6 +149,19 @@ def _utan_skugga(rgb: np.ndarray, yta: np.ndarray, res: float) -> np.ndarray:
     return np.clip(rgb * (1 + (skala - 1) * m)[..., None], 0, 255)
 
 
+def _sand(rgb: np.ndarray, bunker: np.ndarray, res: float) -> np.ndarray:
+    """Bunkrar ur hålfilen som ligger i skugga syns inte i ortofotot (hål 3 på Glasriket):
+    ge dem sandens ljusa ton, mjukt i kanten. Formen kommer från hålfilen, aldrig från AI:n."""
+    if not bunker.any():
+        return rgb
+    sand = np.array([214, 196, 160], dtype=np.float32)
+    lum = rgb.mean(-1, keepdims=True)
+    struktur = (lum - _mjuk(lum[..., 0], max(2, int(1 / res)))[..., None]) * 0.5
+    m = _mjuk(bunker.astype(np.float32), max(1, int(0.4 / res)))[..., None]
+    m *= np.clip((200 - lum) / 60, 0, 1)   # ljus sand i fotot lämnas orörd
+    return np.clip(rgb * (1 - m) + (sand + struktur) * m, 0, 255)
+
+
 def _retusch(rgb: np.ndarray, yta: np.ndarray, res: float) -> np.ndarray:
     """Tar bort små mörka eller ljusa prickar (golfare, vagnar, deras skuggor) på klippta ytor."""
     r = max(3, int(1.2 / res))
@@ -231,6 +244,7 @@ def fotounderlag(hole: Hole, orto: Path, hojd_px: int = 2400):
     gras = ~kl["skog"] & ~kl["vatten"] & ~kl["bunker"]
     rgb = _utan_skugga(f.rgbn[..., :3], green, res)
     rgb = _utan_skugga(rgb, fairway & ~bunker, res)
+    rgb = _sand(rgb, bunker, res)
     rgb = _retusch(rgb, (fairway | green) & ~bunker, res)
     rgb = _skarp(rgb, fairway | green, res)
     rgb = _host(rgb, mt, kl["skog"], gras, fairway | green)
