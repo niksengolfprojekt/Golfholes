@@ -305,6 +305,111 @@ def animatic(hole: Hole, proj: Projektion, hojd_over_mark: list[float], karta: M
     return {"delar": delar, "rutor": n}
 
 
+def omprojicera(bild: Image.Image, proj: Projektion, k0: int, i: int, kant: float = 40.0):
+    """En bild tagen från kameran i ruta k0 (t.ex. en AI-tvättad ruta ur den råa filmen) lagd på
+    marken och sedd från kameran i ruta i. Exakt geometri så länge kameran tittar nästan rakt ner
+    (marken räknas som platt yta, träden blir platta). Används för nedstigningen ur hålbilden.
+    Ger (bild, täckning 0–1), där täckningen tonar ut `kant` px från bildens kant."""
+    a = np.asarray(bild.convert("RGB").resize((proj.bredd, proj.hojd_px), Image.LANCZOS), np.float32)
+    Y, X = np.mgrid[:proj.hojd_px, :proj.bredd].astype(np.float64)
+    e, n = proj.mark_under(i, X, Y)
+    x, y, _ = proj.px(k0, e, n)
+    tack = np.clip(np.minimum.reduce([x, proj.bredd - x, y, proj.hojd_px - y]) / kant, 0, 1)
+    x = np.clip(x - 0.5, 0, proj.bredd - 1)
+    y = np.clip(y - 0.5, 0, proj.hojd_px - 1)
+    return np.stack([_bilinjar(a[..., c], x, y) for c in range(3)], -1), tack[..., None]
+
+
+def omproj_film(bilder: list[tuple[int, Path]], proj: Projektion, k0: int, k1: int, ut: Path, fps: int = 24) -> Path:
+    """Rutorna k0..k1-1 gjorda av AI-tvättade stillbilder (var och en tagen i sin ruta) med
+    kamerabanan. Med flera bilder tonas nästa bild in där den täcker, mot slutet av steget
+    fram till dess ruta (den skarpare, närmare bilden tar över)."""
+    skriv = subprocess.Popen([ffmpeg_bin(), "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24",
+                              "-s", f"{proj.bredd}x{proj.hojd_px}", "-r", str(fps), "-i", "-", "-c:v", "libx264",
+                              "-pix_fmt", "yuv420p", "-crf", "12", str(ut)], stdin=subprocess.PIPE)
+    bilder = sorted(bilder)
+    ims = [(k, Image.open(p)) for k, p in bilder]
+    for i in range(k0, k1):
+        ut_bild, _ = omprojicera(ims[0][1], proj, ims[0][0], i)
+        for j in range(1, len(ims)):
+            kf, kn = ims[j - 1][0], ims[j][0]
+            u = min(1.0, max(0.0, (i - kf - 0.4 * (kn - kf)) / (0.6 * (kn - kf))))
+            if u > 0:
+                b, tack = omprojicera(ims[j][1], proj, kn, i)
+                w = tack * (u * u * (3 - 2 * u))
+                ut_bild = ut_bild * (1 - w) + b * w
+        skriv.stdin.write(np.clip(ut_bild, 0, 255).astype(np.uint8).tobytes())
+    skriv.stdin.close()
+    skriv.wait()
+    return ut
+
+
+def _las_film(film: Path, B: int = 1280, Hp: int = 720, fps: int = 24) -> np.ndarray:
+    """Hela filmen som (rutor, h, b, 3) uint8, omräknad till fps bilder/s."""
+    r = subprocess.run([ffmpeg_bin(), "-loglevel", "error", "-i", str(film), "-vf", f"fps={fps},scale={B}:{Hp}",
+                        "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], stdout=subprocess.PIPE, check=True)
+    return np.frombuffer(r.stdout, np.uint8).reshape(-1, Hp, B, 3)
+
+
+def _medel_std(bilder: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    x = bilder[..., :3].reshape(-1, 3).astype(np.float32)[::7]
+    return x.mean(0), x.std(0) + 1e-3
+
+
+def fargmatcha(bilder: np.ndarray, kalla: tuple, mal: tuple, styrka: float = 1.0) -> np.ndarray:
+    """Flyttar färgernas medel och spridning (per kanal) från kalla mot mal."""
+    (m0, s0), (m1, s1) = kalla, mal
+    m = m0 + (m1 - m0) * styrka
+    s = s0 + (s1 - s0) * styrka
+    return (bilder.astype(np.float32) - m0) * (s / s0) + m
+
+
+def hopklipp(ra: Path, klipp: list[Path], delar: list[tuple[int, int]], ut: Path, fps: int = 24,
+             tona: int = 6, B: int = 1280, Hp: int = 720) -> dict:
+    """Sätter ihop AI-klippen till en film lika lång som den råa (samma rutnummer).
+
+    Utanför AI-delarna används den råa filmen (där täcker hålbilden ändå allt). Varje klipp
+    sträcks/kortas till exakt sin dels längd. Vid skarvarna mellan klippen jämnas färgen
+    ut (medel och spridning glider från förra klippets slut till nästa klipps början) och
+    bilderna tonas i varandra över `tona` rutor, så att man inte ser hoppet."""
+    film = _las_film(ra, B, Hp, fps).copy()
+    bitar = []
+    for (a, b), k in zip(delar, klipp):
+        f = _las_film(k, B, Hp, fps)
+        idx = np.round(np.linspace(0, len(f) - 1, b - a)).astype(int)   # exakt b - a rutor
+        bitar.append(f[idx].copy())
+        del f
+    # färg: varje klipps början dras mot förra klippets slut, med avtagande styrka genom klippet
+    for j in range(1, len(bitar)):
+        slut = _medel_std(bitar[j - 1][-6:])
+        borjan = _medel_std(bitar[j][:6])
+        n = len(bitar[j])
+        for t in range(n):
+            w = max(0.0, 1 - t / (n * 0.6))
+            if w > 0:
+                bitar[j][t] = np.clip(fargmatcha(bitar[j][t], borjan, slut, w), 0, 255).astype(np.uint8)
+    # tona över skarven: sista rutorna i förra klippet glider mot nästa klipps första ruta och tvärtom
+    skillnad = []
+    for j in range(1, len(bitar)):
+        A, Bn = bitar[j - 1], bitar[j]
+        a_slut, b_borjan = A[-1].astype(np.float32), Bn[0].astype(np.float32)
+        skillnad.append(round(float(np.abs(a_slut - b_borjan).mean()), 1))
+        h = min(tona, len(A) // 4, len(Bn) // 4)
+        for t in range(h):
+            w = 0.5 * (t + 1) / (h + 1)          # 0 → 0,5 fram till skarven
+            A[-h + t] = np.clip(A[-h + t] * (1 - w) + b_borjan * w, 0, 255).astype(np.uint8)
+            Bn[h - 1 - t] = np.clip(Bn[h - 1 - t] * (1 - w) + a_slut * w, 0, 255).astype(np.uint8)
+    for (a, b), bit in zip(delar, bitar):
+        film[a:b] = bit
+    skriv = subprocess.Popen([ffmpeg_bin(), "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24",
+                              "-s", f"{B}x{Hp}", "-r", str(fps), "-i", "-", "-c:v", "libx264", "-pix_fmt", "yuv420p",
+                              "-crf", "14", "-preset", "medium", str(ut)], stdin=subprocess.PIPE)
+    skriv.stdin.write(film.tobytes())
+    skriv.stdin.close()
+    skriv.wait()
+    return {"rutor": len(film), "skarv_skillnad": skillnad}
+
+
 def nyckelark(film: Path, rutor: list[int], ut: Path, kolumner: int = 4, bredd: int = 480, fps: int = 24) -> Path:
     """Rutor ur en film på ett ark, med tid under varje bild."""
     from PIL import ImageFont
@@ -340,9 +445,13 @@ def las_rutor(film: Path, rutor: list[int], ut: Path) -> dict[int, Path]:
     return res
 
 
+def _delar(text: str) -> list[tuple[int, int]]:
+    return [tuple(int(x) for x in d.split("-")) for d in text.split(",") if d]
+
+
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="flygfilm_kontroll")
-    p.add_argument("steg", choices=["kameror", "slutbild", "konturer", "animatic"])
+    p.add_argument("steg", choices=["kameror", "slutbild", "konturer", "animatic", "hopklipp", "omproj"])
     p.add_argument("hal")
     p.add_argument("--data")
     p.add_argument("--sek", type=float, default=12.0)
@@ -354,6 +463,10 @@ def main(argv=None) -> int:
     p.add_argument("--forlopp", choices=["rak", "oversikt"], default="rak")
     p.add_argument("--tee", default=None)
     p.add_argument("--start", type=int, default=0, help="filmen börjar vid den här rutan i den råa filmen (klipp)")
+    p.add_argument("--klipp", default="", help="hopklipp: AI-klippen i ordning, kommaseparerade")
+    p.add_argument("--delar", default="", help="hopklipp/omproj: egna rutintervall, t.ex. 55-79,79-175")
+    p.add_argument("--bild", help="omproj: AI-tvättade rutor som ruta:fil, t.ex. 55:a.png,79:b.png")
+    p.add_argument("--ren", action="store_true", help="animatic utan text i bilden (färdig film)")
     p.add_argument("--ut", required=True)
     a = p.parse_args(argv)
     hole = Hole.from_yaml(a.hal)
@@ -367,11 +480,24 @@ def main(argv=None) -> int:
     if a.steg == "animatic":
         malad = Path(a.malad) if a.malad else hp.parent / "halbilder" / f"hal-{hole.number:02d}-malad.webp"
         orto = sorted((data_dir / "orto").glob("*.tif"))[0]
-        r = animatic(hole, proj, kd["info"]["hojd_over_mark_m"], MaladKarta(hole, orto, malad), Path(a.film), Path(a.ut))
+        r = animatic(hole, proj, kd["info"]["hojd_over_mark_m"], MaladKarta(hole, orto, malad), Path(a.film), Path(a.ut),
+                     etikett=not a.ren)
         n = r["rutor"]
         nyckelark(Path(a.ut), [round(j * (n - 1) / 15) for j in range(16)], Path(a.ut).with_suffix(".jpg"))
         for j, (s0, s1) in enumerate(r["delar"], 1):
             print(f"AI-del {j}: ruta {s0}–{s1} ({s0 / 24:.2f}–{s1 / 24:.2f} s, {(s1 - s0) / 24:.2f} s)")
+        return 0
+    if a.steg == "hopklipp":
+        klipp = [Path(k) for k in a.klipp.split(",") if k]
+        delar = _delar(a.delar) or ai_delar(kd["info"]["hojd_over_mark_m"])
+        if len(klipp) != len(delar):
+            raise SystemExit(f"{len(delar)} AI-delar men {len(klipp)} klipp")
+        print(hopklipp(Path(a.film), klipp, delar, Path(a.ut)))
+        return 0
+    if a.steg == "omproj":
+        (k0, k1), = _delar(a.delar)
+        bilder = [(int(d.split(":", 1)[0]), Path(d.split(":", 1)[1])) for d in a.bild.split(",")]
+        omproj_film(bilder, proj, k0, k1, Path(a.ut))
         return 0
     if a.steg == "slutbild":
         malad = Path(a.malad) if a.malad else hp.parent / "halbilder" / f"hal-{hole.number:02d}-malad.webp"

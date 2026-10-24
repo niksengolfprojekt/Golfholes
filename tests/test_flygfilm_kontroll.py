@@ -38,3 +38,15 @@ def test_ai_delar_hela_sekunder_och_hopkopplade():
     assert all((b - a) % 24 == 0 and (b - a) <= 6 * 24 for a, b in delar)
     assert all(delar[j][1] == delar[j + 1][0] for j in range(len(delar) - 1))
     assert mal[delar[0][0]] < 1 and mal[delar[0][0] - 1] >= 0.999 and mal[delar[-1][1]] > 0.99
+
+
+def test_fargmatcha_flyttar_medel_och_spridning():
+    from golfholes.render.flygfilm_kontroll import _medel_std, fargmatcha
+    rng = np.random.default_rng(1)
+    a = rng.normal(100, 10, (4, 20, 20, 3)).clip(0, 255).astype(np.uint8)
+    b = rng.normal(150, 30, (4, 20, 20, 3)).clip(0, 255).astype(np.uint8)
+    ut = fargmatcha(a, _medel_std(a), _medel_std(b))
+    m, s = _medel_std(ut)
+    mb, sb = _medel_std(b)
+    assert np.allclose(m, mb, atol=2) and np.allclose(s, sb, atol=2)
+    assert np.allclose(fargmatcha(a, _medel_std(a), _medel_std(b), 0.0), a, atol=0.01)
