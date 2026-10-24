@@ -2115,4 +2115,10 @@ trees:
   - [491973.7, 6305672.2]
   - [491974.6, 6305673.9]
   - [491975.9, 6305674.7]
+# Out of bounds: klubbens banguide 2025 (glasriketsgk.se/haloversikt, vita streckade linjer på
+# hålkartan H08-1.jpg). Sträckan i meter längs spellinjen från bakre tee är avläst ur skisskartan
+# (ungefärlig); linjen ritas där skogen börjar (trädlinjen ur ortofotot). Klubben bekräftar exakt läge.
+ob: []
+# Vänster (out enligt banguiden, 64–189 m) ritas inte: ingen sammanhängande trädlinje där i
+# ortofotot (öppen ruff och en stenmur) – läget går inte att lägga säkert. Klubben anger linjen.
 strategy: {}

@@ -2668,4 +2668,6 @@ trees:
   - [491505.7, 6305869.5]
   - [491506.2, 6305869.7]
   - [491508.3, 6305869.9]
+# Flaggan mitt på den synliga puttytan i ortofotot (kontroll 2026-10-24): polygonen tar med förgreenen/infarten nedtill; den synliga puttytan (ovalen) ligger högre.
+flagga_punkt: [491497.7, 6305902.0]
 strategy: {}

@@ -28,6 +28,12 @@ profil:
   logga_pa_morkt: profil/sigill-vit.png
   logga_farg: profil/sigill-fargad-mork.png   # sigillet "Småland" i färg på mörk botten
 
+# Flaggan på hålbilderna (Eric 2026-10-24: "All flaggor ska vi göra med klubbens egna logga på i deras färg").
+# Sigillet "Småland" i en färg (vitt) på duk i profilens Sjö. Saknas fältet ritas T-flaggan.
+flagga:
+  logga: profil/sigill-vit.png
+  farg: "#1D4756"
+
 # Hålsponsring: klubbens egna villkor. Prospektet läser allt härifrån.
 sponsring:
   sasong: 2027

@@ -293,13 +293,13 @@ def utkast(fro_fil: str) -> int:
 
 
 def fotobild(path: str) -> int:
-    from .render.foto import fotobild as rita, orto_for
+    from .render.foto import flaggstil, fotobild as rita, orto_for
 
     p = Path(path)
     hole = Hole.from_yaml(p)
     club_dir = _club_dir(p)
     ut = club_dir / "halbilder" / f"hal-{hole.number:02d}-foto.webp"
-    rita(hole, orto_for(Path("data") / club_dir.name), ut)
+    rita(hole, orto_for(Path("data") / club_dir.name), ut, flagga=flaggstil(club_dir))
     print(f"Sparat: {ut} – lägg in som `bild:` i halkort/hal-{hole.number:02d}.yaml")
     return 0
 
@@ -322,7 +322,7 @@ AI_GRANS = 0.7  # under detta har AI:n ritat om hålet (provat: trogna 0,80–0,
 
 
 def aibild(path: str, malningar: list[str], stil: str | None = None) -> int:
-    from .render.foto import ai_tillbaka, orto_for
+    from .render.foto import ai_tillbaka, flaggstil, orto_for
     from .stilar import malad_bild
 
     p = Path(path)
@@ -332,7 +332,8 @@ def aibild(path: str, malningar: list[str], stil: str | None = None) -> int:
     ut = malad_bild(club_dir, hole.number, s)
     print(f"Stil: {s.namn}")
     kontroll = Path("data") / club_dir.name / "utkast" / f"hal-{hole.number:02d}_ai_kontroll.jpg"
-    _, poang = ai_tillbaka(hole, orto_for(Path("data") / club_dir.name), [Path(m) for m in malningar], ut, kontroll)
+    _, poang = ai_tillbaka(hole, orto_for(Path("data") / club_dir.name), [Path(m) for m in malningar], ut, kontroll,
+                           flagga=flaggstil(club_dir))
     for i, r in enumerate(poang):
         print(f"  {'VALD ' if i == 0 else '     '}{r['poang']:.3f}  (likhet {r['likhet']:.3f}, kant {r['kant']:.3f})  {r['fil']}")
     if poang[0]["poang"] < AI_GRANS:

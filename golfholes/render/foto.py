@@ -163,10 +163,11 @@ def _retusch(rgb: np.ndarray, yta: np.ndarray, res: float) -> np.ndarray:
     return ut
 
 
-def fotobild(hole: Hole, orto: Path, ut: Path, hojd_px: int = 2400, markeringar: bool = True) -> Path:
+def fotobild(hole: Hole, orto: Path, ut: Path, hojd_px: int = 2400, markeringar: bool = True,
+             flagga: dict | None = None) -> Path:
     rot, px = fotounderlag(hole, orto, hojd_px)
     if markeringar:
-        rita_spel(rot, hole, px)
+        rita_spel(rot, hole, px, flagga)
     return _spara(rot, ut)
 
 
@@ -262,8 +263,54 @@ def fotounderlag(hole: Hole, orto: Path, hojd_px: int = 2400):
     return rot, px
 
 
-def rita_spel(rot: Image.Image, hole: Hole, px) -> None:
-    """Prickar (100/150 m kvar till greenens mitt) och flagga – alltid ritade av koden."""
+def greenytans_mitt(hole: Hole, res: float = 0.1) -> tuple[float, float]:
+    """Mitten av puttytan: medelpunkten av greenpolygonens yta (rastrerad, så att en polygon som
+    korsar sig själv inte ger en tyngdpunkt ute i kanten – Glasriket hål 7 och 15) minus
+    bunkrar som polygonen råkar täcka."""
+    G = hole.green
+    e0, n1 = min(p[0] for p in G), max(p[1] for p in G)
+    W = int((max(p[0] for p in G) - e0) / res) + 2
+    H = int((n1 - min(p[1] for p in G)) / res) + 2
+    m = Image.new("L", (W, H), 0)
+    d = ImageDraw.Draw(m)
+    d.polygon([((e - e0) / res, (n1 - n) / res) for e, n in G], fill=1)
+    for h in hole.hazards:
+        if h.kind == "bunker" and len(h.polygon) >= 3:
+            d.polygon([((e - e0) / res, (n1 - n) / res) for e, n in h.polygon], fill=0)
+    ys, xs = np.nonzero(np.asarray(m))
+    if not len(xs):
+        return _tyngdpunkt(G)
+    return (e0 + (xs.mean() + 0.5) * res, n1 - (ys.mean() + 0.5) * res)
+
+
+def flaggpunkt(hole: Hole) -> tuple[float, float]:
+    """Där flaggan står: hålfilens `flagga_punkt` om den finns (kontrollerad mot ortofotot),
+    annars mitten av puttytan (greenytans_mitt)."""
+    return hole.flagga_punkt or greenytans_mitt(hole)
+
+
+def flaggstil(klubbmapp: Path | None) -> dict | None:
+    """Klubbens egen flagga ur klubb.yaml: `flagga: {logga: profil/sigill-vit.png, farg: "#1D4756"}`.
+    Loggan ska vara i en färg (ljus) med genomskinlig bakgrund. Saknas fältet: None (T-flaggan)."""
+    if klubbmapp is None:
+        return None
+    f = Path(klubbmapp) / "klubb.yaml"
+    if not f.exists():
+        return None
+    import yaml
+
+    d = (yaml.safe_load(f.read_text(encoding="utf-8")) or {}).get("flagga") or {}
+    if not d.get("logga") or not d.get("farg"):
+        return None
+    logga = Path(klubbmapp) / d["logga"]
+    if not logga.exists():
+        raise FileNotFoundError(f"Flaggans logga finns inte: {logga}")
+    farg = d["farg"].lstrip("#")
+    return {"logga": logga, "farg": tuple(int(farg[i:i + 2], 16) for i in (0, 2, 4))}
+
+
+def rita_prickar(rot: Image.Image, hole: Hole, px) -> None:
+    """Prickar 100/150 m kvar till greenens mitt (par 3: inga)."""
     d = ImageDraw.Draw(rot)
     s = rot.height / 1000  # storlek på symboler oberoende av upplösning
     mitt = _tyngdpunkt(hole.green)
@@ -273,8 +320,154 @@ def rita_spel(rot: Image.Image, hole: Hole, px) -> None:
             x, y = px(*p)
             r = 9 * s
             d.ellipse((x - r, y - r, x + r, y + r), fill=farg + (255,), outline=(255, 255, 255, 230), width=max(1, int(1.6 * s)))
-    # flagga i greenens mitt
-    _flagga(rot, *px(*mitt), s)
+
+
+def rita_flagga_och_ob(rot: Image.Image, hole: Hole, px, flagga: dict | None = None) -> None:
+    """Outlinjer (om hålfilen har `ob`) och flaggan på `flaggpunkt`. Ritas sist, ovanpå en
+    bild utan flagga – så kan flaggan bytas utan att hålet målas om."""
+    rita_ob(rot, hole, px)
+    _flagga(rot, *px(*flaggpunkt(hole)), rot.height / 1000, flagga)
+
+
+def rita_spel(rot: Image.Image, hole: Hole, px, flagga: dict | None = None) -> None:
+    """Prickar (100/150 m kvar till greenens mitt), outlinjer och flagga – alltid ritade av koden."""
+    rita_prickar(rot, hole, px)
+    rita_flagga_och_ob(rot, hole, px, flagga)
+
+
+# ---------- out of bounds ----------
+OB_STEG_M = 2.0       # punkt var 2:a meter längs spellinjen
+OB_MAX_M = 70.0       # längre än så från spellinjen letas ingen trädlinje
+OB_IN_I_SKOG_M = 1.0  # linjen ligger strax innanför trädlinjen, som outpinnarna
+OB_MIN_PUNKTER = 15   # kortare än 30 m sammanhängande trädlinje (enstaka dungar) ritas inte
+
+
+def _langs(linje, station: float):
+    """Punkt och enhetsvektor framåt på `station` meter längs linjen."""
+    gick = 0.0
+    for a, b in zip(linje, linje[1:]):
+        L = math.dist(a, b)
+        if L and gick + L >= station:
+            t = (station - gick) / L
+            return (a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1])), ((b[0] - a[0]) / L, (b[1] - a[1]) / L)
+        gick += L
+    return None, None
+
+
+def ob_linjer(hole: Hole, res: float = 0.5) -> list[list[tuple[float, float]]]:
+    """Outlinjerna i SWEREF: för varje `ob`-sträcka går en stråle från spellinjen rakt ut åt
+    sidan och linjen läggs där strålen först når hålfilens skog (`trees`, ur ortofotot) –
+    trädlinjen. Där ingen skog finns inom OB_MAX_M blir det ett glapp; inga påhittade lägen."""
+    if not hole.ob or not hole.trees:
+        return []
+    from .. import geometry as g
+
+    bak = max(hole.tees, key=lambda t: t.length_m or 0)
+    s0 = g.project(hole.centerline, bak.point)[0]
+    alla = [p for t in hole.trees for p in t] + hole.centerline
+    e0, n1 = min(p[0] for p in alla) - OB_MAX_M, max(p[1] for p in alla) + OB_MAX_M
+    e1, n0 = max(p[0] for p in alla) + OB_MAX_M, min(p[1] for p in alla) - OB_MAX_M
+    W, H = int((e1 - e0) / res) + 1, int((n1 - n0) / res) + 1
+    m = Image.new("L", (W, H), 0)
+    d = ImageDraw.Draw(m)
+    for t in hole.trees:
+        if len(t) >= 3:
+            d.polygon([((e - e0) / res, (n1 - n) / res) for e, n in t], fill=255)
+    skog = np.asarray(m) > 0
+    spelytor = Image.new("L", (W, H), 0)
+    d = ImageDraw.Draw(spelytor)
+    for poly in hole.fairways + [hole.green]:
+        if len(poly) >= 3:
+            d.polygon([((e - e0) / res, (n1 - n) / res) for e, n in poly], fill=255)
+    spel = np.asarray(spelytor) > 0
+
+    def i_skog(e, n):
+        x, y = int((e - e0) / res), int((n1 - n) / res)
+        return 0 <= x < W and 0 <= y < H and skog[y, x]
+
+    def i_spel(e, n):
+        x, y = int((e - e0) / res), int((n1 - n) / res)
+        return 0 <= x < W and 0 <= y < H and spel[y, x]
+
+    linjer = []
+    for ob in hole.ob:
+        tecken = 1 if ob["sida"] == "vanster" else -1
+        run: list = []
+        st = float(ob.get("fran_m", 0))
+        till = float(ob.get("till_m", 1e9))
+        while st <= till:
+            p, fram = _langs(hole.centerline, s0 + st)
+            if p is None:
+                break
+            nx, ny = -fram[1] * tecken, fram[0] * tecken  # vänster = framåt vridet 90° moturs
+            hit = None
+            dd = 4.0
+            while dd <= OB_MAX_M:
+                q = (p[0] + nx * dd, p[1] + ny * dd)
+                if i_skog(*q) and not i_spel(*q):
+                    hit = dd + OB_IN_I_SKOG_M
+                    break
+                dd += res
+            if hit is None:
+                if len(run) >= OB_MIN_PUNKTER:
+                    linjer.append(run)
+                run = []
+            else:
+                run.append((p[0] + nx * hit, p[1] + ny * hit))
+            st += OB_STEG_M
+        if len(run) >= OB_MIN_PUNKTER:
+            linjer.append(run)
+    # mjuka till: glidande medel över fem punkter (trädlinjen är taggig i fotot)
+    ut = []
+    for run in linjer:
+        k = 3
+        sm = []
+        for i in range(len(run)):
+            bit = run[max(0, i - k): i + k + 1]
+            sm.append((sum(p[0] for p in bit) / len(bit), sum(p[1] for p in bit) / len(bit)))
+        ut.append(sm)
+    return ut
+
+
+def rita_ob(rot: Image.Image, hole: Hole, px) -> None:
+    """Outlinjen som tunn vit streckad linje (som i klubbarnas banguider), bara där bilden syns."""
+    linjer = ob_linjer(hole)
+    if not linjer:
+        return
+    s = rot.height / 1000
+    k = 2  # ritas dubbelt så stort och skalas ner för mjuka kanter
+    lag = Image.new("RGBA", (rot.width * k, rot.height * k), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lag)
+    streck, glapp, bredd = 9 * s * k, 6 * s * k, max(2, round(1.5 * s * k))
+    for linje in linjer:
+        pts = [tuple(c * k for c in px(*p)) for p in linje]
+        # dela linjen i streck med jämn rytm längs hela linjen
+        pos, rita, kvar = 0.0, True, streck
+        for a, b in zip(pts, pts[1:]):
+            L = math.dist(a, b)
+            t = 0.0
+            while t < L:
+                steg = min(kvar, L - t)
+                if rita:
+                    p0 = (a[0] + (b[0] - a[0]) * t / L, a[1] + (b[1] - a[1]) * t / L)
+                    p1 = (a[0] + (b[0] - a[0]) * (t + steg) / L, a[1] + (b[1] - a[1]) * (t + steg) / L)
+                    d.line((p0, p1), fill=(255, 255, 255, 215), width=bredd)
+                t += steg
+                kvar -= steg
+                if kvar <= 1e-6:
+                    rita = not rita
+                    kvar = streck if rita else glapp
+    lag = lag.resize(rot.size, Image.LANCZOS)
+    # bara där målningen syns fullt: ingen linje ut i den tonade kanten
+    alfa = np.asarray(rot.getchannel("A"), dtype=np.float32) / 255.0
+    vis = np.clip((alfa - 0.45) / 0.35, 0, 1)
+    a = np.asarray(lag.getchannel("A"), dtype=np.float32) * vis
+    lag.putalpha(Image.fromarray(a.astype(np.uint8), "L"))
+    # svag mörk kant under, så linjen syns även mot ljust gräs
+    skugga = Image.new("RGBA", rot.size, (12, 28, 14, 0))
+    skugga.putalpha(lag.getchannel("A").filter(ImageFilter.GaussianBlur(1.2 * s)).point(lambda v: v * 45 // 100))
+    rot.alpha_composite(skugga)
+    rot.alpha_composite(lag)
 
 
 FLAGGFARG = (87, 31, 48)        # TACADA Vinröd #571F30: tydlig mot allt grönt
@@ -282,24 +475,58 @@ FLAGGMARKE = (243, 237, 226)    # TACADA Elfenben #F3EDE2
 TYPSNITT_TACADA = Path(__file__).resolve().parent.parent.parent / "assets" / "typsnitt" / "Marcellus-Regular.ttf"
 
 
-def _flagga(rot: Image.Image, x: float, y: float, s: float) -> None:
+def _vag(i: float) -> float:
+    """Dukens våg: 0–1 längs duken → förskjutning i enheter av 1,4 × s."""
+    return math.sin(i * math.pi * 1.6)
+
+
+def _duk_med_logga(fl: float, fh: float, S: float, farg: tuple, logga: Path) -> Image.Image:
+    """Tygflaggan i klubbens färg med loggan (en färg, ljus) mitt på, vajande: varje kolumn
+    flyttas upp/ned med vågen och får ljus och skugga – loggan följer tyget."""
+    W, H = max(2, round(fl)), max(2, round(fh))
+    duk = Image.new("RGBA", (W, H), farg + (255,))
+    lg = Image.open(logga).convert("RGBA")
+    lg = lg.crop(lg.getchannel("A").getbbox())
+    d = round(H * 0.9)
+    lg = lg.resize((d, round(d * lg.height / lg.width)), Image.LANCZOS)
+    duk.alpha_composite(lg, ((W - lg.width) // 2, (H - lg.height) // 2))
+    a = np.asarray(duk, dtype=np.float32)
+    amp = 1.4 * S
+    ut = np.zeros((H + int(2 * amp) + 4, W, 4), np.float32)
+    for x in range(W):
+        u = x / W
+        dy = amp + amp * _vag(u)
+        ljus = 1 + 0.28 * math.cos(u * math.pi * 1.6)
+        y0 = int(dy)
+        f = dy - y0
+        kol = a[:, x].copy()
+        kol[:, :3] = np.clip(kol[:, :3] * ljus, 0, 255)
+        # delpixelförskjutning: blanda två heltalslägen
+        ut[y0:y0 + H, x] += kol * (1 - f)
+        ut[y0 + 1:y0 + 1 + H, x] += kol * f
+    return Image.fromarray(np.clip(ut, 0, 255).astype(np.uint8), "RGBA")
+
+
+def _flagga(rot: Image.Image, x: float, y: float, s: float, stil: dict | None = None) -> None:
     """Flaggan som i målningen: ljus stång, vajande tygflagga med ljus och skugga, hålkopp
     och en mjuk slagskugga åt höger–uppåt (solen står lågt nere till vänster, som i målningen).
-    Ritas 4 ggr större och skalas ner för mjuka kanter."""
+    `stil` = flaggstil(klubbmapp): klubbens logga på duk i klubbens färg (lite större duk,
+    så att sigillet syns). Utan stil: TACADA-flaggan med T. Ritas 4 ggr större och skalas ner."""
     k = 4
     w, h = int(70 * s), int(56 * s)
     lag = Image.new("RGBA", (w * k, h * k), (0, 0, 0, 0))
     ox, oy = 14 * s * k, (h - 8 * s) * k  # stångens fot i lagret
     S = s * k
-    stang = 27 * S
+    stang = (30 if stil else 27) * S
+    fl, fh = ((24 * S, 18 * S) if stil else (19 * S, 13 * S))
     # slagskugga: stång och flagga lagda snett bakåt på greenen
     sk = Image.new("L", lag.size, 0)
     ds = ImageDraw.Draw(sk)
     dx, dy = 1.05, -0.38  # skuggans riktning per meter stång
     topp = (ox + stang * dx, oy + stang * dy)
     ds.line((ox, oy, *topp), fill=185, width=int(1.3 * S))
-    ds.polygon([topp, (topp[0] - 14 * S * 0.3, topp[1] - 14 * S * 0.9 + 2 * S),
-                (ox + (stang - 9 * S) * dx, oy + (stang - 9 * S) * dy)], fill=160)
+    ds.polygon([topp, (topp[0] - fl * 0.22, topp[1] - fl * 0.66 + 2 * S),
+                (ox + (stang - fh * 0.7) * dx, oy + (stang - fh * 0.7) * dy)], fill=160)
     sk = sk.filter(ImageFilter.GaussianBlur(1.1 * S))
     lag.paste((10, 30, 10, 255), mask=sk)
     d = ImageDraw.Draw(lag)
@@ -309,9 +536,16 @@ def _flagga(rot: Image.Image, x: float, y: float, s: float) -> None:
     # stången: ljus med skuggsida
     d.line((ox, oy, ox, oy - stang), fill=(240, 238, 230, 255), width=int(1.3 * S))
     d.line((ox + 0.6 * S, oy, ox + 0.6 * S, oy - stang), fill=(170, 168, 160, 255), width=max(1, int(0.6 * S)))
-    # tygflaggan: vajande kant (två bågar), ljusare överkant, mörkare veck
     t0 = oy - stang
-    fl, fh = 19 * S, 13 * S
+    if stil:
+        duk = _duk_med_logga(fl, fh, S, stil["farg"], stil["logga"])
+        lag.alpha_composite(duk, (int(ox), int(t0 - 1.4 * S)))
+        upp = [(ox + fl * i / 12, t0 + 1.4 * S * _vag(i / 12)) for i in range(13)]
+        d.line([(px_, py_ + 0.5 * S) for px_, py_ in upp], fill=(255, 255, 255, 60), width=max(1, int(0.6 * S)))
+        lag = lag.resize((w, h), Image.LANCZOS)
+        rot.alpha_composite(lag, (int(x - ox / k), int(y - oy / k)))
+        return
+    # tygflaggan: vajande kant (två bågar), ljusare överkant, mörkare veck
     upp = [(ox + fl * i / 12, t0 + 1.4 * S * math.sin(i / 12 * math.pi * 1.6)) for i in range(13)]
     ned = [(ox + fl * i / 12, t0 + fh - 1.0 * S * i / 12 + 1.4 * S * math.sin(i / 12 * math.pi * 1.6)) for i in range(12, -1, -1)]
     d.polygon(upp + ned, fill=FLAGGFARG + (255,))
@@ -738,8 +972,27 @@ def formpoang(underlag: Image.Image, malad: Image.Image, hole: Hole, px) -> dict
     return {"likhet": round(likhet, 3), "kant": round(kant, 3), "poang": round(0.6 * likhet + 0.4 * kant, 3)}
 
 
+def pa_formen(rot: Image.Image, fil: Path) -> Image.Image:
+    """AI-målningen (9:16-duken från ai_underlag) skalad tillbaka och utklippt med
+    fotounderlagets siluett `rot` – samma placering som ai_tillbaka."""
+    hojd_px = rot.height
+    ai = Image.open(fil).convert("RGB")
+    # AI:n lämnar inte exakt 9:16 (4K: 3072 × 5504); duken räknas som underlagets 9:16
+    duk_w = round(hojd_px * 9 / 16)
+    ai = ai.resize((duk_w, hojd_px), Image.LANCZOS)
+    inre_h = round(hojd_px * AI_SKALA)
+    inre_w = round(rot.width * AI_SKALA)
+    if inre_w > duk_w * AI_SKALA:  # brett hål: som i ai_underlag styr bredden
+        inre_w = round(duk_w * AI_SKALA)
+        inre_h = round(inre_w * rot.height / rot.width)
+    x0, y0 = (duk_w - inre_w) // 2, (hojd_px - inre_h) // 2
+    malad = ai.crop((x0, y0, x0 + inre_w, y0 + inre_h)).resize(rot.size, Image.LANCZOS).convert("RGBA")
+    malad.putalpha(rot.getchannel("A"))
+    return malad
+
+
 def ai_tillbaka(hole: Hole, orto: Path, ai_bilder: list[Path], ut: Path, kontroll: Path | None = None,
-                hojd_px: int = 4000) -> tuple[Path, list[dict]]:
+                hojd_px: int = 4000, flagga: dict | None = None) -> tuple[Path, list[dict]]:
     """Lägger AI-målningen på hålets exakta form: duken skalas tillbaka, hålet klipps
     ut med fotounderlagets egen siluett (alfa) och prickar och flagga ritas av koden
     på hålfilens koordinater. Får den flera målningar väljs den med högst formpoäng.
@@ -748,22 +1001,20 @@ def ai_tillbaka(hole: Hole, orto: Path, ai_bilder: list[Path], ut: Path, kontrol
     rot, px = fotounderlag(hole, orto, hojd_px)
     resultat = []
     for fil in ai_bilder:
-        ai = Image.open(fil).convert("RGB")
-        # AI:n lämnar inte exakt 9:16 (4K: 3072 × 5504); duken räknas som underlagets 9:16
-        duk_w = round(hojd_px * 9 / 16)
-        ai = ai.resize((duk_w, hojd_px), Image.LANCZOS)
-        inre_h = round(hojd_px * AI_SKALA)
-        inre_w = round(rot.width * AI_SKALA)
-        if inre_w > duk_w * AI_SKALA:  # brett hål: som i ai_underlag styr bredden
-            inre_w = round(duk_w * AI_SKALA)
-            inre_h = round(inre_w * rot.height / rot.width)
-        x0, y0 = (duk_w - inre_w) // 2, (hojd_px - inre_h) // 2
-        malad = ai.crop((x0, y0, x0 + inre_w, y0 + inre_h)).resize(rot.size, Image.LANCZOS).convert("RGBA")
-        malad.putalpha(rot.getchannel("A"))
+        malad = pa_formen(rot, fil)
         resultat.append((formpoang(rot, malad, hole, px) | {"fil": str(fil)}, malad))
     resultat.sort(key=lambda t: -t[0]["poang"])
     malad = resultat[0][1]
     if kontroll:
         _spara(rita_konturer(malad, hole, px), kontroll)
-    rita_spel(malad, hole, px)
+    rita_prickar(malad, hole, px)
+    # utan flagga och outlinje: så kan flaggan bytas senare utan att något suddas bort
+    _spara(malad, utan_flagga(ut))
+    rita_flagga_och_ob(malad, hole, px, flagga)
     return _spara(malad, ut), [r[0] for r in resultat]
+
+
+def utan_flagga(bild: Path) -> Path:
+    """hal-NN-malad.webp → hal-NN-malad-utan-flagga.webp (målningen med prickar, utan flagga och outlinje)."""
+    bild = Path(bild)
+    return bild.with_name(f"{bild.stem}-utan-flagga{bild.suffix}")
