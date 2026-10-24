@@ -11,16 +11,14 @@ index: 6
 tees: [["60", 380], ["56", 347], ["52 · 49", 318], ["44", 243]]
 bild: ../halbilder/hal-08-malad.webp
 typbild: false
-rubrik: Banans snabbaste green
-beskrivning: >-
-  En rak par 4 norrut ut ur en smal gata i skogen. Fairwaybunker till vänster cirka 170 m
-  och till höger cirka 210 m från tee 56. Avlång green med bunker höger fram.
+rubrik: "Banans snabbaste green"
+beskrivning: "Utslaget går ut ur en smal gata i skogen, med out längs vänstersidan och tjock ruff till höger. Två fairwaybunkrar väntar på var sin sida. Belöningen är banans snabbaste green."
 rad_rubrik: Råd från pro:n
 rad:
-  - Ganska smalt utslag med out längs vänstersidan och tjock ruff på höger.
-  - Placera utslaget på fairway så blir hålet lättspelat.
-slutrad: Banans snabbaste green.
-kortrad: "Placera utslaget på fairway, så blir hålet lättspelat."   # pro:ns råd i en mening (prospekt och inlägg)
+  - "Ganska smalt utslag: out längs vänstersidan och tjock ruff till höger."
+  - "Placera utslaget på fairway, så blir hålet lättspelat."
+slutrad: "Banans snabbaste green – var rädd om farten."
+kortrad: "Hitta fairway från tee, så blir hålet lättspelat."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Utslag kort om bunkrarna, mitt i fairway – kvar blir ett medellångt inspel.
   chansa: Driver förbi bunkrarna ger kort inspel, men out vänster straffar en hook.

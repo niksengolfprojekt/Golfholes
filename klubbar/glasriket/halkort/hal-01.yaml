@@ -11,16 +11,14 @@ index: 12
 tees: [["56 · 60", 442], ["52 · 49", 394], ["44", 303]]
 bild: ../halbilder/hal-01-malad.webp
 typbild: false
-rubrik: Ett bra öppningshål
-beskrivning: >-
-  En par 5 från klubbhuset mot sydväst som svänger vänster runt två dammar på högersidan,
-  cirka 250–325 m från tee 56/60. Greenen har en bunker till höger.
+rubrik: "Rundan börjar med en chans"
+beskrivning: "Klubbhuset i ryggen och en kort par 5 som svänger mjukt vänster. Out på båda sidor håller dig skärpt, och längre fram blänker två dammar till höger. Lägg bollen rätt, så är greenen nära."
 rad_rubrik: Råd från pro:n
 rad:
-  - Relativt kort och bra öppningshål. Outgräns både på vänster- och högersidan.
-  - Andra slaget bör placeras på höger sida, då ger du dig ett ganska kort inspel mot en svagt ifrånsluttande green.
-slutrad: Vänsterkanten ger dig medstuds.
-kortrad: "Lägg andra slaget på högersidan. Då väntar ett kort inspel."   # pro:ns råd i en mening (prospekt och inlägg)
+  - "Ett relativt kort öppningshål, men det är out både till vänster och till höger."
+  - "Lägg andra slaget på högersidan. Då får du ett ganska kort inspel mot en green som sluttar svagt ifrån dig."
+slutrad: "Vänsterkanten ger dig medstuds."
+kortrad: "Lägg andra slaget till höger – där väntar ett kort inspel."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Utslag mitt i fairway, andra slaget förbi dammarna ut till höger sida – kvar blir ett kort inspel.
   chansa: Långtslående kan nå greenen på två, men dammarna och out på båda sidor straffar ett snett slag.

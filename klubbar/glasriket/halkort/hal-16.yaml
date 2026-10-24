@@ -10,16 +10,15 @@ index: 15
 tees: [["52 · 56 · 60", 297], ["49 · 44", 259]]
 bild: ../halbilder/hal-16-malad.webp
 typbild: false
-rubrik: Vänta på blixtlampan
-beskrivning: >-
-  En kort par 4 som går snett vänster ut från tee och svänger höger upp mot en green
-  med vatten på vänster sida och en damm till höger bakom.
+rubrik: "En snäll green bland vatten"
+beskrivning: "Ett kort par 4 som svänger höger upp mot greenen. Vattnet ramar in slutet, till vänster om greenen och i en damm till höger bakom. Ett kontrollerat utslag räcker långt. Flaggan avgör hur modig du ska vara."
 rad_rubrik: Råd från pro:n
 rad:
-  - En lätt fade från tee på 170 m ger dig ett kort inspel, men se upp om flaggan står till vänster – då krävs längdkontroll.
-  - "Säkerhet: slå bara ut när blixtlampan framme till höger är släckt. Tänd lampan när du lämnat tee och släck den med knappen innan du går in på green."
-slutrad: Snäll green.
-kortrad: "En lätt fade på 170 meter ger ett kort inspel. Slå bara när lampan är släckt."   # pro:ns råd i en mening (prospekt och inlägg)
+  - "En lätt fade på cirka 170 meter från tee ger dig ett kort inspel."
+  - "Står flaggan till vänster krävs längdkontroll."
+  - "Säkerhet: slå bara ut när blixtlampan framme till höger är släckt. Tänd lampan när du lämnat tee och släck den med knappen innan du går in på greenen."
+slutrad: "Snäll green."
+kortrad: "En lätt fade på 170 meter – och slå bara när lampan är släckt."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Ett kontrollerat utslag på 170 m till fairway och ett kort inspel mot mitten av greenen.
   chansa: Spela mot flaggan även när den står till vänster – men kort eller vänster väntar vattnet.

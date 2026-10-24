@@ -11,16 +11,14 @@ index: 5
 tees: [["52 · 56 · 60", 128], ["49 · 44", 89]]
 bild: ../halbilder/hal-17-malad.webp
 typbild: false
-rubrik: Banans signaturhål
-beskrivning: >-
-  Ett kort par 3 mot nordväst över vatten. Greenen omges av dammar till vänster,
-  framför och bakom, med en trädö i dammen närmast tee.
+rubrik: "Signaturhålet över vattnet"
+beskrivning: "Hålet alla pratar om efter rundan. Ett kort par 3 över vatten, förbi en trädö i dammen, mot en green med vatten till vänster, framför och bakom. Rätt klubba ger ett lugnt par. Fel klubba hörs."
 rad_rubrik: Råd från pro:n
 rad:
-  - Rätt längd och riktning, så gör du ett säkert par.
-  - Slår du vänster, kort eller långt blir det blött.
-slutrad: Bakom greenen är det rött pliktområde hela vägen.
-kortrad: "Rätt längd och riktning ger ett säkert par. Vänster, kort eller långt blir blött."   # pro:ns råd i en mening (prospekt och inlägg)
+  - "Banans signaturhål. Rätt längd och riktning, så gör du ett säkert par."
+  - "Slår du vänster, kort eller långt blir det blött."
+slutrad: "Bakom greenen är det rött pliktområde hela vägen."
+kortrad: "Rätt längd och riktning ger ett säkert par. Allt annat blir blött."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Sikta mot högra halvan av greenen – där finns gräs att landa på.
   chansa: Flaggan till vänster kräver exakt längd över vattnet.

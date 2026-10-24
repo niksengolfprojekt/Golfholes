@@ -11,16 +11,14 @@ index: 2
 tees: [["60", 331], ["56 · 52", 301], ["49 · 44", 245]]
 bild: ../halbilder/hal-06-malad.webp
 typbild: false
-rubrik: Håll vänster från tee
-beskrivning: >-
-  Banans näst svåraste hål. Fairway går mot nordväst med träd längs hela högersidan och
-  svänger sedan höger upp mot en stor green. Dammen ligger till vänster om tee 49/44.
+rubrik: "Vänster först, sedan platån"
+beskrivning: "Index 2, och det märks. Fairway viker av åt höger bakom en rad träd som är mycket svåra att slå över. Greenen är stor men har platåer, så hålet är inte klart förrän bollen ligger på rätt nivå."
 rad_rubrik: Råd från pro:n
 rad:
-  - Håll vänster på ditt utslag, träden på höger sida är mycket svåra att slå över.
-  - Inspelet bör placeras på rätt platå för att undvika treputtar.
-slutrad: Greenen är stor – läs platåerna.
-kortrad: "Håll vänster från tee. Träden till höger är mycket svåra att slå över."   # pro:ns råd i en mening (prospekt och inlägg)
+  - "Håll vänster med utslaget. Träden på högersidan är mycket svåra att slå över."
+  - "Placera inspelet på rätt platå, annars väntar lätt en treputt."
+slutrad: "Rätt platå sparar slag."
+kortrad: "Håll vänster från tee och lägg inspelet på rätt platå."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Utslag mot vänstra halvan av fairway, där svängen öppnar upp för inspelet.
   chansa: Ett utslag nära träden till höger kortar hålet, men en boll i träden kostar slag.

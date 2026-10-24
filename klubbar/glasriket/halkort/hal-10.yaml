@@ -11,16 +11,14 @@ index: 11
 tees: [["60", 175], ["56", 165], ["52 · 49 · 44", 140]]
 bild: ../halbilder/hal-10-malad.webp
 typbild: false
-rubrik: Pinne och vind avgör
-beskrivning: >-
-  Ett långt par 3 söderut ut ur en skogsgata. Greenen är över 40 m lång och smal,
-  med bunker till höger och en bunker vänster bakom.
+rubrik: "Läs flaggan, känn vinden"
+beskrivning: "Ett långt par 3 ut ur skogen mot en smal green som är över 40 meter lång. Bunkrar vaktar både sidan och baksidan. Var flaggan står kan skilja flera klubbor, och vinden vill alltid vara med."
 rad_rubrik: Råd från pro:n
 rad:
-  - Ett bra korthål.
-  - Viktigt att veta var pinnen står samt hur vinden rör sig.
-slutrad: Väl inbunkrad green.
-kortrad: "Välj klubba efter var pinnen står. Den långa greenen förlåter längd mer än sidled."   # pro:ns råd i en mening (prospekt och inlägg)
+  - "Ett bra korthål. Ta reda på var pinnen står innan du väljer klubba."
+  - "Känn efter hur vinden rör sig innan du slår."
+slutrad: "Greenen är väl inbunkrad."
+kortrad: "Kolla pinnen, känn vinden – sedan väljer du klubba."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Välj klubba efter flaggan och sikta mitt i greenen – den långa greenen förlåter längd mer än sidled.
   chansa: Flaggan långt bak lockar, men bunkern vänster bakom straffar ett för långt slag.

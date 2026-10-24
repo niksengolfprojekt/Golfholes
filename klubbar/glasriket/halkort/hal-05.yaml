@@ -11,16 +11,14 @@ index: 8
 tees: [["60", 355], ["56 · 52", 320], ["49 · 44", 277]]
 bild: ../halbilder/hal-05-malad.webp
 typbild: false
-rubrik: Mer plats än det ser ut
-beskrivning: >-
-  Ett rakt par 4 österut mot en stor green. Dammen ligger till vänster framför tee och
-  en bunker vaktar vänstra sidan av fairway en bit före greenen.
+rubrik: "Mer plats än du tror"
+beskrivning: "Från tee ser fairway smalare ut än den är. En damm tidigt till vänster och en bunker längre fram på samma sida drar blicken åt fel håll. Den som litar på högersidan får en stor green att sikta på."
 rad_rubrik: Råd från pro:n
 rad:
-  - Det finns mer plats på höger sida än vad som syns från tee.
-  - Sneddar du för tight på vänstersidan blir du lätt mask.
-slutrad: Greenen är stor och lätträffad.
-kortrad: "Sikta höger om mitten. Den som sneddar för tight vänster blir lätt mask."   # pro:ns råd i en mening (prospekt och inlägg)
+  - "Det finns mer plats på högersidan än vad som syns från tee. Använd den."
+  - "Sneddar du för tight längs vänstersidan blir du lätt mask."
+slutrad: "Greenen är stor och lätträffad."
+kortrad: "Lita på högersidan – där finns mer plats än det ser ut."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Sikta till höger om mitten från tee – där finns mer plats än det ser ut.
   chansa: Linjen längs vänstersidan kortar hålet, men där väntar dammen och bunkern.

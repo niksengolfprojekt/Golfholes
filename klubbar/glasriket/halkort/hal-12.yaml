@@ -12,16 +12,14 @@ index: 3
 tees: [["60", 527], ["56", 490], ["52 · 49 · 44", 400]]
 bild: ../halbilder/hal-12-malad.webp
 typbild: false
-rubrik: Kräver ett bra utslag
-beskrivning: >-
-  En lång par 5 norrut i en skogsgata. De sista 100 m smalnar fairway av och svänger
-  svagt vänster mot en stor oval green med två bunkrar vänster fram.
+rubrik: "Tålamod genom skogen"
+beskrivning: "En lång par 5 i en skogsgata, index 3. De sista hundra metrarna smalnar fairway av och svänger svagt vänster, med två bunkrar vänster framför greenen. Tålamod lönar sig: greenen är stor och snäll."
 rad_rubrik: Råd från pro:n
 rad:
-  - En lång par femma som kräver ett bra utslag.
-  - Ta gärna ett lite längre tredjeslag, för framme vid green är det väldigt smalt.
-slutrad: Stor och snäll green.
-kortrad: "Ta hellre ett längre tredjeslag. Framme vid greenen är det väldigt smalt."   # pro:ns råd i en mening (prospekt och inlägg)
+  - "En lång par femma som kräver ett bra utslag."
+  - "Ta gärna ett lite längre tredjeslag, för framme vid greenen är det väldigt smalt."
+slutrad: "Stor och snäll green."
+kortrad: "Ett bra utslag, sedan hellre ett längre tredjeslag in genom det smala."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Tre raka slag – lägg andra slaget så att du har ett fullt slag in genom det smala partiet.
   chansa: Två långa slag tar dig nära, men framme vid green är det smalt med bunkrar vänster.

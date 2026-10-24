@@ -9,16 +9,14 @@ index: 1
 tees: [["60", 369], ["56", 335], ["52 · 49 · 44", 290]]
 bild: ../halbilder/hal-14-malad.webp
 typbild: false
-rubrik: Banans svåraste utslag
-beskrivning: >-
-  Ett smalt dogleg höger genom granskogen. Out längs hela vänstersidan, skog till höger
-  och en bunker som vaktar greenen kort om höger. Här vinns och förloras rundan.
+rubrik: "Banans svåraste utslag"
+beskrivning: "Index 1. Fairway böjer av åt höger genom granskogen, med out längs hela vänstersidan och skog till höger. En bunker vaktar greenen. Långtslående frestas att gena. Alla andra vinner hålet på tålamod."
 rad_rubrik: Råd från pro:n
 rad:
-  - Den långtslående genar över skogen mot greenen och får ett kort inspel.
-  - Medelgolfaren ska inte utmana här – det är out till vänster och skog till höger.
-slutrad: Spela hålet som ett par fem för säkerhets skull.
-kortrad: "Spela hålet som ett par 5. Att gena över skogen är för den långtslående."   # pro:ns råd i en mening (prospekt och inlägg)
+  - "Den långtslående genar över skogen mot greenen och får ett kort inspel."
+  - "Medelgolfaren ska inte utmana här. Det är out till vänster och skog till höger."
+slutrad: "Spela hålet som ett par 5 – det är säkrast."
+kortrad: "Spela det som ett par 5. Genvägen över skogen är för de långtslående."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Spela hålet som ett par fem – utslag till fairway, fram mot greenen och ett kort inspel förbi bunkern.
   chansa: Gena över skogen till höger mot greenen. Out längs hela vänstersidan om det går snett.

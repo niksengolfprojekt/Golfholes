@@ -12,16 +12,14 @@ index: 18
 tees: [["56 · 60", 116], ["52 · 49 · 44", 105]]
 bild: ../halbilder/hal-07-malad.webp
 typbild: false
-rubrik: Inbunkrad rund green
-beskrivning: >-
-  Ett kort par 3 mot östsydost till en rund green. Bunkrar till vänster, höger fram
-  och bakom till vänster fångar upp det mesta som missar greenen.
+rubrik: "Banans bästa birdiechans"
+beskrivning: "Index 18: det lättaste hålet på scorekortet. Ett kort par 3 mot en rund green med bunkrar runt om, som fångar nästan allt som missar. Träffa ytan, så står du med en birdieputt."
 rad_rubrik: Råd från pro:n
 rad:
-  - Bunkrarna fångar upp det mesta utanför green.
-  - Om du besöker bunkrarna – var snäll och gå inte ner och ur dem i de höga slänterna. Då blir de lösa och risken för pluggad boll ökar.
-slutrad: Ett bra birdiehål.
-kortrad: "Bunkrarna fångar det mesta utanför green. Träffa den, så är det ett birdiehål."   # pro:ns råd i en mening (prospekt och inlägg)
+  - "Ett bra birdiehål. Bunkrarna fångar upp det mesta som missar greenen."
+  - "Hamnar du i en bunker: gå inte ner eller upp via de höga slänterna. De blir lösa och risken för pluggade bollar ökar."
+slutrad: "Träffa greenen, sedan är chansen din."
+kortrad: "Träffa greenen, så har du ett av banans bästa birdielägen."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Sikta mitt på greenen – den är rund och bunkrarna ligger runt kanterna.
   chansa: Gå på flaggan när den står nära en bunker – kort eller snett blir ett bunkerslag.

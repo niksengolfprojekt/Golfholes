@@ -11,16 +11,14 @@ index: 17
 tees: [["60", 359], ["56 · 52", 320], ["49 · 44", 270]]
 bild: ../halbilder/hal-13-malad.webp
 typbild: false
-rubrik: Håll utslaget till höger
-beskrivning: >-
-  En rak par 4 genom en smal skogsgata. Fairway lutar mot vänster och den stora bunkern
-  cirka 195–245 m från tee 56/52. Greenen vaktas av bunkrar på båda sidor.
+rubrik: "Sikta höger, landa mitt i"
+beskrivning: "Index 17 på scorekortet, men fairway har en egen vilja. Den lutar mot vänster, där rött pliktområde och en lång bunker väntar. Greenen vaktas av bunkrar på båda sidor. Rätt linje gör halva jobbet."
 rad_rubrik: Råd från pro:n
 rad:
-  - Fairway lutar mot vänster och bunkern – håll utslaget mot högersidan, så hamnar du mitt i och får bästa vinkeln in mot greenen.
-  - Stor bunker till höger med höga kanter på en del ställen. Gå aldrig ner i eller ur bunkern i slänterna!
-slutrad: Oändligt rött pliktområde på vänster sida fram till bunkern.
-kortrad: "Håll utslaget mot högersidan. Fairway lutar och tar bollen mot mitten."   # pro:ns råd i en mening (prospekt och inlägg)
+  - "Fairway lutar mot vänster och bunkern. Håll utslaget mot högersidan, så hamnar du mitt i med bästa vinkeln in mot greenen."
+  - "Den stora bunkern till höger har höga kanter på sina ställen. Gå aldrig ner i eller upp ur bunkern via slänterna."
+slutrad: "Vänster fram till bunkern: rött pliktområde."
+kortrad: "Håll utslaget höger – lutningen tar bollen mot mitten."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Utslag mot högra kanten av fairway kort om bunkern, sedan ett kort inspel mitt på greenen.
   chansa: Ett långt utslag förbi bunkern ger en wedge in – men vänster väntar plikt och bunker.

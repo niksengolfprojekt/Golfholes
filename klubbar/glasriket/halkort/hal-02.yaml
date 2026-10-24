@@ -12,15 +12,14 @@ index: 4
 tees: [["60", 355], ["56 · 52", 318], ["49", 284], ["44", 248]]
 bild: ../halbilder/hal-02-malad.webp
 typbild: false
-rubrik: Kort om dammen
-beskrivning: >-
-  Ett rakt par 4 söderut. Den fyrkantiga dammen ligger tvärs över hålet cirka 220 m från
-  tee 56/52, och greenen har en liten bunker till höger.
+rubrik: "Dammen bestämmer längden"
+beskrivning: "Hålet ser rakt och öppet ut. Men cirka 220 meter från tee 56 skär en fyrkantig damm tvärs över fairway, och hela högersidan fram till dammen är rött pliktområde. Index 4. Här vinner den som känner sin längd."
 rad_rubrik: Råd från pro:n
 rad:
-  - En fyrkantig damm ligger ca 220 m från tee 56.
-  - Placera utslaget kort om dammen, då får du ett inspel på ca 120 m till en högersluttande green.
-slutrad: Oändligt rött pliktområde på höger sida fram till dammen.
+  - "Lägg utslaget kort om den fyrkantiga dammen, som ligger cirka 220 meter från tee 56."
+  - "Då återstår ungefär 120 meter till en green som sluttar åt höger."
+slutrad: "Högersidan fram till dammen är rött pliktområde."
+kortrad: "Stanna kort om dammen och spela in med 120 meter kvar."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Ett utslag på 180–200 m från tee 56 stannar kort om dammen – kvar blir ca 120 m in.
   chansa: Att bära dammen ger ett kort inspel, men ett slag till höger hamnar i pliktområdet.

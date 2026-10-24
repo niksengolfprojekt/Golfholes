@@ -14,15 +14,14 @@ index: 14
 tees: [["60", 176], ["56 · 52", 140], ["49 · 44", 125]]
 bild: ../halbilder/hal-04-malad.webp
 typbild: false
-rubrik: Spela rakt
-beskrivning: >-
-  Ett par 3 rakt söderut genom en skogsgata. Framför greenen ligger en bunker till höger
-  och en till vänster, med skog tätt inpå på båda sidor.
+rubrik: "Rakt genom skogsgatan"
+beskrivning: "Ett fint par 3 genom en smal skogsgata. Två bunkrar vaktar greenens framkant, en på var sida, och skogen står tätt inpå. Hålet begär bara ett rakt slag. Det är svårare än det låter."
 rad_rubrik: Råd från pro:n
 rad:
-  - Ett fint korthål.
-  - Bunkern till höger lär fånga upp de flesta bollarna som går till höger, så du slipper leta.
-slutrad: Nu gäller det bara att spela rakt på det här hålet.
+  - "Ett fint korthål där en sak gäller: spela rakt."
+  - "Bunkern till höger fångar de flesta bollar som går åt höger, så du slipper leta."
+slutrad: "Rakt är rätt på det här hålet."
+kortrad: "Spela rakt. Missar du höger fångar bunkern bollen."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Sikta mitt på greenen – båda bunkrarna ligger vid framkanten på sidorna.
   chansa: Flaggan nära en bunker lockar, men ett slag som drar iväg hamnar i sand eller skog.
