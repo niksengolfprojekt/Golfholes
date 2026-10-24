@@ -65,13 +65,10 @@
 - [x] Rå flygfilm ur Lantmäteriets data (2026-10-23): `flygfilm` – höjdmodell + ortofoto + Laserdata Skog, kamera 5 m över mittlinjen med blicken 60 m fram, mjuk kurva, stiger och tippar till vy rakt ovanifrån där allt utanför hålet tonas till papper. 1280×720, 24 fps. Test Glasriket hål 14 och 17: `/mnt/project-files/glasriket/flygfilm-test/` (plan för AI-yta i `plan.md`)
 - [x] AI-test flygfilm hål 14 (2026-10-23, 952 krediter): Wan 3.0 element-till-video med rå film som förlaga håller formen i flygningen; övergången till hålbilden görs av koden. Formkontroll: `python -m golfholes.render.flygfilm_kontroll` (kamerabana, hålbild i filmens sista ruta, konturer på rutor). Resultat: `/mnt/project-files/glasriket/flygfilm-test/ai-test/resultat.md`
 - [x] Flygfilm v2 "översikt" (Erics önskan 2026-10-24): `flygfilm --forlopp oversikt` börjar i hålbildens vy ovanifrån, sjunker mjukt till 5 m bakom tee 56, flyger hålet i 27 m/s (förut ~38) och stiger tillbaka till samma vy, cirka 24 s. `flygfilm_kontroll animatic` gör filmen med bara kod (målad hålbild högt upp, film lågt ner) och räknar ut AI-klippen. Plan och pris: `/mnt/project-files/glasriket/flygfilm-test/v2/plan.md`
-- [ ] Flygfilm v2 hål 14 med AI-yta (2026-10-24, 1 186 krediter använda, stoppat):
-  - **Klart:** början 0–8,5 s. Koden gör nedstigningen (`flygfilm_kontroll omproj`). AI-del 1 (omtag, ruta 79–175) är godkänd i formkontrollen.
-  - **Underkänt:** AI-del 2 hittade på bunkrar. Omtag + del 3–4 ryms inte i taket på 1 950.
-  - **Väntar** på Erics val: höjt tak (cirka 1 120 till, kontot behöver fyllas på) eller 480p (560).
-  - Ihopsättning klar i koden: `hopklipp` + `animatic --ren`.
-  - Resultat: `/mnt/project-files/glasriket/flygfilm-test/v2/final/resultat.md`
-- [ ] Flygfilm med AI-yta för fler hål – v2 med översikt i 720p kostar cirka 1 500 krediter per försök och realistiskt 1 900–2 300 per hål (80 krediter per AI-sekund); väntar på Erics beslut
+- [x] Flygfilm v2 hål 14 i 480p (Eric 2026-10-24: "gör filmen i 480p så ser vi kvaliteten"): färdig film 23,7 s, 854 × 480, `/mnt/project-files/glasriket/flygfilm-test/v2/final/hal-14-flygfilm-v2-480p.mp4`. Del 2–4 i 480p kostade 560 krediter (tak 600), totalt för v2 1 746.
+  - Formkontroll: del 2 hittade på en green och två bunkrar vid horisonten de sista ~1,3 s, och slutet av del 1 hade små sandfläckar. Borttvättade med kod (`flygfilm_kontroll tvatt`, bara borttagning). Del 3 och 4: rätt bunker och green, men bunkern lite för stor/flikig vid 16,5–19 s, och en stig till höger vid 14–16,5 s där den råa filmen har träd. Omtag rymdes inte.
+  - Väntar på klubbens/Erics godkännande. Resultat: `/mnt/project-files/glasriket/flygfilm-test/v2/final/resultat.md`
+- [ ] Flygfilm med AI-yta för fler hål – v2 med översikt i 720p kostar cirka 1 500 krediter per försök och realistiskt 1 900–2 300 per hål (80 krediter per AI-sekund); 480p kostar hälften (40 krediter per AI-sekund) men är mjukare; väntar på Erics beslut
 - [ ] Tee-vy i 3D (Mac Pro)
 - [x] Ögonhöjdsvy ur data (`golfholes/render/perspektiv.py`): höjdmodell + ortofoto + skogsmassa, spellinjen hålls öppen. AI (OpenArt) målar vyn till foto. Glasriket hål 3, 5, 14: `/mnt/project-files/glasriket/ogonhojd/` – väntar på Erics godkännande. Visas som "Visualisering", aldrig som foto.
 - [ ] Ecosigns tryckspecifikation in i `SignSpec` (mått, utfall, PDF/X)

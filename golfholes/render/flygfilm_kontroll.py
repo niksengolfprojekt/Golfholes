@@ -21,6 +21,13 @@ de ska ligga i varje ruta – både i den råa filmen och i AI-filmen.
 AI:n måste göra om (hela sekunder, högst 6 s per klipp). Byt --film mot AI-klippen
 hopsatta så blir det den färdiga filmen.
 
+`tvatt` tar bort påhittad sand (och med --green en påhittad ljus green-yta) i ett område
+nära horisonten i valda rutor, där formkontrollen visat att AI:n hittat på. Bara borttagning:
+ytan fylls med gräset runt omkring, inget nytt ritas in (v2 480p: slutet av del 1 och del 2):
+
+    python -m golfholes.render.flygfilm_kontroll tvatt klubbar/glasriket/hal-14.yaml --film del2.mp4 \
+        --delar 85-150 --omrade 500,1010,280,355 --green --ut del2-tvattad.mp4
+
 `slutbild` lägger den godkända målade hålbilden (hal-NN-malad.webp) i exakt samma
 läge som den råa filmens sista ruta (vy rakt ovanifrån på papper). Den används som
 slutbild till AI:n, så att filmen landar i hålbilden.
@@ -410,6 +417,106 @@ def hopklipp(ra: Path, klipp: list[Path], delar: list[tuple[int, int]], ut: Path
     return {"rutor": len(film), "skarv_skillnad": skillnad}
 
 
+def _vidga(m: np.ndarray, n: int) -> np.ndarray:
+    for _ in range(n):
+        m2 = m.copy()
+        m2[1:] |= m[:-1]; m2[:-1] |= m[1:]; m2[:, 1:] |= m[:, :-1]; m2[:, :-1] |= m[:, 1:]
+        m = m2
+    return m
+
+
+def pahittad_yta(bild: np.ndarray, ruta: tuple[int, int, int, int], green: bool = False) -> np.ndarray:
+    """Mask för sand (och med green=True: för ljus "green"-yta) inom ruta = (x0, x1, y0, y1).
+
+    Används bara där formkontrollen har visat att AI:n har hittat på bunkrar eller en green
+    som inte finns i hålfilen eller den råa filmen."""
+    x0, x1, y0, y1 = ruta
+    f = bild.astype(np.float32)
+    r, g, b = f[..., 0], f[..., 1], f[..., 2]
+    mx, mn = f.max(-1), f.min(-1)
+    sat = (mx - mn) / (mx + 1)
+    m = (mx > 140) & (sat < 0.34) & (r > b + 4) & (r >= g - 12)          # ljus, blek, varm = sand
+    if green:
+        L = f.mean(-1)
+        ref = np.median(L[y1:y1 + 50, x0:x1])                            # vanlig fairway strax under
+        m |= (L > ref + 22) & (g >= r - 4)
+    omr = np.zeros_like(m)
+    omr[y0:y1, x0:x1] = True
+    m &= omr
+    e = m.copy()                                                          # bort med enstaka prickar
+    e[1:-1, 1:-1] = m[1:-1, 1:-1] & m[:-2, 1:-1] & m[2:, 1:-1] & m[1:-1, :-2] & m[1:-1, 2:]
+    m = e
+    if green:                                                             # stäng hål ("dammar") i ytan
+        for y in range(y0, y1):
+            xs = np.nonzero(m[y])[0]
+            for p, q in zip(xs[:-1], xs[1:]):
+                if 1 < q - p < 45:
+                    m[y, p:q] = True
+    return _vidga(m, 6 if green else 7) & omr
+
+
+def fyll_med_omgivning(bild: np.ndarray, m: np.ndarray, varv: int = 200) -> np.ndarray:
+    """Fyller maskade pixlar inifrån kanten med medel av grannarna (gräset runt omkring)."""
+    acc = bild.astype(np.float32).copy()
+    w = (~m).astype(np.float32)
+    acc[m] = 0
+
+    def grannar(x):
+        p = np.pad(x, ((1, 1), (1, 1)) + ((0, 0),) * (x.ndim - 2), mode="edge")
+        return p[:-2, 1:-1] + p[2:, 1:-1] + p[1:-1, :-2] + p[1:-1, 2:]
+    for _ in range(varv):
+        s, c = grannar(acc * w[..., None]), grannar(w)
+        upd = m & (c > 0)
+        acc[upd] = (s / np.maximum(c, 1e-6)[..., None])[upd]
+        w = np.where(upd, 1.0, w)
+    return acc
+
+
+def tvatta_bild(bild: np.ndarray, ruta: tuple[int, int, int, int], green: bool = False) -> tuple[np.ndarray, int]:
+    """Tar bort påhittad sand/green inom ruta. Bara borttagning: inget nytt ritas in."""
+    from PIL import ImageFilter
+    m = pahittad_yta(bild, ruta, green)
+    if not m.any():
+        return bild, 0
+    ys, xs = np.nonzero(m)
+    Y0, Y1, X0, X1 = max(ys.min() - 14, 0), ys.max() + 15, max(xs.min() - 14, 0), xs.max() + 15
+    sub, ms = bild[Y0:Y1, X0:X1], m[Y0:Y1, X0:X1]
+    f = fyll_med_omgivning(sub, ms)
+    f[ms] += np.random.default_rng(1).normal(0, 4, f[ms].shape)          # lite korn så det inte blir slätt
+    w = np.array(Image.fromarray((ms * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(2)), np.float32)[..., None] / 255
+    ut = bild.copy()
+    ut[Y0:Y1, X0:X1] = np.clip(sub * (1 - w) + f * w, 0, 255).astype(np.uint8)
+    return ut, int(m.sum())
+
+
+def tvatta_film(film: Path, ut: Path, rutor: tuple[int, int], ruta: tuple[int, int, int, int], green: bool = False,
+                fps: int | None = None, B: int = 1280, Hp: int = 720) -> int:
+    """tvatta_bild på rutorna a–b (filmens egna rutnummer) i en film; resten orört."""
+    r = subprocess.run([ffmpeg_bin(), "-loglevel", "error", "-i", str(film), "-vf", f"scale={B}:{Hp}",
+                        "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], stdout=subprocess.PIPE, check=True)
+    bilder = np.frombuffer(r.stdout, np.uint8).reshape(-1, Hp, B, 3).copy()
+    if fps is None:
+        p = subprocess.run([ffmpeg_bin().replace("ffmpeg", "ffprobe"), "-v", "error", "-select_streams", "v:0",
+                            "-show_entries", "stream=r_frame_rate", "-of", "csv=p=0", str(film)],
+                           stdout=subprocess.PIPE, text=True)
+        try:
+            t, n = p.stdout.strip().split("/")
+            fps = round(int(t) / int(n))
+        except ValueError:
+            fps = 24
+    antal = 0
+    for i in range(rutor[0], min(rutor[1], len(bilder))):
+        bilder[i], k = tvatta_bild(bilder[i], ruta, green)
+        antal += k
+    skriv = subprocess.Popen([ffmpeg_bin(), "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24",
+                              "-s", f"{B}x{Hp}", "-r", str(fps), "-i", "-", "-c:v", "libx264", "-pix_fmt", "yuv420p",
+                              "-crf", "14", "-preset", "medium", str(ut)], stdin=subprocess.PIPE)
+    skriv.stdin.write(bilder.tobytes())
+    skriv.stdin.close()
+    skriv.wait()
+    return antal
+
+
 def nyckelark(film: Path, rutor: list[int], ut: Path, kolumner: int = 4, bredd: int = 480, fps: int = 24) -> Path:
     """Rutor ur en film på ett ark, med tid under varje bild."""
     from PIL import ImageFont
@@ -451,7 +558,7 @@ def _delar(text: str) -> list[tuple[int, int]]:
 
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="flygfilm_kontroll")
-    p.add_argument("steg", choices=["kameror", "slutbild", "konturer", "animatic", "hopklipp", "omproj"])
+    p.add_argument("steg", choices=["kameror", "slutbild", "konturer", "animatic", "hopklipp", "omproj", "tvatt"])
     p.add_argument("hal")
     p.add_argument("--data")
     p.add_argument("--sek", type=float, default=12.0)
@@ -467,8 +574,15 @@ def main(argv=None) -> int:
     p.add_argument("--delar", default="", help="hopklipp/omproj: egna rutintervall, t.ex. 55-79,79-175")
     p.add_argument("--bild", help="omproj: AI-tvättade rutor som ruta:fil, t.ex. 55:a.png,79:b.png")
     p.add_argument("--ren", action="store_true", help="animatic utan text i bilden (färdig film)")
+    p.add_argument("--omrade", default="420,1020,60,340", help="tvatt: x0,x1,y0,y1 där påhittad sand får tas bort")
+    p.add_argument("--green", action="store_true", help="tvatt: ta också bort påhittad ljus green-yta")
     p.add_argument("--ut", required=True)
     a = p.parse_args(argv)
+    if a.steg == "tvatt":
+        (r0, r1), = _delar(a.delar)
+        omr = tuple(int(v) for v in a.omrade.split(","))
+        print("tvättade pixlar:", tvatta_film(Path(a.film), Path(a.ut), (r0, r1), omr, a.green))
+        return 0
     hole = Hole.from_yaml(a.hal)
     hp = Path(a.hal)
     data_dir = Path(a.data) if a.data else Path("data") / hp.parent.name

@@ -50,3 +50,15 @@ def test_fargmatcha_flyttar_medel_och_spridning():
     mb, sb = _medel_std(b)
     assert np.allclose(m, mb, atol=2) and np.allclose(s, sb, atol=2)
     assert np.allclose(fargmatcha(a, _medel_std(a), _medel_std(b), 0.0), a, atol=0.01)
+
+
+def test_tvatt_tar_bort_paahittad_sand_bara_i_omradet():
+    from golfholes.render.flygfilm_kontroll import tvatta_bild
+    rng = np.random.default_rng(0)
+    bild = np.clip(np.array([90, 120, 70]) + rng.normal(0, 6, (200, 300, 3)), 0, 255).astype(np.uint8)
+    bild[40:60, 50:90] = (225, 210, 185)       # påhittad bunker inne i området
+    bild[150:170, 200:240] = (225, 210, 185)   # sand utanför området: ska vara kvar
+    ut, n = tvatta_bild(bild, (0, 300, 0, 100))
+    assert n > 0
+    assert ut[45:55, 60:80].astype(int).mean(axis=(0, 1))[0] < 130     # ingen sandfärg kvar
+    assert (ut[150:170, 200:240] == bild[150:170, 200:240]).all()
