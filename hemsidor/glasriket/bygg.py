@@ -46,7 +46,7 @@ PLAUSIBLE_DOMAN = None
 # Värd för sajt och formulär. Netlify tar emot formulären (Netlify Forms) – står i integritetspolicyn.
 VARD = "Netlify"
 # Klubbens organisationsnummer i integritetspolicyn. None = raden visas inte.
-ORGNR = None
+ORGNR = "829502-1565"  # allabolag.se, hämtat 2026-10-24
 # ------------------------------------------------------------------------------------------
 
 ATTRIBUTION = "Underlag: Ortofoto och Markhöjdmodell ©Lantmäteriet, bearbetat, CC BY 4.0"
