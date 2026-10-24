@@ -16,7 +16,7 @@ from .halkort import Halkort
 from .klubbmaterial import ATTRIBUTION, Klubb, Webblasare, css, e, hal_i_ruta, halkort_markerat, kontaktark
 
 W, H = 1080, 1350
-TYPER = ("nystart", "serie", "sponsorer", "hal", "bli_sponsor")
+TYPER = ("nystart", "serie", "sponsorer", "hal", "bli_sponsor", "valj_hal")
 
 CSS = """
 *{margin:0;padding:0;box-sizing:border-box}
@@ -136,6 +136,35 @@ def m_bli_sponsor(k: Klubb, p: dict, c: Halkort) -> str:
 <div class='src'>Hål {c.hole} på {e(k.bana)}. {ATTRIBUTION}</div></div>"""
 
 
+def m_valj_hal(k: Klubb, p: dict, kort: list[Halkort]) -> str:
+    """För företag: alla hål i ett rutnät, rubrik, text och kontakt. Hål som är bokade eller
+    sålda enligt `sponsring.status` får ett band (samma uppgift som i den gemensamma presentationen)."""
+    n = len(kort)
+    kol = (n + 1) // 2
+    x0, y0, bw, rh = 44, 560, W - 88, 330
+    cw = bw / max(kol, 1)
+    celler = ""
+    for i, c in enumerate(kort):
+        x, y = x0 + (i % kol) * cw, y0 + (i // kol) * (rh + 22)
+        st = k.status(c.hole)
+        celler += hal_i_ruta(c.image, x + 3, y, cw - 6, rh - 40, "center bottom", max_px=1200,
+                             extra="opacity:.35" if st != "ledig" else "")
+        if st != "ledig":
+            celler += (f"<div class='abs' style='left:{x + 3:.0f}px;width:{cw - 6:.0f}px;top:{y + rh / 2 - 40:.0f}px;"
+                       f"background:var(--glod);text-align:center;font:600 11px/22px var(--sans);letter-spacing:.12em;"
+                       f"text-transform:uppercase'>{'Sålt' if st == 'såld' else 'Bokat'}</div>")
+        celler += (f"<div class='abs' style='left:{x:.0f}px;width:{cw:.0f}px;top:{y + rh - 30}px;text-align:center;"
+                   f"font:400 26px/1 var(--serif)'>{c.hole}</div>")
+    kontakt = k.sponsring.get("kontakt", k.web)
+    return f"""<div class='pg'>{_topp(k, p.get('etikett', ''), False)}
+<div class='abs' style='left:64px;right:64px;top:170px'>
+ <div class='h' style='font-size:84px'>{e(p.get('rubrik', ''))}</div>
+ <div class='t' style='margin-top:24px;max-width:900px'>{e(p.get('text', ''))}</div>
+ <div style='margin-top:30px;font:600 16px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--glod-m)'>Prata med kansliet</div>
+ <div style='margin-top:12px;font:500 26px/1.3 var(--sans)'>{e(kontakt)}</div></div>
+{celler}<div class='src'>{ATTRIBUTION}</div></div>"""
+
+
 # ------------------------------------------------------------------ bygg
 def las(klubbmapp: Path) -> list[dict]:
     d = yaml.safe_load((Path(klubbmapp) / "some" / "inlagg.yaml").read_text(encoding="utf-8")) or {}
@@ -160,6 +189,8 @@ def html_for(k: Klubb, p: dict, kort: dict[int, Path], markerat) -> str | None:
         return _sida(k, m_nystart(k, p, [markerat(kort[h]) for h in p.get("hal", []) if h in kort]))
     if typ == "serie":
         return _sida(k, m_serie(k, p, [markerat(f) for _, f in sorted(kort.items())]))
+    if typ == "valj_hal":
+        return _sida(k, m_valj_hal(k, p, [markerat(f) for _, f in sorted(kort.items())]))
     return _sida(k, m_sponsorer(k, p))
 
 

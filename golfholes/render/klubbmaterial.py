@@ -86,6 +86,18 @@ class Klubb:
             return int(egen), f"{self.kortnamn}s egen siffra"
         return RIKSSNITT_RONDER, RIKSSNITT_KALLA
 
+    def status(self, hal: int) -> str:
+        """Hålets sponsorstatus ur `sponsring.status`: "ledig", "bokad" eller "såld" (saknas = ledig)."""
+        st = self.sponsring.get("status") or {}
+        v = str(st.get(hal, st.get(str(hal), "ledig")) or "ledig").strip().lower()
+        if v in ("ledig", "ledigt", "fri"):
+            return "ledig"
+        if v in ("bokad", "bokat"):
+            return "bokad"
+        if v in ("såld", "sålt", "sald", "salt"):
+            return "såld"
+        raise ValueError(f"sponsring.status för hål {hal}: {v!r} (skriv ledig, bokad eller såld)")
+
     def logga(self, bakgrund: str = "ljus") -> str:
         p = self.loggor.get(bakgrund)
         return data_uri(p, 600) if p and p.exists() else ""

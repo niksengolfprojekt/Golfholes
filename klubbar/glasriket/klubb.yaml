@@ -31,12 +31,39 @@ profil:
 # Hålsponsring: klubbens egna villkor. Prospektet läser allt härifrån.
 sponsring:
   sasong: 2027
-  pris_per_hal: 10000       # kr per hål och år (Glasrikets pris i dag)
-  pris_villkor: per år      # t.ex. "per år, exkl. moms" – klubben bekräftar momsen
+  pris_per_hal: 25000       # kr per hål och år (Erics beslut 2026-10-24)
+  pris_villkor: per år
   # Hålsidan blir `web` + /banan/hal-NN/ och QR-koden pekar dit med ?q=hNN (golfholes/statistik.py, qr_lank).
   # Byts domänen: ändra `web` här och DOMAN i hemsidor/glasriket/bygg.py.
   kontakt: info@glasriketsgk.se · 0470-653 20
   ronder_per_ar: null       # klubbens antal ronder per år; tomt = riksgenomsnittet används som uppskattning
+                            # Erics beslut 2026-10-24: fjolårets siffra (2025). Ingen offentlig källa hittad
+                            # (glasriketsgk.se har ingen verksamhetsberättelse ute); senast publicerat är 2020:
+                            # 15 500 medlemsronder + 3 400 greenfeeronder bokade i GIT. Klubben lämnar 2025 års siffra.
+  # Den gemensamma presentationen (prospekt --gemensam): exempelhål och omslagets hål.
+  exempelhal: 17
+  omslagshal: [14, 17, 9]
+  sponsorsida: https://www.glasriketsgk.se/halsponsorer/   # QR-koden på sista sidan
+  # Kryssrutorna på sidan "Vilket blir ert hål?": ledig, bokad eller såld. Ändra och kör kommandot igen.
+  status:
+    1: ledig
+    2: ledig
+    3: ledig
+    4: ledig
+    5: ledig
+    6: ledig
+    7: ledig
+    8: ledig
+    9: ledig
+    10: ledig
+    11: ledig
+    12: ledig
+    13: ledig
+    14: ledig
+    15: ledig
+    16: ledig
+    17: ledig
+    18: ledig
 
 # Sociala medier: kontonamn och hashtaggar som följer med alla inlägg (some/inlagg.yaml)
 some:

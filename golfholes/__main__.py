@@ -18,6 +18,7 @@ Layout väljs i klubb.yaml med `layout: 1` (eller en lista, t.ex. [1, 4]):
   python -m golfholes webb     klubbar/<klubb>                      → output/<klubb>/webb/
   python -m golfholes prospekt klubbar/<klubb>/halkort/hal-14.yaml  → output/<klubb>/prospekt/ (PDF + översikt)
   python -m golfholes prospekt klubbar/<klubb> --alla               → ett prospekt per hål som har hålbild
+  python -m golfholes prospekt klubbar/<klubb> --gemensam           → en presentation för alla hål + kryssrutor
   python -m golfholes inlagg   klubbar/<klubb>                      → output/<klubb>/inlagg/ (PNG 4:5 + texter.md)
   python -m golfholes utsnitt  klubbar/<klubb> data/<klubb>/orto/*.tif  → data/<klubb>/utsnitt/orto.jpg + .jgw
   python -m golfholes sponsorrapport klubbar/<klubb> --sasong 2027 [--kalla mapp] → output/<klubb>/sponsorrapport/2027/
@@ -176,11 +177,22 @@ def webb(club_dir: str) -> int:
     return 0
 
 
-def prospekt(path: str, alla: bool, ut: str | None) -> int:
+def prospekt(path: str, alla: bool, ut: str | None, gemensam: bool = False) -> int:
     from .render.klubbmaterial import Klubb
     from .render.prospekt import bygg_alla
 
     p = Path(path)
+    if gemensam:
+        from .render.prospekt_gemensam import bygg
+
+        mapp = p if p.is_dir() else _club_dir(p)
+        r = bygg(mapp, Path(ut) if ut else Path("output") / mapp.name / "prospekt")
+        print(f"  {r['pdf']}\n  {r['oversikt']}")
+        print(f"  {r['lediga']} av {r['hal']} hål lediga; {r['kryssrutor']} kryssrutor går att kryssa i PDF:en"
+              + ("" if r["kryssrutor"] or not r["lediga"] else " (pypdf saknas: pip install pypdf)"))
+        if not r["qr_akta"]:
+            print("OBS: QR-koden är en platshållare. Installera 'segno' (pip install segno) och kör igen.")
+        return 0
     if alla or p.is_dir():
         k = Klubb.from_dir(p if p.is_dir() else _club_dir(p))
         filer = list(k.halkort().values())
@@ -402,6 +414,8 @@ def main(argv: list[str] | None = None) -> int:
     pr = sub.add_parser("prospekt", help="Hålsponsorprospekt (PDF) per hål, med klubben som avsändare")
     pr.add_argument("fil", help="halkort/hal-NN.yaml, eller klubbmappen tillsammans med --alla")
     pr.add_argument("--alla", action="store_true", help="alla hål i klubben som har en hålbild")
+    pr.add_argument("--gemensam", action="store_true",
+                    help="en presentation för alla hål, med sidan 'Vilket blir ert hål?' (kryss ur klubb.yaml)")
     pr.add_argument("--ut", default=None, help="mapp för PDF:erna (standard: output/<klubb>/prospekt)")
     il = sub.add_parser("inlagg", help="Inlägg för sociala medier (4:5) ur some/inlagg.yaml")
     il.add_argument("klubbmapp")
@@ -469,7 +483,7 @@ def main(argv: list[str] | None = None) -> int:
     if a.cmd == "layoutprov":
         return layoutprov(a.fil)
     if a.cmd == "prospekt":
-        return prospekt(a.fil, a.alla, a.ut)
+        return prospekt(a.fil, a.alla, a.ut, a.gemensam)
     if a.cmd == "inlagg":
         return inlagg(a.klubbmapp, a.ut)
     if a.cmd == "webb":

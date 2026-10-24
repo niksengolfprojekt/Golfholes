@@ -66,9 +66,14 @@ def _sida(k: Klubb, kropp: str) -> str:
             f"<body>{kropp}</body></html>")
 
 
-def _huvud(k: Klubb, c: Halkort, nr: int, left: int = M, right: int = M) -> str:
+def _huvud(k: Klubb, c: Halkort, nr: int, left: int = M, right: int = M, d: dict | None = None) -> str:
+    """Sidhuvud. I den gemensamma presentationen (d["gemensam"]) är hålet ett exempel och
+    sidnumret kommer ur d["sidnr"]."""
+    d = d or {}
+    nr = (d.get("sidnr") or {}).get(nr, nr)
+    hoger = f"Exempel: hål {c.hole} · {nr:02d}" if d.get("gemensam") else f"Hål {c.hole} · {nr:02d}"
     return (f"<div class='hd' style='left:{left}px;right:{right}px'><span>{e(k.namn)} · Hålsponsor {k.sasong}</span>"
-            f"<span>Hål {c.hole} · {nr:02d}</span></div>")
+            f"<span>{hoger}</span></div>")
 
 
 def _tees(c: Halkort) -> str:
@@ -116,7 +121,7 @@ def s2_halet(k: Klubb, c: Halkort, d: dict) -> str:
 <div class='abs' style='left:0;top:0;width:820px;height:1080px;background:var(--djup)'></div>
 {hal_i_ruta(c.image, 70, 60, 680, 960)}
 <div class='src ljus' style='left:70px;width:680px;bottom:24px;font-size:13px'>{ATTRIBUTION}</div>
-{_huvud(k, c, 2, 920)}
+{_huvud(k, c, 2, 920, d=d)}
 <div class='abs' style='left:920px;right:{M}px;top:150px'>
  <div class='ey'>Hålet ni sponsrar</div>
  <div style='display:flex;align-items:flex-end;gap:44px;margin-top:18px'>
@@ -167,7 +172,7 @@ def s3_skylt(k: Klubb, c: Halkort, d: dict, qr_svg: str) -> str:
 <div class='abs' style='left:0;top:0;width:820px;height:1080px;background:linear-gradient(180deg,#DCE6E2 0%,#C9D6D0 100%)'></div>
 {skylt}
 <div class='abs note' style='left:44px;top:46px;font-size:14px'>Skylten vid tee, 70 × 100 cm. Er logotyp sitter på den nedre plattan.</div>
-{_huvud(k, c, 3, 920)}
+{_huvud(k, c, 3, 920, d=d)}
 <div class='abs' style='left:920px;right:{M}px;top:150px'>
  <div class='ey'>Vid tee</div>
  <h1>Varje utslag börjar vid er skylt.</h1>
@@ -215,7 +220,7 @@ def _post(k: Klubb, c: Halkort) -> str:
 
 def s4_digitalt(k: Klubb, c: Halkort, d: dict) -> str:
     return f"""<div class='pg'>
-{_huvud(k, c, 4)}
+{_huvud(k, c, 4, d=d)}
 <div class='abs' style='left:{M}px;top:150px;width:720px'>
  <div class='ey'>I mobilen och i flödet</div>
  <h1>Hålet följer med hem.</h1>
@@ -259,7 +264,7 @@ def s5_rapport(k: Klubb, c: Halkort, d: dict) -> str:
   {tabell}</div></div>"""
     return f"""<div class='pg'>
 <div class='abs' style='left:0;top:0;width:820px;height:1080px;background:#DCE6E2'></div>{rapport}
-{_huvud(k, c, 5, 920)}
+{_huvud(k, c, 5, 920, d=d)}
 <div class='abs' style='left:920px;right:{M}px;top:150px'>
  <div class='ey'>Efter säsongen</div>
  <h1>Ni ser vad pengarna gav.</h1>
@@ -278,7 +283,7 @@ def s6_erbjudande(k: Klubb, c: Halkort, d: dict, qr_svg: str, url: str) -> str:
                 if pris else "<div style='font:400 34px/1.2 var(--serif)'>Pris enligt överenskommelse</div>")
     kontakt = sp.get("kontakt") or k.web
     return f"""<div class='pg'>
-{_huvud(k, c, 6, M, 760)}
+{_huvud(k, c, 6, M, 760, d=d)}
 <div class='abs' style='left:{M}px;top:150px;width:1000px'>
  <div class='ey'>Det här ingår</div>
  <h1>Ett hål. En hel säsong. Ert namn.</h1>

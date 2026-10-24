@@ -7,6 +7,8 @@
 #   sponsorer   – fäst inlägg: tack till hålsponsorerna, 18 nummer
 #   hal         – ett helt hål med rubrik, kort text och pro:ns råd (rad, annars hålkortets kortrad)
 #   bli_sponsor – för företag: ert namn på ett hål, logotypfält och kontakt
+#   valj_hal    – för företag: "Vilket blir ert hål?", alla hål i rutnät + kontakt. Bokade/sålda hål
+#                 (sponsring.status i klubb.yaml) får ett band.
 # Fält: id, typ, hal, etikett (liten rad överst), rubrik, text (på bilden), rad, mork (mörk botten),
 #       bildtext (texten under inlägget), hashtags (utöver klubbens i klubb.yaml).
 # Ett hål utan hålbild hoppas över och kommer med när kommandot körs igen (hål 2 och 4).
@@ -122,18 +124,18 @@ inlagg:
       greenen får öva bunkerslag. Hur många birdies har du gjort här?
     hashtags: ["#hålförhål", "#par3"]
 
-  - id: bli-halsponsor
-    typ: bli_sponsor
-    hal: 5
+  - id: vilket-blir-ert-hal
+    typ: valj_hal
     etikett: Hålsponsor 2027
-    rubrik: Ert namn på ett hål.
-    text: Vid tee, på hålets sida och här i flödet. Hela säsongen.
+    rubrik: Vilket blir ert hål?
+    text: Arton hål genom skogen på Fylleryd. Ett av dem kan bära ert namn hela säsongen 2027.
     bildtext: >-
-      Till er som driver företag i Växjötrakten. Tänk er ert namn på ett hål som golfarna pratar
-      om hela säsongen. Som hålsponsor syns ni på skylten vid tee, på hålets egen sida och här i
-      flödet, och efter säsongen ser ni hur många gånger hålet och er logotyp har visats. Alla 18
-      hål har sponsorer i dag. Vill ni stå först i kön när ett hål blir ledigt? Mejla
-      info@glasriketsgk.se.
+      Till er som driver företag i Växjötrakten. Arton hål på Fylleryd, och vart och ett har sin
+      egen historia. Utslaget genom granskogen på 14. De 128 metrarna över vatten på 17. Vilket
+      blir ert? Som hålsponsor står ert namn på skylten vid tee, på hålets egen sida och här i
+      flödet. Efter säsongen får ni en rapport över hur många gånger hålet och er logotyp har
+      visats. Ni väljer hål, vi gör resten. Mejla info@glasriketsgk.se så skickar vi
+      presentationen.
     hashtags: ["#hålsponsor", "#företagivaxjo", "#sponsring"]
 
   - id: hal-08
