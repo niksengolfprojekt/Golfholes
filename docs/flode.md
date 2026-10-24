@@ -37,7 +37,7 @@
 - [ ] Signatur med riktigt ortofoto (koden är klar; visar platshållare när `data/<klubb>/` saknas i sessionen)
 - [ ] Glasriket hål 5: längden rättad 2026-10-24 (alla tees 10 m bakåt, tee 56 och 60 ligger i skogen) – alla tees inom ±3 %. Kvar: AI-målningen har breddat fairway åt höger, gjort om greenen och dammen och lagt till gångvägar, så hålet ska målas om. Jämförelse: `output/glasriket/hal-05-jamforelse.jpg` (lokal).
 - [x] Glasriket hål 11: tee 60 flyttad 33 m bakåt 2026-10-24 (scorekortet: 48 m bakom tee 56) – alla tees inom ±3 %. Läget är valt efter scorekortet; på fotot syns inget tydligt teeplan där, så det bekräftas av klubben.
-- [ ] Glasriket hål 3, tee 44: dragen 15 m bakåt 2026-10-24, kvar på samma sida av grusgången – fortfarande 4,0 % kort. Väntar på att klubben visar var teen ligger.
+- [ ] Glasriket hål 3, tee 44: dragen 15 m bakåt 2026-10-24 och lagd på höger sida av grusgången (sett från tee 56 mot green) – fortfarande 4,0 % kort. Väntar på att klubben visar var teen ligger.
 - [x] Texturrendering: Klassisk och Nordisk ritas med texturkit (gräs, vatten, lövverk, penseldrag) klippta efter exakta masker – demo-kit utklippt ur AI-skisserna
 - [ ] Högupplösta texturkit för tryck (genereras som rena texturer, inte hela hål) + kit för Arv och Signatur-ljussättning
 - [ ] Ritverktyget: fler lager som skisserna visar – gångvägar, broar, solitärträd, ruffkant

@@ -1,6 +1,6 @@
 # UTKAST – genererat 2026-10-20 av `python -m golfholes utkast klubbar/glasriket/utkast/hal-03.yaml`.
 # Granska mot klubbens hålkarta och kontrollbilden innan det godkänns.
-# Rättat för hand 2026-10-24: tee 44 dragen 15 m bakåt längs spellinjen, kvar på samma sida av grusgången. Preliminär tills klubben bekräftat läget.
+# Rättat för hand 2026-10-24: tee 44 dragen 15 m bakåt och flyttad till höger sida av grusgången (sett från tee 56 mot green). Preliminär tills klubben bekräftat läget.
 club: Glasrikets Golfklubb
 hole: 3
 par: 4
@@ -20,7 +20,7 @@ tees:
   point: [491546.8, 6305902.0]
   length_m: 274
 - name: '44'
-  point: [491610.2, 6305859.8]
+  point: [491601.9, 6305849.8]
   length_m: 199
 green:
 - [491715.2, 6305721.2]
