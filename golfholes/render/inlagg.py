@@ -84,7 +84,7 @@ def m_nystart(k: Klubb, p: dict, kort: list[Halkort]) -> str:
     bilder = "".join(hal_i_ruta(c.image, 50 + i * cw, 150, cw - 10, 700) for i, c in enumerate(kort))
     nummer = "".join(f"<div class='abs ey' style='left:{50 + i * cw:.0f}px;width:{cw - 10:.0f}px;top:866px;text-align:center'>Hål {c.hole}</div>"
                      for i, c in enumerate(kort))
-    return f"""<div class='pg'>{_topp(k, p.get('etikett', ''), False)}{bilder}{nummer}
+    return f"""<div class='pg mork'>{_topp(k, p.get('etikett', ''), True)}{bilder}{nummer}
 <div class='abs' style='left:64px;right:64px;top:940px'>
  <div class='h' style='font-size:74px'>{e(p.get('rubrik', ''))}</div>
  <div class='t' style='margin-top:24px;max-width:860px'>{e(p.get('text', ''))}</div></div>
@@ -102,7 +102,7 @@ def m_serie(k: Klubb, p: dict, kort: list[Halkort]) -> str:
         celler += hal_i_ruta(c.image, x + 3, y, cw - 6, rh - 40, "center bottom", max_px=1200)
         celler += (f"<div class='abs' style='left:{x:.0f}px;width:{cw:.0f}px;top:{y + rh - 30}px;text-align:center;"
                    f"font:400 26px/1 var(--serif)'>{c.hole}</div>")
-    return f"""<div class='pg'>{_topp(k, p.get('etikett', ''), False)}
+    return f"""<div class='pg mork'>{_topp(k, p.get('etikett', ''), True)}
 <div class='abs' style='left:64px;right:64px;top:180px'>
  <div class='h' style='font-size:84px'>{e(p.get('rubrik', ''))}</div>
  <div class='t' style='margin-top:26px;max-width:860px'>{e(p.get('text', ''))}</div></div>
@@ -122,7 +122,7 @@ def m_sponsorer(k: Klubb, p: dict) -> str:
 
 def m_bli_sponsor(k: Klubb, p: dict, c: Halkort) -> str:
     kontakt = k.sponsring.get("kontakt", k.web)
-    return f"""<div class='pg'>{_topp(k, p.get('etikett', ''), False)}
+    return f"""<div class='pg mork'>{_topp(k, p.get('etikett', ''), True)}
 {hal_i_ruta(c.image, 36, 150, 480, 1130)}
 <div class='abs' style='left:560px;right:64px;top:150px;bottom:80px;display:flex;flex-direction:column;justify-content:center'>
  <div class='h' style='font-size:76px'>{e(p.get('rubrik', ''))}</div>
@@ -156,7 +156,7 @@ def m_valj_hal(k: Klubb, p: dict, kort: list[Halkort]) -> str:
         celler += (f"<div class='abs' style='left:{x:.0f}px;width:{cw:.0f}px;top:{y + rh - 30}px;text-align:center;"
                    f"font:400 26px/1 var(--serif)'>{c.hole}</div>")
     kontakt = k.sponsring.get("kontakt", k.web)
-    return f"""<div class='pg'>{_topp(k, p.get('etikett', ''), False)}
+    return f"""<div class='pg mork'>{_topp(k, p.get('etikett', ''), True)}
 <div class='abs' style='left:64px;right:64px;top:170px'>
  <div class='h' style='font-size:84px'>{e(p.get('rubrik', ''))}</div>
  <div class='t' style='margin-top:24px;max-width:900px'>{e(p.get('text', ''))}</div>

@@ -9,7 +9,7 @@
 #   bli_sponsor – för företag: ert namn på ett hål, logotypfält och kontakt
 #   valj_hal    – för företag: "Vilket blir ert hål?", alla hål i rutnät + kontakt. Bokade/sålda hål
 #                 (sponsring.status i klubb.yaml) får ett band.
-# Fält: id, typ, hal, etikett (liten rad överst), rubrik, text (på bilden), rad, mork (mörk botten),
+# Fält: id, typ, hal, etikett (liten rad överst), rubrik, text (på bilden), rad, mork (mörk botten; alla hålinlägg är mörka, Eric 2026-10-24),
 #       bildtext (texten under inlägget), hashtags (utöver klubbens i klubb.yaml).
 # Ett hål utan hålbild hoppas över och kommer med när kommandot körs igen (hål 2 och 4).
 # Publiceras först efter styrelsens beslut 8 december 2026, och varje hål först när klubben godkänt det.
@@ -51,6 +51,7 @@ inlagg:
 
   - id: hal-01
     typ: hal
+    mork: true
     hal: 1
     etikett: Säsongsstart 2027
     rubrik: Första utslaget väntar.
@@ -65,6 +66,7 @@ inlagg:
   # hal-02 och hal-04: UTKAST ur scorekortets anteckningar – skriv om när hålkorten finns.
   - id: hal-02
     typ: hal
+    mork: true
     hal: 2
     text: En par 4 med en fyrkantig damm cirka 220 meter ut och rött pliktområde till höger.
     bildtext: >-
@@ -74,6 +76,7 @@ inlagg:
 
   - id: hal-03
     typ: hal
+    mork: true
     hal: 3
     rubrik: Genvägen kräver 240 meter.
     text: Ett kort par 4 som svänger höger mot en liten green. Frestande nära, och out hela vägen till höger.
@@ -85,6 +88,7 @@ inlagg:
 
   - id: hal-04
     typ: hal
+    mork: true
     hal: 4
     text: Ett par 3 med ny bunkerlayout från 2025.
     bildtext: >-
@@ -93,6 +97,7 @@ inlagg:
 
   - id: hal-05
     typ: hal
+    mork: true
     hal: 5
     rubrik: Mer plats än det ser ut.
     text: Ett rakt par 4 österut mot en stor, lätträffad green. Dammen är det första du ser från tee.
@@ -104,6 +109,7 @@ inlagg:
 
   - id: hal-06
     typ: hal
+    mork: true
     hal: 6
     rubrik: Banans näst svåraste.
     text: En sen sväng upp mot en stor green i platåer. Index 2 av en anledning.
@@ -115,6 +121,7 @@ inlagg:
 
   - id: hal-07
     typ: hal
+    mork: true
     hal: 7
     rubrik: 116 meter till birdie.
     text: Ett kort par 3 mot en rund green, med bunkrar till vänster, höger fram och bakom.
@@ -140,6 +147,7 @@ inlagg:
 
   - id: hal-08
     typ: hal
+    mork: true
     hal: 8
     rubrik: Banans snabbaste green.
     text: Ett smalt utslag ur skogsgatan, med out till vänster och tjock ruff till höger.
@@ -151,6 +159,7 @@ inlagg:
 
   - id: hal-09
     typ: hal
+    mork: true
     hal: 9
     rubrik: Gott om plats. Till en början.
     text: En lång par 5 rakt norrut, med gott om plats från tee och två fairwaybunkrar långt ut.
@@ -162,6 +171,7 @@ inlagg:
 
   - id: hal-10
     typ: hal
+    mork: true
     hal: 10
     rubrik: Pinne och vind avgör.
     text: Ett långt par 3 söderut ur skogsgatan, mot en smal green som är över 40 meter lång.
@@ -173,6 +183,7 @@ inlagg:
 
   - id: hal-11
     typ: hal
+    mork: true
     hal: 11
     rubrik: Rakt ut ur rännan.
     text: En par 5 söderut som börjar i en smal ränna mellan träden och öppnar sig efter dungarna.
@@ -184,6 +195,7 @@ inlagg:
 
   - id: hal-12
     typ: hal
+    mork: true
     hal: 12
     rubrik: Banans längsta hål.
     text: 527 meter från tee 60. En par 5 i en skogsgata som smalnar av de sista 100 metrarna.
@@ -195,6 +207,7 @@ inlagg:
 
   - id: hal-13
     typ: hal
+    mork: true
     hal: 13
     rubrik: Håll utslaget till höger.
     text: En rak par 4 genom en smal skogsgata, med rött pliktområde till vänster och bunkrar runt greenen.
@@ -206,9 +219,9 @@ inlagg:
 
   - id: hal-14
     typ: hal
+    mork: true
     hal: 14
     etikett: Index 1
-    mork: true
     rubrik: Banans svåraste utslag.
     text: Out längs hela vänstersidan, granskog till höger. Här vinns och förloras rundan.
     bildtext: >-
@@ -220,6 +233,7 @@ inlagg:
 
   - id: hal-15
     typ: hal
+    mork: true
     hal: 15
     rubrik: Över den vänstra björken.
     text: En par 4 mot nordväst. Bred i mitten, smal mellan granarna och out till höger.
@@ -231,6 +245,7 @@ inlagg:
 
   - id: hal-16
     typ: hal
+    mork: true
     hal: 16
     rubrik: Vänta på lampan.
     text: En kort par 4 som svänger höger mot en green med vatten till vänster och en damm bakom.
@@ -242,6 +257,7 @@ inlagg:
 
   - id: hal-17
     typ: hal
+    mork: true
     hal: 17
     etikett: Signaturhålet
     rubrik: 128 meter över vatten.
@@ -255,6 +271,7 @@ inlagg:
 
   - id: hal-18
     typ: hal
+    mork: true
     hal: 18
     rubrik: Hem mot klubbhuset.
     text: Ett par 4 norrut med två fairwaybunkrar och en green som lutar svagt ifrån dig.
