@@ -10,6 +10,17 @@ de ska ligga i varje ruta – både i den råa filmen och i AI-filmen.
     python -m golfholes.render.flygfilm_kontroll konturer klubbar/glasriket/hal-14.yaml --kam kam.json \
         --film ai.mp4 --rutor 0,100,200,311 --ut kontroll/   [--start 192 för ett klipp som börjar vid 8 s]
 
+Översiktsfilmen (Eric 2026-10-24: ovanifrån → ner till tee 56 → green → upp igen):
+
+    python -m golfholes.render.flygfilm_kontroll kameror  klubbar/glasriket/hal-14.yaml --forlopp oversikt --ut kam.json
+    python -m golfholes.render.flygfilm_kontroll animatic klubbar/glasriket/hal-14.yaml --kam kam.json \
+        --film hal-14-oversikt-flygfilm-ra.mp4 --ut animatic.mp4      (→ animatic.mp4 + animatic.jpg)
+
+`animatic` gör hela filmen med bara kod: högt upp den målade hålbilden lagd på marken
+(exakt, ruta för ruta), lågt ner filmen (rå nu, AI-filmen sen). Den skriver ut vilka rutor
+AI:n måste göra om (hela sekunder, högst 6 s per klipp). Byt --film mot AI-klippen
+hopsatta så blir det den färdiga filmen.
+
 `slutbild` lägger den godkända målade hålbilden (hal-NN-malad.webp) i exakt samma
 läge som den råa filmens sista ruta (vy rakt ovanifrån på papper). Den används som
 slutbild till AI:n, så att filmen landar i hålbilden.
@@ -30,7 +41,8 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 from ..hole import Hole
-from .flygfilm import UTANFOR, Kamera, _bilinjar, bygg_scen, hal_bbox, kamerabana, korridor, ffmpeg_bin
+from .flygfilm import (UTANFOR, Kamera, _avstand_till_linje, _bilinjar, bygg_scen, ffmpeg_bin, hal_bbox, kamerabana,
+                       kamerabana_oversikt, korridor, standardtee)
 
 
 def _scen(hole: Hole, data_dir: Path):
@@ -42,12 +54,16 @@ def _scen(hole: Hole, data_dir: Path):
     return scen
 
 
-def kameror(hole: Hole, data_dir: Path, sekunder: float, slut_s: float = 4.0) -> dict:
+def kameror(hole: Hole, data_dir: Path, sekunder: float, slut_s: float = 4.0, forlopp: str = "rak",
+            tee: str | None = None) -> dict:
     """Kamerabanan precis som i den råa filmen, plus markhöjd runt hålet (för projektion)."""
     scen = _scen(hole, data_dir)
-    kams, info = kamerabana(hole, scen, 24, sekunder, 5.0, 60.0, slut_s)
+    if forlopp == "oversikt":
+        kams, info = kamerabana_oversikt(hole, scen, 24, standardtee(hole, tee))
+    else:
+        kams, info = kamerabana(hole, scen, 24, sekunder, 5.0, 60.0, slut_s)
     # markhöjd i 2 m-rutnät runt hålet (räcker för att lägga konturer på marken)
-    e0, n0, e1, n1 = hal_bbox(hole, 60.0)
+    e0, n0, e1, n1 = hal_bbox(hole, 60.0 if forlopp == "rak" else 450.0)
     E = np.arange(e0, e1, 2.0)
     N = np.arange(n1, n0, -2.0)
     x = (E[None, :] - scen.e0) / scen.res - 0.5
@@ -147,28 +163,168 @@ def rita_konturer(im: Image.Image, proj: Projektion, i: int, hole: Hole) -> Imag
     return ut
 
 
+class MaladKarta:
+    """Den godkända målade hålbilden som karta: SWEREF-punkt → färg (papper utanför)."""
+
+    def __init__(self, hole: Hole, orto: Path, malad: Path):
+        from .foto import fotounderlag
+        m = Image.open(malad).convert("RGBA")
+        _, px = fotounderlag(hole, orto, m.height)
+        # px är affin (vridning + skala): räkna ut den ur tre punkter
+        c = g_centroid(hole)
+        self.e0, self.n0 = c
+        p0, p1, p2 = px(c[0], c[1]), px(c[0] + 100, c[1]), px(c[0], c[1] + 100)
+        self.p0 = np.array(p0, np.float64)
+        self.ax = (np.array(p1) - p0) / 100
+        self.ay = (np.array(p2) - p0) / 100
+        self.a = np.asarray(m, np.float32)
+        self.w, self.h = m.width, m.height
+
+    def farg(self, e: np.ndarray, n: np.ndarray) -> np.ndarray:
+        mx = self.p0[0] + (e - self.e0) * self.ax[0] + (n - self.n0) * self.ay[0]
+        my = self.p0[1] + (e - self.e0) * self.ax[1] + (n - self.n0) * self.ay[1]
+        farg = np.stack([_bilinjar(self.a[..., c], mx - 0.5, my - 0.5) for c in range(4)], -1)
+        farg[(mx < 0) | (my < 0) | (mx > self.w - 1) | (my > self.h - 1)] = 0
+        alfa = farg[..., 3:4] / 255
+        return farg[..., :3] * alfa + UTANFOR * (1 - alfa)
+
+
+def g_centroid(hole: Hole) -> tuple[float, float]:
+    pts = hole.centerline
+    return (float(np.mean([p[0] for p in pts])), float(np.mean([p[1] for p in pts])))
+
+
+def malad_i_ruta(karta: MaladKarta, proj: Projektion, i: int) -> np.ndarray:
+    """Den målade hålbilden som den syns från kameran i ruta i (lagd på marken)."""
+    Y, X = np.mgrid[:proj.hojd_px, :proj.bredd].astype(np.float64)
+    e, n = proj.mark_under(i, X, Y)
+    return karta.farg(e, n)
+
+
 def slutbild(hole: Hole, proj: Projektion, orto: Path, malad: Path, bredd: int = 1280, hojd_px: int = 720) -> Image.Image:
     """Den målade hålbilden lagd exakt som den råa filmens sista ruta (rakt ovanifrån) på papper."""
-    from .foto import fotounderlag
-    m = Image.open(malad).convert("RGBA")
-    _, px = fotounderlag(hole, orto, m.height)
-    i = len(proj.kams) - 1
-    Y, X = np.mgrid[:hojd_px, :bredd].astype(np.float64)
-    e, n = proj.mark_under(i, X, Y)
-    # e, n → målningens bildpunkter. px är affin (vridning + skala): räkna ut den ur tre punkter
-    e0, n0 = float(np.mean(e)), float(np.mean(n))
-    p0, p1, p2 = px(e0, n0), px(e0 + 100, n0), px(e0, n0 + 100)
-    ax = (np.array(p1) - p0) / 100
-    ay = (np.array(p2) - p0) / 100
-    mx = p0[0] + (e - e0) * ax[0] + (n - n0) * ay[0]
-    my = p0[1] + (e - e0) * ax[1] + (n - n0) * ay[1]
-    a = np.asarray(m, np.float32)
-    farg = np.stack([_bilinjar(a[..., c], mx - 0.5, my - 0.5) for c in range(4)], -1)
-    ute = (mx < 0) | (my < 0) | (mx > m.width - 1) | (my > m.height - 1)
-    farg[ute] = 0
-    alfa = farg[..., 3:4] / 255
-    bild = farg[..., :3] * alfa + UTANFOR * (1 - alfa)
+    bild = malad_i_ruta(MaladKarta(hole, orto, malad), proj, len(proj.kams) - 1)
     return Image.fromarray(np.clip(bild, 0, 255).astype(np.uint8))
+
+
+# ---------------------------------------------------------------- animatic och AI-delar
+MALAD_HOJD = (90.0, 300.0)    # m över mark: under 90 syns filmen, över 300 bara hålbilden (övergång ~0,8 s)
+PAPPER_HOJD = (50.0, 150.0)   # m över mark: utanför hålet tonas filmen till papper (som i hålbilden)
+
+
+def _logvikt(h: float, lag: float, hog: float) -> float:
+    u = (math.log(max(h, 0.1)) - math.log(lag)) / (math.log(hog) - math.log(lag))
+    u = min(1.0, max(0.0, u))
+    return u * u * (3 - 2 * u)
+
+
+def vikter(hojd_over_mark: list[float]) -> tuple[np.ndarray, np.ndarray]:
+    """Per ruta: (andel målad hålbild, andel papper utanför hålet)."""
+    h = np.asarray(hojd_over_mark, np.float64)
+    return (np.array([_logvikt(x, *MALAD_HOJD) for x in h]), np.array([_logvikt(x, *PAPPER_HOJD) for x in h]))
+
+
+def ai_delar(hojd_over_mark: list[float], fps: int = 24, max_s: int = 6) -> list[tuple[int, int]]:
+    """Rutorna där filmen syns (hålbilden inte täcker allt) delade i klipp på hela sekunder
+    (OpenArt tar bara hela sekunder), högst max_s s var. Nästa klipp börjar på förra
+    klippets sista ruta (samma startbild), så delarna hänger ihop."""
+    mal, _ = vikter(hojd_over_mark)
+    syns = np.nonzero(mal < 0.999)[0]
+    if syns.size == 0:
+        return []
+    a, b = int(syns[0]), int(syns[-1])
+    sek = max(1, math.ceil((b - a) / fps - 1e-6))
+    antal = math.ceil(sek / max_s)
+    langder = [sek // antal + (1 if j < sek % antal else 0) for j in range(antal)]
+    ut, start = [], a
+    for L in langder:
+        ut.append((start, start + L * fps))
+        start += L * fps
+    return ut
+
+
+def papper_utanfor(hole: Hole, proj: Projektion, i: int, skala: int = 4) -> np.ndarray:
+    """0 → 1 utanför hålets korridor (samma mått som urklippet i den råa filmen), (h, w, 1)."""
+    linje, halv = korridor(hole)
+    Y, X = np.mgrid[:proj.hojd_px:skala, :proj.bredd:skala].astype(np.float64) + skala / 2
+    e, n = proj.mark_under(i, X, Y)
+    d = _avstand_till_linje(e, n, linje)
+    m = np.clip((d - halv) / 18.0, 0, 1).astype(np.float32)
+    m = np.asarray(Image.fromarray((m * 255).astype(np.uint8)).resize((proj.bredd, proj.hojd_px), Image.BILINEAR),
+                   np.float32) / 255
+    return m[..., None]
+
+
+def animatic(hole: Hole, proj: Projektion, hojd_over_mark: list[float], karta: MaladKarta, film: Path,
+             ut: Path, fps: int = 24, etikett: bool = True) -> dict:
+    """Bara kod: målade hålbilden där kameran är högt, filmen (rå eller AI) där den är lågt.
+    Övergången: först tonas allt utanför hålet till papper, sedan tonas hålbilden in på plats."""
+    ff = ffmpeg_bin()
+    B, Hp = proj.bredd, proj.hojd_px
+    mal, pap = vikter(hojd_over_mark)
+    delar = ai_delar(hojd_over_mark, fps)
+    las = subprocess.Popen([ff, "-loglevel", "error", "-i", str(film), "-f", "rawvideo", "-pix_fmt", "rgb24",
+                            "-vf", f"scale={B}:{Hp}", "-"], stdout=subprocess.PIPE)
+    skriv = subprocess.Popen([ff, "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24",
+                              "-s", f"{B}x{Hp}", "-r", str(fps), "-i", "-", "-c:v", "libx264", "-pix_fmt", "yuv420p",
+                              "-crf", "18", "-preset", "medium", "-movflags", "+faststart", str(ut)],
+                             stdin=subprocess.PIPE)
+    from PIL import ImageFont
+    try:
+        font = ImageFont.truetype("DejaVuSans-Bold.ttf", 20)
+        liten = ImageFont.truetype("DejaVuSans.ttf", 13)
+    except OSError:
+        font = liten = ImageFont.load_default()
+    n = len(proj.kams)
+    for i in range(n):
+        buf = las.stdout.read(B * Hp * 3)
+        if len(buf) < B * Hp * 3:
+            break
+        r = np.frombuffer(buf, np.uint8).reshape(Hp, B, 3).astype(np.float32)
+        if pap[i] > 0.001 and mal[i] < 0.999:
+            m = papper_utanfor(hole, proj, i) * pap[i]
+            r = r * (1 - m) + UTANFOR * m
+        if mal[i] > 0.001:
+            r = r * (1 - mal[i]) + malad_i_ruta(karta, proj, i) * mal[i]
+        im = Image.fromarray(np.clip(r, 0, 255).astype(np.uint8))
+        if etikett:
+            d = ImageDraw.Draw(im)
+            ai = any(a <= i <= b for a, b in delar)
+            delnr = next((j + 1 for j, (a, b) in enumerate(delar) if a <= i <= b), None)
+            text = f"{i / fps:5.1f} s  " + (f"AI-del {delnr} (här: rå film)" if ai else "KOD: målade hålbilden")
+            x1 = d.textbbox((14, 11), text, font=font)[2]
+            d.rectangle([8, 8, x1 + 8, 36], fill=(0, 0, 0))
+            d.text((14, 11), text, fill=(255, 220, 0) if ai else (255, 255, 255), font=font)
+            d.text((10, Hp - 20), "Underlag: Ortofoto, Markhöjdmodell och Laserdata Skog ©Lantmäteriet, bearbetat, CC BY 4.0",
+                   fill=(60, 60, 60), font=liten)
+        skriv.stdin.write(im.tobytes())
+    skriv.stdin.close()
+    skriv.wait()
+    las.stdout.close()
+    las.wait()
+    return {"delar": delar, "rutor": n}
+
+
+def nyckelark(film: Path, rutor: list[int], ut: Path, kolumner: int = 4, bredd: int = 480, fps: int = 24) -> Path:
+    """Rutor ur en film på ett ark, med tid under varje bild."""
+    from PIL import ImageFont
+    import tempfile
+    tmp = Path(tempfile.mkdtemp(prefix="nyckelark-"))
+    bilder = las_rutor(film, rutor, tmp)
+    h = round(bredd * 9 / 16)
+    rader = math.ceil(len(rutor) / kolumner)
+    ark = Image.new("RGB", (kolumner * bredd, rader * (h + 26)), (255, 255, 255))
+    d = ImageDraw.Draw(ark)
+    try:
+        font = ImageFont.truetype("DejaVuSans.ttf", 16)
+    except OSError:
+        font = ImageFont.load_default()
+    for j, r in enumerate(rutor):
+        x, y = (j % kolumner) * bredd, (j // kolumner) * (h + 26)
+        ark.paste(Image.open(bilder[r]).convert("RGB").resize((bredd, h)), (x, y))
+        d.text((x + 6, y + h + 4), f"{r / fps:.1f} s", fill=(0, 0, 0), font=font)
+    ark.save(ut, quality=88)
+    return ut
 
 
 def las_rutor(film: Path, rutor: list[int], ut: Path) -> dict[int, Path]:
@@ -186,7 +342,7 @@ def las_rutor(film: Path, rutor: list[int], ut: Path) -> dict[int, Path]:
 
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="flygfilm_kontroll")
-    p.add_argument("steg", choices=["kameror", "slutbild", "konturer"])
+    p.add_argument("steg", choices=["kameror", "slutbild", "konturer", "animatic"])
     p.add_argument("hal")
     p.add_argument("--data")
     p.add_argument("--sek", type=float, default=12.0)
@@ -195,6 +351,8 @@ def main(argv=None) -> int:
     p.add_argument("--malad")
     p.add_argument("--film")
     p.add_argument("--rutor", default="")
+    p.add_argument("--forlopp", choices=["rak", "oversikt"], default="rak")
+    p.add_argument("--tee", default=None)
     p.add_argument("--start", type=int, default=0, help="filmen börjar vid den här rutan i den råa filmen (klipp)")
     p.add_argument("--ut", required=True)
     a = p.parse_args(argv)
@@ -202,9 +360,19 @@ def main(argv=None) -> int:
     hp = Path(a.hal)
     data_dir = Path(a.data) if a.data else Path("data") / hp.parent.name
     if a.steg == "kameror":
-        Path(a.ut).write_text(json.dumps(kameror(hole, data_dir, a.sek, a.slut)))
+        Path(a.ut).write_text(json.dumps(kameror(hole, data_dir, a.sek, a.slut, a.forlopp, a.tee)))
         return 0
-    proj = Projektion(json.loads(Path(a.kam).read_text()))
+    kd = json.loads(Path(a.kam).read_text())
+    proj = Projektion(kd)
+    if a.steg == "animatic":
+        malad = Path(a.malad) if a.malad else hp.parent / "halbilder" / f"hal-{hole.number:02d}-malad.webp"
+        orto = sorted((data_dir / "orto").glob("*.tif"))[0]
+        r = animatic(hole, proj, kd["info"]["hojd_over_mark_m"], MaladKarta(hole, orto, malad), Path(a.film), Path(a.ut))
+        n = r["rutor"]
+        nyckelark(Path(a.ut), [round(j * (n - 1) / 15) for j in range(16)], Path(a.ut).with_suffix(".jpg"))
+        for j, (s0, s1) in enumerate(r["delar"], 1):
+            print(f"AI-del {j}: ruta {s0}–{s1} ({s0 / 24:.2f}–{s1 / 24:.2f} s, {(s1 - s0) / 24:.2f} s)")
+        return 0
     if a.steg == "slutbild":
         malad = Path(a.malad) if a.malad else hp.parent / "halbilder" / f"hal-{hole.number:02d}-malad.webp"
         orto = sorted((data_dir / "orto").glob("*.tif"))[0]

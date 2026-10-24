@@ -53,3 +53,40 @@ def test_rendering_visar_mark_under_horisonten_och_himmel_ovanfor():
 def test_korridoren_tacker_green_och_tees():
     linje, bredd = korridor(_hal())
     assert bredd >= 30 and tuple(np.round(linje[0])) == (300, 100) and round(linje[-1][1]) == 400
+
+
+def test_oversikt_borjar_och_slutar_ovanifran_och_flyger_lugnt_5_m_over_marken():
+    from golfholes.render.flygfilm import kamerabana_oversikt
+    sc, hal = _scen(), _hal()
+    fps = 10
+    kams, info = kamerabana_oversikt(hal, sc, fps=fps, tee="58")
+    assert info["sekunder"] >= 20
+    for k in (kams[0], kams[-1]):
+        assert k.pitch < -math.radians(89) and abs(k.yaw - math.pi / 2) < 0.01 and k.z > 300
+    assert abs(kams[0].z - kams[-1].z) < 0.5 and abs(kams[0].n - kams[-1].n) < 0.5   # samma vy
+    f0, f1 = info["faser_s"]["ned"][1], info["faser_s"]["upp"][0]
+    mitt = [k for i, k in enumerate(kams) if f0 <= i / fps <= f1]
+    for k in mitt:
+        mark = sc.mark[int((sc.n0 - k.n) / sc.res), int((k.e - sc.e0) / sc.res)]
+        assert abs(k.z - mark - 5.0) < 0.3
+    # flygningen börjar 15 m bakom tee (300, 100), när kameran är på väg ner
+    start = kams[round(info["faser_s"]["flygning"][0] * fps)]
+    assert abs(start.e - 300) < 2 and 80 < start.n < 92 and start.z > 110
+    assert mitt[0].n < 115 and mitt[-1].n > 340
+    # inga ryck: upplevd fart (m/s delat med höjden över mark) ändras mjukt mellan rutor
+    P = np.array([[k.e, k.n, k.z] for k in kams])
+    v = np.linalg.norm(np.diff(P, axis=0), axis=1) * fps
+    upplevd = v / np.maximum(np.array(info["hojd_over_mark_m"][:-1]), 5.0)
+    assert upplevd.max() < 6 and np.abs(np.diff(upplevd)).max() < 0.5
+    # norr-sydlig rörelse byter riktning högst två gånger (ner mot tee, fram, tillbaka till mitten)
+    dn = np.sign(np.round(np.diff(P[:, 1]), 2))
+    dn = dn[dn != 0]
+    assert np.count_nonzero(np.diff(dn)) <= 2
+    assert max(v[int(f0 * fps):int(f1 * fps)]) < 30                         # lugn flygning
+
+
+def test_standardtee_valjer_56():
+    from golfholes.render.flygfilm import standardtee
+    hal = _hal()
+    hal.tees = [Tee("60", (300.0, 90.0), 310), Tee("52/56", (300.0, 100.0), 300)]
+    assert standardtee(hal) == "52/56" and standardtee(hal, "60") == "60"

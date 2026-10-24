@@ -62,6 +62,8 @@
 - [ ] Klubbmärke (SVG) från klubben till rubriken i stil 1
 - [x] Rå flygfilm ur Lantmäteriets data (2026-10-23): `flygfilm` – höjdmodell + ortofoto + Laserdata Skog, kamera 5 m över mittlinjen med blicken 60 m fram, mjuk kurva, stiger och tippar till vy rakt ovanifrån där allt utanför hålet tonas till papper. 1280×720, 24 fps. Test Glasriket hål 14 och 17: `/mnt/project-files/glasriket/flygfilm-test/` (plan för AI-yta i `plan.md`)
 - [x] AI-test flygfilm hål 14 (2026-10-23, 952 krediter): Wan 3.0 element-till-video med rå film som förlaga håller formen i flygningen; övergången till hålbilden görs av koden. Formkontroll: `python -m golfholes.render.flygfilm_kontroll` (kamerabana, hålbild i filmens sista ruta, konturer på rutor). Resultat: `/mnt/project-files/glasriket/flygfilm-test/ai-test/resultat.md`
+- [x] Flygfilm v2 "översikt" (Erics önskan 2026-10-24): `flygfilm --forlopp oversikt` börjar i hålbildens vy ovanifrån, sjunker mjukt till 5 m bakom tee 56, flyger hålet i 27 m/s (förut ~38) och stiger tillbaka till samma vy, cirka 24 s. `flygfilm_kontroll animatic` gör filmen med bara kod (målad hålbild högt upp, film lågt ner) och räknar ut AI-klippen. Plan och pris: `/mnt/project-files/glasriket/flygfilm-test/v2/plan.md`
+- [ ] Flygfilm v2 hål 14 med AI-yta – väntar på Erics beslut om tempot och krediterna
 - [ ] Flygfilm med AI-yta för fler hål – 720p, två klipp per hål, cirka 1 300 krediter per hål; väntar på Erics beslut
 - [ ] Tee-vy i 3D (Mac Pro)
 - [x] Ögonhöjdsvy ur data (`golfholes/render/perspektiv.py`): höjdmodell + ortofoto + skogsmassa, spellinjen hålls öppen. AI (OpenArt) målar vyn till foto. Glasriket hål 3, 5, 14: `/mnt/project-files/glasriket/ogonhojd/` – väntar på Erics godkännande. Visas som "Visualisering", aldrig som foto.

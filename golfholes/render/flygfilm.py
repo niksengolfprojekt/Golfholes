@@ -173,12 +173,34 @@ def _vinkel_lerp(a: float, b: float, u: float) -> float:
     return a + d * u
 
 
-def kamerabana(hole: Hole, scen: Scen, fps: int = 24, sekunder: float = 12.0, hojd_m: float = 5.0,
-               blick_m: float = 60.0, slut_s: float = 4.0, bredd: int = 1280, hojd_px: int = 720,
-               fov_grader: float = 60.0) -> tuple[list[Kamera], dict]:
-    """Kamerans läge per ruta. Flygning tee → strax före green, sedan stigning och tippning
-    ner till vy rakt ovanifrån med hela hålet i bild."""
+def oversiktslage(hole: Hole, scen: Scen, bredd: int = 1280, hojd_px: int = 720,
+                  fov_grader: float = 60.0) -> tuple[float, float, float, float, float]:
+    """Vyn rakt ovanifrån med hela hålet i bild (tee nederst, green överst), samma
+    utsnitt som den målade hålbilden läggs i. Returnerar (e, n, markhöjd, höjd över mark, yaw)."""
     tee = hole.tee()
+    gm = g.centroid(hole.green)
+    cl = hole.centerline
+    vfov = 2 * math.atan(math.tan(math.radians(fov_grader) / 2) * hojd_px / bredd)
+    yaw_t = math.atan2(gm[1] - tee.point[1], gm[0] - tee.point[0])
+    pts = cl + hole.green + [t.point for t in hole.tees]
+    ca, sa = math.cos(yaw_t), math.sin(yaw_t)
+    lang = [(p[0] - tee.point[0]) * ca + (p[1] - tee.point[1]) * sa for p in pts]
+    tvar = [-(p[0] - tee.point[0]) * sa + (p[1] - tee.point[1]) * ca for p in pts]
+    ml, mt = (min(lang) + max(lang)) / 2, (min(tvar) + max(tvar)) / 2
+    ce, cn = tee.point[0] + ml * ca - mt * sa, tee.point[1] + ml * sa + mt * ca
+    x = (np.array([p[0] for p in pts]) - scen.e0) / scen.res - 0.5
+    y = (scen.n0 - np.array([p[1] for p in pts])) / scen.res - 0.5
+    mark_mitt = float(np.median(_bilinjar(scen.mark, x, y)))
+    ut_l = (max(lang) - min(lang)) * 1.12 + 24
+    ut_t = (max(tvar) - min(tvar)) * 1.12 + 24
+    alt = max(ut_l / 2 / math.tan(vfov / 2), ut_t / 2 / math.tan(math.radians(fov_grader) / 2))
+    return ce, cn, mark_mitt, alt, yaw_t
+
+
+def _linjebana(hole: Hole, scen: Scen, tee, blick_m: float, fore_m: float = 20.0, efter_m: float = 40.0,
+               forlang_bak: bool = False):
+    """Mittlinjen som mjuk kurva (var 1 m, utjämnad σ 12 m) med utjämnad markhöjd.
+    Returnerar (s_tee, s_green, vid(s) → ((e, n), markhöjd), H_pa(e, n) → mark + träd)."""
     cl = hole.centerline
     s_tee = g.project(cl, tee.point)[0]
     gm = g.centroid(hole.green)
@@ -186,6 +208,10 @@ def kamerabana(hole: Hole, scen: Scen, fps: int = 24, sekunder: float = 12.0, ho
     langd = g.polyline_length(cl)
 
     def punkt(s):
+        if s < 0 and forlang_bak:  # bakom mittlinjens början: förläng första sträckan bakåt
+            a, b = cl[0], cl[1]
+            d = g.dist(a, b)
+            return (a[0] + (a[0] - b[0]) / d * -s, a[1] + (a[1] - b[1]) / d * -s)
         if s <= langd:
             return g.point_along(cl, max(0.0, s))
         a, b = cl[-2], cl[-1]
@@ -193,7 +219,7 @@ def kamerabana(hole: Hole, scen: Scen, fps: int = 24, sekunder: float = 12.0, ho
         return (b[0] + (b[0] - a[0]) / d * (s - langd), b[1] + (b[1] - a[1]) / d * (s - langd))
 
     # mittlinjen var 1 m, utjämnad (σ 12 m) = mjuk kurva utan knyckar vid brytpunkterna
-    ss = np.arange(s_tee - 20, s_green + blick_m + 40, 1.0)
+    ss = np.arange(s_tee - fore_m, s_green + blick_m + efter_m, 1.0)
     P = np.array([punkt(s) for s in ss])
     P = np.stack([_utjamna(P[:, 0], 12), _utjamna(P[:, 1], 12)], 1)
 
@@ -216,6 +242,17 @@ def kamerabana(hole: Hole, scen: Scen, fps: int = 24, sekunder: float = 12.0, ho
         p = P[i0] * (1 - f) + P[i0 + 1] * f
         return p, mark_P[i0] * (1 - f) + mark_P[i0 + 1] * f
 
+    return s_tee, s_green, vid, H_pa
+
+
+def kamerabana(hole: Hole, scen: Scen, fps: int = 24, sekunder: float = 12.0, hojd_m: float = 5.0,
+               blick_m: float = 60.0, slut_s: float = 4.0, bredd: int = 1280, hojd_px: int = 720,
+               fov_grader: float = 60.0) -> tuple[list[Kamera], dict]:
+    """Kamerans läge per ruta. Flygning tee → strax före green, sedan stigning och tippning
+    ner till vy rakt ovanifrån med hela hålet i bild."""
+    tee = hole.tee()
+    s_tee, s_green, vid, H_pa = _linjebana(hole, scen, tee, blick_m)
+
     n = int(round(fps * sekunder))
     n_slut = int(round(fps * slut_s))
     n_flyg = n - n_slut
@@ -225,7 +262,6 @@ def kamerabana(hole: Hole, scen: Scen, fps: int = 24, sekunder: float = 12.0, ho
     v = np.where(u < 0.15, (u / 0.15) ** 2 * 0.15 / 2 / 0.925, (u - 0.075) / 0.925)
     s_lista = s_tee + (s_slut - s_tee) * v / v[-1]
 
-    vfov = 2 * math.atan(math.tan(math.radians(fov_grader) / 2) * hojd_px / bredd)
     kams: list[Kamera] = []
     varning = []
     for s in s_lista:
@@ -241,17 +277,7 @@ def kamerabana(hole: Hole, scen: Scen, fps: int = 24, sekunder: float = 12.0, ho
         kams.append(Kamera(p[0], p[1], z, yaw, pitch))
 
     # slutläge: rakt ner, tee nederst och green överst, hela hålet i bild
-    yaw_t = math.atan2(gm[1] - tee.point[1], gm[0] - tee.point[0])
-    pts = cl + hole.green + [t.point for t in hole.tees]
-    ca, sa = math.cos(yaw_t), math.sin(yaw_t)
-    lang = [(p[0] - tee.point[0]) * ca + (p[1] - tee.point[1]) * sa for p in pts]
-    tvar = [-(p[0] - tee.point[0]) * sa + (p[1] - tee.point[1]) * ca for p in pts]
-    ml, mt = (min(lang) + max(lang)) / 2, (min(tvar) + max(tvar)) / 2
-    ce, cn = tee.point[0] + ml * ca - mt * sa, tee.point[1] + ml * sa + mt * ca
-    mark_mitt = float(np.median(mark_pa(np.array([p[0] for p in pts]), np.array([p[1] for p in pts]))))
-    ut_l = (max(lang) - min(lang)) * 1.12 + 24
-    ut_t = (max(tvar) - min(tvar)) * 1.12 + 24
-    alt = max(ut_l / 2 / math.tan(vfov / 2), ut_t / 2 / math.tan(math.radians(fov_grader) / 2))
+    ce, cn, mark_mitt, alt, yaw_t = oversiktslage(hole, scen, bredd, hojd_px, fov_grader)
     sist = kams[-1]
     for i in range(1, n_slut + 1):
         u = i / n_slut
@@ -266,6 +292,100 @@ def kamerabana(hole: Hole, scen: Scen, fps: int = 24, sekunder: float = 12.0, ho
             dimma=1.0 - uxy, urklipp=float(_smoothstep((u - 0.7) / 0.3))))
     info = {"ruta_slut_flygning": n_flyg, "rutor": len(kams), "hojd_slut_m": round(alt),
             "flygstracka_m": round(s_slut - s_tee), "lyft_for_trad_vid_m": sorted(set(varning))}
+    return kams, info
+
+
+def standardtee(hole: Hole, tee: str | None = None) -> str:
+    """Teen som översiktsfilmen landar på: angiven, annars den som heter (eller innehåller) 56,
+    annars bakre tee."""
+    if tee:
+        return hole.tee(tee).name
+    for t in hole.tees:
+        if t.name == "56":
+            return t.name
+    for t in hole.tees:
+        if "56" in t.name.replace(" ", "").split("/"):
+            return t.name
+    return hole.tee().name
+
+
+def kamerabana_oversikt(hole: Hole, scen: Scen, fps: int = 24, tee: str | None = None, hojd_m: float = 5.0,
+                        blick_m: float = 60.0, bredd: int = 1280, hojd_px: int = 720, fov_grader: float = 60.0,
+                        sta_s: float = 1.0, ned_s: float = 5.0, fart_ms: float = 27.0, upp_s: float = 4.5,
+                        slutsta_s: float = 1.5, bakom_m: float = 15.0) -> tuple[list[Kamera], dict]:
+    """Forlopp "oversikt" (Eric 2026-10-24): börjar i hålbildens vy rakt ovanifrån, sjunker
+    mjukt ner till 5 m strax bakom vald tee, flyger hålet i lugnare fart och stiger sist
+    tillbaka upp i samma vy ovanifrån.
+
+    Nedstigning och stigning är en blandning mellan översiktsläget (w = 0) och flygläget
+    (w = 1). Höjden blandas logaritmiskt (jämn känsla av "zoom"), läget i sidled är framme
+    över teen innan kameran är nere, och lutningen tippar upp först under cirka 120 m.
+    Flygningen börjar röra sig strax innan nedstigningen är klar och bromsar in medan
+    kameran stiger, så farten aldrig hackar vid skarvarna."""
+    t_val = hole.tee(tee)
+    s_tee, s_green, vid, H_pa = _linjebana(hole, scen, t_val, blick_m, fore_m=bakom_m + 40, efter_m=80,
+                                             forlang_bak=True)
+    ce, cn, mark_mitt, alt, yaw_t = oversiktslage(hole, scen, bredd, hojd_px, fov_grader)
+
+    s0 = s_tee - bakom_m
+    s1 = s_green - (45 if hole.par > 3 else 25)
+    acc = 2.5                                        # s mjuk start och mjuk inbromsning
+    flyg_s = (s1 - s0) / fart_ms + acc
+    t_ned0, t_ned1 = sta_s, sta_s + ned_s
+    tf0 = t_ned1 - 0.75                              # flygningen startar strax innan kameran är nere
+    tf1 = tf0 + flyg_s
+    t_upp0 = tf1 - 1.5                               # stigningen börjar medan den ännu glider fram
+    t_upp1 = t_upp0 + upp_s
+    total = t_upp1 + slutsta_s
+    n = int(round(total * fps))
+    t = np.arange(n) / fps
+
+    # fart: mjuk start och mjuk inbromsning (smoothstep på farten), integrerad till sträcka
+    v = np.minimum(_smoothstep((t - tf0) / acc), _smoothstep((tf1 - t) / acc))
+    v = np.where((t >= tf0) & (t <= tf1), v, 0.0)
+    s_t = np.concatenate([[0.0], np.cumsum((v[1:] + v[:-1]) / 2)])
+    s_t = s0 + (s1 - s0) * s_t / max(s_t[-1], 1e-9)
+
+    w = np.where(t < t_upp0, _smoothstep((t - t_ned0) / ned_s), 1 - _smoothstep((t - t_upp0) / upp_s))
+    pitch_o = -math.pi / 2 + 1e-3
+
+    kams: list[Kamera] = []
+    for s, wi in zip(s_t, w):
+        p, m = vid(s)
+        q, mq = vid(s + blick_m)
+        z_f = m + hojd_m
+        yaw_f = math.atan2(q[1] - p[1], q[0] - p[0])
+        pitch_f = math.atan2(mq - z_f, math.hypot(q[0] - p[0], q[1] - p[1]))
+        wi = float(wi)
+        wxy = float(_smoothstep(wi / 0.85))               # över teen innan kameran är helt nere
+        wp = float(_smoothstep((wi - 0.35) / 0.65))       # tippa upp först under ~120 m
+        hh = alt * (hojd_m / alt) ** wi                   # höjd över mark, logaritmiskt: jämn "zoom"
+        mark = mark_mitt + (m - mark_mitt) * wxy
+        e = ce + (p[0] - ce) * wxy
+        n_ = cn + (p[1] - cn) * wxy
+        yaw = _vinkel_lerp(yaw_t, yaw_f, wxy)
+        pitch = pitch_o + (pitch_f - pitch_o) * wp
+        kams.append(Kamera(float(e), float(n_), float(mark + hh), yaw, pitch, dimma=wi, urklipp=0.0))
+
+    # träd i vägen: lyft mjukt (lyftet breddas ±0,5 s och jämnas ut, så inga ryck)
+    z = np.array([k.z for k in kams])
+    hinder = np.array([float(H_pa(k.e, k.n)) for k in kams]) + 1.5
+    lyft = np.maximum(hinder - z, 0)
+    r = fps // 2
+    bred = np.array([lyft[max(0, i - r): i + r + 1].max() for i in range(n)])
+    lyft_s = np.maximum(_utjamna(bred, fps / 4), lyft)
+    varning = sorted({round(float(s_t[i] - s_tee)) for i in np.nonzero(lyft > 0.05)[0]})
+    for k, dz in zip(kams, lyft_s):
+        k.z += float(dz)
+    E, N = np.array([k.e for k in kams]), np.array([k.n for k in kams])
+    markh = np.array([k.z for k in kams]) - _bilinjar(scen.mark, (E - scen.e0) / scen.res - 0.5,
+                                                      (scen.n0 - N) / scen.res - 0.5)
+    f = lambda x: round(float(x), 2)  # noqa: E731
+    info = {"forlopp": "oversikt", "tee": t_val.name, "rutor": n, "sekunder": f(n / fps),
+            "faser_s": {"oversikt": [0, f(t_ned0)], "ned": [f(t_ned0), f(t_ned1)], "flygning": [f(tf0), f(tf1)],
+                        "upp": [f(t_upp0), f(t_upp1)], "oversikt_slut": [f(t_upp1), f(total)]},
+            "flygstracka_m": round(s1 - s0), "fart_ms": fart_ms, "hojd_oversikt_m": round(alt),
+            "hojd_over_mark_m": [round(float(h), 1) for h in markh], "lyft_for_trad_vid_m": varning}
     return kams, info
 
 
@@ -405,8 +525,12 @@ def ffmpeg_bin() -> str | None:
 def flygfilm(hole: Hole, data_dir: Path, ut_dir: Path, fps: int = 24, sekunder: float = 12.0,
              bredd: int = 1280, hojd_px: int = 720, hojd_m: float = 5.0, blick_m: float = 60.0,
              slut_s: float = 4.0, nyckelbilder: int = 6, processer: int | None = None,
-             res: float = 0.25, ss: float = 1.5) -> dict:
-    """Renderar hela flygningen. Returnerar filvägar och fakta om banan."""
+             res: float = 0.25, ss: float = 1.5, forlopp: str = "rak", tee: str | None = None) -> dict:
+    """Renderar hela flygningen. Returnerar filvägar och fakta om banan.
+
+    forlopp "rak": tee → green → upp till vy ovanifrån (första versionen).
+    forlopp "oversikt": ovanifrån → ner till tee (standard 56 om den finns) → green → upp igen;
+    längden bestäms av banan (cirka 22–24 s), inte av `sekunder`."""
     global _SCEN
     orto = sorted((data_dir / "orto").glob("*.tif"))
     dem = sorted((data_dir / "hojd").glob("*.tif"))
@@ -416,9 +540,12 @@ def flygfilm(hole: Hole, data_dir: Path, ut_dir: Path, fps: int = 24, sekunder: 
     bbox = hal_bbox(hole, 450.0)
     _SCEN = bygg_scen(orto[0], dem[0], laz[0] if laz else None, bbox, res)
     _SCEN.korridor, _SCEN.korridor_m = korridor(hole)
-    kams, info = kamerabana(hole, _SCEN, fps, sekunder, hojd_m, blick_m, slut_s, bredd, hojd_px)
+    if forlopp == "oversikt":
+        kams, info = kamerabana_oversikt(hole, _SCEN, fps, standardtee(hole, tee), hojd_m, blick_m, bredd, hojd_px)
+    else:
+        kams, info = kamerabana(hole, _SCEN, fps, sekunder, hojd_m, blick_m, slut_s, bredd, hojd_px)
     ut_dir.mkdir(parents=True, exist_ok=True)
-    namn = f"hal-{hole.number:02d}"
+    namn = f"hal-{hole.number:02d}" + ("-oversikt" if forlopp == "oversikt" else "")
     tmp = Path(tempfile.mkdtemp(prefix=f"flygfilm-{namn}-"))
     jobb = [(i, k, bredd, hojd_px, str(tmp), ss) for i, k in enumerate(kams)]
     import multiprocessing as mp
@@ -442,6 +569,6 @@ def flygfilm(hole: Hole, data_dir: Path, ut_dir: Path, fps: int = 24, sekunder: 
         filer["rutor"] = tmp
     if ff:
         shutil.rmtree(tmp, ignore_errors=True)
-    info.update({"tee": hole.tee().name, "sekunder": round(len(kams) / fps, 1), "fps": fps,
+    info.update({"tee": info.get("tee", hole.tee().name), "sekunder": round(len(kams) / fps, 1), "fps": fps,
                  "upplosning": f"{bredd}x{hojd_px}", "laser": bool(laz)})
     return {"filer": filer, "info": info}

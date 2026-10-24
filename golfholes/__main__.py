@@ -23,7 +23,7 @@ Layout väljs i klubb.yaml med `layout: 1` (eller en lista, t.ex. [1, 4]):
   python -m golfholes utsnitt  klubbar/<klubb> data/<klubb>/orto/*.tif  → data/<klubb>/utsnitt/orto.jpg + .jgw
   python -m golfholes sponsorrapport klubbar/<klubb> --sasong 2027 [--kalla mapp] → output/<klubb>/sponsorrapport/2027/
   python -m golfholes partnerexport  klubbar/<klubb>                  → output/<klubb>/partner/ (JSON per hål + zip)
-  python -m golfholes flygfilm klubbar/<klubb>/hal-14.yaml [--data data/<klubb>] [--sek 12]
+  python -m golfholes flygfilm klubbar/<klubb>/hal-14.yaml [--data data/<klubb>] [--sek 12] [--forlopp oversikt]
                                                                     → output/<klubb>/flygfilm/ (rå MP4 + nyckelbilder)
 """
 from __future__ import annotations
@@ -371,7 +371,8 @@ def partnerexport(club_dir: str) -> int:
     return 0
 
 
-def flygfilm(path: str, data: str | None, ut: str | None, sek: float, slut: float) -> int:
+def flygfilm(path: str, data: str | None, ut: str | None, sek: float, slut: float,
+             forlopp: str = "rak", tee: str | None = None) -> int:
     from .render.flygfilm import ATTRIBUTION, flygfilm as rendera
 
     p = Path(path)
@@ -379,10 +380,10 @@ def flygfilm(path: str, data: str | None, ut: str | None, sek: float, slut: floa
     club_dir = _club_dir(p)
     data_dir = Path(data) if data else Path("data") / club_dir.name
     ut_dir = Path(ut) if ut else Path("output") / club_dir.name / "flygfilm"
-    r = rendera(hole, data_dir, ut_dir, sekunder=sek, slut_s=slut)
+    r = rendera(hole, data_dir, ut_dir, sekunder=sek, slut_s=slut, forlopp=forlopp, tee=tee)
     for k, v in r["filer"].items():
         print(f"  {k}: {v}")
-    print("  " + ", ".join(f"{k}={v}" for k, v in r["info"].items()))
+    print("  " + ", ".join(f"{k}={v}" for k, v in r["info"].items() if k != "hojd_over_mark_m"))
     if r["info"]["lyft_for_trad_vid_m"]:
         print(f"OBS: kameran lyftes över träd vid {r['info']['lyft_for_trad_vid_m']} m från tee.")
     print(f"Rå film ur Lantmäteriets data, ingen AI. Märk publikt material: {ATTRIBUTION}")
@@ -442,6 +443,9 @@ def main(argv: list[str] | None = None) -> int:
     ff.add_argument("--ut", default=None, help="utmapp (standard: output/<klubb>/flygfilm)")
     ff.add_argument("--sek", type=float, default=12.0, help="filmens längd i sekunder (standard 12)")
     ff.add_argument("--slut", type=float, default=4.0, help="sekunder för stigning till vy ovanifrån (standard 4)")
+    ff.add_argument("--forlopp", choices=["rak", "oversikt"], default="rak",
+                    help="rak: tee → green → upp (standard). oversikt: ovanifrån → ner till tee → green → upp igen (~23 s)")
+    ff.add_argument("--tee", default=None, help="tee att landa på i forlopp oversikt (standard 56)")
     sr = sub.add_parser("sponsorrapport", help="Visningar per sponsor och kanal för en säsong (PNG + PDF per sponsor)")
     sr.add_argument("klubbmapp")
     sr.add_argument("--sasong", type=int, required=True)
@@ -455,7 +459,7 @@ def main(argv: list[str] | None = None) -> int:
     if a.cmd == "partnerexport":
         return partnerexport(a.klubbmapp)
     if a.cmd == "flygfilm":
-        return flygfilm(a.fil, a.data, a.ut, a.sek, a.slut)
+        return flygfilm(a.fil, a.data, a.ut, a.sek, a.slut, a.forlopp, a.tee)
     if a.cmd == "aiunderlag":
         return aiunderlag(a.fil)
     if a.cmd == "aibild":
