@@ -77,8 +77,12 @@ class Halkort:
         typsnitt = d.get("typsnitt")
         klubb = path.parent.parent / "klubb.yaml"
         halfil = path.parent.parent / f"hal-{int(d['hole']):02d}.yaml"
-        if typsnitt is None and klubb.exists():
-            typsnitt = (yaml.safe_load(klubb.read_text(encoding="utf-8")) or {}).get("typsnitt")
+        kd = (yaml.safe_load(klubb.read_text(encoding="utf-8")) or {}) if klubb.exists() else {}
+        if typsnitt is None:
+            typsnitt = kd.get("typsnitt")
+        # mörk botten: hålkortets egen färg, annars klubbens mörkaste profilfärg
+        farg_mork = d.get("farg_mork") or kd.get("farg_mork") or \
+            ((kd.get("profil") or {}).get("farger") or {}).get("djup") or "#142219"
         if d.get("bild"):
             bild = (path.parent / d["bild"]).resolve()
         else:  # ingen bild angiven: den målade hålbilden i klubbens stil
@@ -93,7 +97,7 @@ class Halkort:
             slutrad=d.get("slutrad", ""), sakert=d.get("strategi", {}).get("sakert", ""),
             chansa=d.get("strategi", {}).get("chansa", ""),
             sponsor=Sponsor(**sp) if sp else None, typbild=bool(d.get("typbild", False)),
-            farg_mork=d.get("farg_mork", "#142219"), typsnitt=typsnitt,
+            farg_mork=farg_mork, typsnitt=typsnitt,
             avstandslinjer=bool(d.get("avstandslinjer", False)),
             halfil=(halfil if d.get("markera", True) and halfil.exists() and not d.get("typbild") else None),
         )
@@ -206,6 +210,9 @@ def layout_halkort(c: Halkort, dark: bool = False) -> tuple[str, int, int]:
         ink, body, head, rule, num = "#efe7d6", "rgba(239,231,214,.74)", "#c8a96b", "rgba(200,169,107,.55)", "#efe7d6"
         num_font = "'Cormorant Garamond',serif;font-weight:500"
         sans = "'DM Sans',sans-serif"
+        if c.typsnitt:  # klubbens profil gäller även på mörk botten
+            num_font = f"'{c.typsnitt.get('siffror', 'Cormorant Garamond')}',serif;font-weight:500"
+            sans = f"'{c.typsnitt.get('text', 'DM Sans')}',sans-serif"
         caps = "letter-spacing:.16em"
         last = "#efe7d6"
     else:
