@@ -19,13 +19,12 @@ LANSERAD = False
 # Glasrikets styrelse beslutar 2026-12-08. Till dess nämns klubben inte på sajten,
 # och referenssidan byggs inte. Sätt True först när klubben godkänt texten skriftligt.
 REFERENS_GLASRIKET = False
-# Bolagsuppgifter. None visas som en tydlig lucka och stoppar lansering.
+# Kontaktuppgifter. Eric 2026-10-25: inget bolagsnamn eller org.nr förrän TACADA-bolaget
+# är bildat, inget telefonnummer.
 BOLAG = {
-    "namn": None,       # t.ex. "Niksen AB"
-    "orgnr": None,
-    "epost": None,      # t.ex. "hej@tacada.se"
-    "telefon": None,
-    "ort": None,
+    "namn": "TACADA",
+    "epost": "fore@tacada.se",
+    "ort": "Växjö",
 }
 # ------------------------------------------------------------------------------------
 
@@ -58,10 +57,9 @@ def las_sida(fil):
 
 
 def ersatt(text):
-    text = text.replace("{{epost}}", bolag("epost", "e-post"))
-    text = text.replace("{{telefon}}", bolag("telefon", "telefon"))
-    text = text.replace("{{bolag}}", bolag("namn", "bolagsnamn"))
-    text = text.replace("{{orgnr}}", bolag("orgnr", "org.nr"))
+    epost = BOLAG.get("epost")
+    text = text.replace("{{epost}}", f'<a href="mailto:{epost}">{epost}</a>' if epost else LUCKA.format("e-post"))
+    text = text.replace("{{bolag}}", bolag("namn", "namn"))
     text = text.replace("{{ort}}", bolag("ort", "ort"))
     return text
 
@@ -115,8 +113,8 @@ def bygg_sida(meta, kropp, ordmarke):
         <p>Vi skapar värde till varje hål.</p>
       </div>
       <div><h2>Områden</h2><ul><li><a href="/golfklubbar/">Courses</a></li><li><a href="/halsponsorer/">Partners</a></li><li><a href="/studio/">Studio</a></li><li><a href="/editions/">Editions</a></li></ul></div>
-      <div><h2>Kontakt</h2><ul><li>{{{{epost}}}}</li><li>{{{{telefon}}}}</li><li><a href="/kontakt/">Boka en visning</a></li></ul></div>
-      <div><h2>Bolag</h2><ul><li>{{{{bolag}}}}</li><li>Org.nr {{{{orgnr}}}}</li><li><a href="/integritet/">Integritetspolicy</a></li></ul></div>
+      <div><h2>Kontakt</h2><ul><li>{{{{epost}}}}</li><li>{{{{ort}}}}</li><li><a href="/kontakt/">Boka en visning</a></li></ul></div>
+      <div><h2>TACADA</h2><ul><li><a href="/om/">Om oss</a></li><li><a href="/integritet/">Integritetspolicy</a></li></ul></div>
     </div>
     <div class="kallor">
       <span>Underlag: Ortofoto och Markhöjdmodell ©Lantmäteriet, bearbetat, CC BY 4.0.</span>
