@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TACADA · Riktning A</title>
+<style>
+@font-face{font-family:"Marcellus";src:url(fonts/marcellus-latin.woff2) format("woff2");font-display:swap}
+@font-face{font-family:"Inter";src:url(fonts/inter-latin.woff2) format("woff2");font-weight:400 600;font-display:swap}
+:root{--tallgron:#183329;--natt:#101F2B;--elfenben:#F3EDE2;--brons:#B7955E;--dampad:#AEB7AE}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--natt);color:var(--elfenben);font-family:"Inter",system-ui,sans-serif}
+canvas#moln{position:fixed;inset:0;width:100vw;height:100vh;display:block}
+.topp{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:22px clamp(16px,4vw,48px);z-index:3;mix-blend-mode:normal}
+.ordmarke{font-family:"Marcellus",Georgia,serif;font-size:22px;letter-spacing:.14em}
+.meny{display:flex;gap:28px;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+.meny a{color:var(--elfenben);text-decoration:none;opacity:.85}
+.scen{position:relative;height:420vh;z-index:2}
+.steg{position:sticky;top:0;height:100vh;display:grid;align-items:end;padding:0 clamp(16px,6vw,96px) clamp(48px,10vh,110px);pointer-events:none}
+.kort{max-width:760px;opacity:0;transition:opacity .5s ease,transform .5s ease}
+.kort h1,.kort h2{font-family:"Marcellus",Georgia,serif;font-weight:400;text-transform:uppercase;letter-spacing:.05em;line-height:1.06;margin:0 0 18px}
+.kort h1{font-size:clamp(36px,5vw,72px)}
+.kort h2{font-size:clamp(32px,4.6vw,64px)}
+.kort p{font-size:clamp(16px,1.5vw,19px);line-height:1.6;color:#D7DDD6;max-width:46ch;margin:0}
+.lager{position:absolute;left:clamp(16px,6vw,96px);bottom:clamp(48px,10vh,110px);right:clamp(16px,6vw,96px)}
+.knapp{pointer-events:auto;display:inline-block;margin-top:26px;background:var(--brons);color:var(--natt);text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:16px 24px}
+.matare{position:fixed;right:clamp(16px,4vw,48px);bottom:clamp(48px,10vh,110px);z-index:3;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--dampad);text-align:right;line-height:1.9}
+.matare b{display:block;font-family:"Marcellus",Georgia,serif;font-weight:400;font-size:clamp(28px,3.4vw,44px);letter-spacing:.04em;color:var(--elfenben)}
+.malad{position:absolute;right:clamp(16px,8vw,140px);top:50%;transform:translateY(-50%);height:min(78vh,760px);opacity:0;transition:opacity .8s ease}
+.malad img{height:100%;width:auto;display:block;filter:drop-shadow(0 30px 60px rgba(0,0,0,.45))}
+.scrim{position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to top,rgba(16,31,43,.88) 0%,rgba(16,31,43,.55) 32%,rgba(16,31,43,0) 58%),linear-gradient(to bottom,rgba(16,31,43,.7),rgba(16,31,43,0) 120px)}
+.kalla{position:fixed;left:clamp(16px,4vw,48px);bottom:14px;font-size:11px;color:#8E978E;z-index:3}
+.efter{position:relative;z-index:2;background:var(--elfenben);color:#292D28;padding:120px clamp(16px,6vw,96px)}
+.efter h2{font-family:"Marcellus",Georgia,serif;font-weight:400;text-transform:uppercase;letter-spacing:.06em;color:var(--tallgron);font-size:clamp(28px,4vw,52px);margin:0 0 16px}
+@media (max-width:720px){.meny{display:none}.malad{right:50%;top:84px;transform:translateX(50%);height:38vh}}
+@media (prefers-reduced-motion:reduce){.kort,.malad{transition:none}}
+</style>
+</head>
+<body>
+<canvas id="moln" aria-hidden="true"></canvas>
+<div class="scrim" aria-hidden="true"></div>
+<header class="topp"><span class="ordmarke">TACADA</span><nav class="meny"><a href="#">Golfklubbar</a><a href="#">Hålsponsorer</a><a href="#">Studio</a><a href="#">Kontakt</a></nav></header>
+
+<section class="scen" id="scen">
+  <div class="steg">
+    <div class="lager kort" data-fran="0" data-till=".3">
+      <h1>Ni har byggt en fantastisk bana. Nu ska alla se den.</h1>
+      <p>Ett riktigt hål från en riktig bana i Småland. Scrolla, så går vi ut på det.</p>
+    </div>
+    <div class="lager kort" data-fran=".3" data-till=".62">
+      <h2>Varje träd. Varje bunker. Där de står.</h2>
+      <p>Ingen skiss och ingen gissning. Hålet så som golfaren möter det på tee, ner till minsta svacka.</p>
+    </div>
+    <div class="lager kort" data-fran=".62" data-till="1.01">
+      <h2>Sedan gör vi det vackert.</h2>
+      <p>I den stil klubben väljer, på skylten, i guiden, på hemsidan och i flödet. Lika genomarbetat som banan.</p>
+      <a class="knapp" href="#">Se ett av era egna hål</a>
+    </div>
+    <figure class="malad" id="malad"><img src="exempel-hal.webp" alt="Samma hål målat i akvarell: fairway, bunker och green ovanifrån"></figure>
+  </div>
+</section>
+<section class="efter"><h2>Resten av sidan fortsätter här</h2><p>Paketet, stilarna, kalkylatorn och kontakt, i samma uttryck.</p></section>
+<div class="kalla">Underlag: Laserdata, Ortofoto och Markhöjdmodell ©Lantmäteriet, bearbetat, CC BY 4.0</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(async function(){
+  const canvas=document.getElementById('moln');
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setClearColor(0x101F2B,1);
+  const scene=new THREE.Scene();
+  scene.fog=new THREE.Fog(0x101F2B,380,900);
+  const cam=new THREE.PerspectiveCamera(38,1,1,2000);
+  cam.up.set(0,0,1);
+
+  const b64=(await (await fetch('hal14.json')).json()).data;
+  const buf=Uint8Array.from(atob(b64),c=>c.charCodeAt(0)).buffer;
+  const n=new DataView(buf).getUint32(0,true);
+  const pos16=new Int16Array(buf,4,n*3);
+  const col8=new Uint8Array(buf,4+n*6,n*3);
+  const pos=new Float32Array(n*3), col=new Float32Array(n*3);
+  const bg=[16/255,31/255,43/255];
+  for(let i=0;i<n;i++){
+    const x=pos16[i*3]/10,y=pos16[i*3+1]/10;pos[i*3]=x;pos[i*3+1]=y;pos[i*3+2]=pos16[i*3+2]/10;
+    // Mjuk kant: punkterna tonar mot bakgrunden i stället för att sluta i en fyrkant.
+    const r=Math.hypot(x/165,y/220), k=Math.max(0,Math.min(1,(1.0-r)/0.35));
+    for(let c=0;c<3;c++){const v=Math.pow(col8[i*3+c]/255,1.15)*1.12;col[i*3+c]=bg[c]+(v-bg[c])*k;}
+  }
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const mat=new THREE.PointsMaterial({size:1.7,vertexColors:true,sizeAttenuation:true,transparent:true,opacity:1});
+  scene.add(new THREE.Points(geo,mat));
+
+  // Kamerabana: ovanifrån, sedan ner bakom tee 56 och längs mittlinjen mot green.
+  const tee=new THREE.Vector3(78,131,0), green=new THREE.Vector3(-60,-150,0);
+  const banor=[
+    {p:new THREE.Vector3(40,-260,300),m:new THREE.Vector3(0,0,0)},
+    {p:new THREE.Vector3(150,260,170),m:new THREE.Vector3(10,-30,0)},
+    {p:new THREE.Vector3(84,168,24),m:new THREE.Vector3(70,40,4)},
+    {p:new THREE.Vector3(70,60,40),m:green}
+  ];
+  const lerp=(a,b,t)=>a+(b-a)*t, ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+  const scen=document.getElementById('scen'), kort=[...document.querySelectorAll('.kort')];
+  const malad=document.getElementById('malad');
+  const stilla=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let t0=performance.now();
+
+  function storlek(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);cam.aspect=w/h;cam.fov=w<h?58:38;cam.updateProjectionMatrix();}
+  addEventListener('resize',storlek);storlek();
+
+  function framsteg(){const r=scen.getBoundingClientRect();return Math.min(1,Math.max(0,-r.top/(r.height-innerHeight)));}
+  function ruta(nu){
+    const f=framsteg();
+    const seg=Math.min(banor.length-2,Math.floor(f*(banor.length-1)));
+    const lt=ease(f*(banor.length-1)-seg);
+    const a=banor[seg],b=banor[seg+1];
+    const p=a.p.clone().lerp(b.p,lt), m=a.m.clone().lerp(b.m,lt);
+    if(!stilla && f<.02){const v=(nu-t0)/14000;p.x=Math.sin(v)*260;p.y=-Math.cos(v)*260;}
+    cam.position.copy(p);cam.lookAt(m);
+    mat.opacity=f>.7?lerp(1,.18,Math.min(1,(f-.7)/.2)):1;
+    malad.style.opacity=f>.72?Math.min(1,(f-.72)/.15):0;
+    kort.forEach(k=>{const on=f>=+k.dataset.fran&&f<+k.dataset.till;k.style.opacity=on?1:0;k.style.transform=on?'none':'translateY(14px)';});
+    renderer.render(scene,cam);
+    requestAnimationFrame(ruta);
+  }
+  requestAnimationFrame(ruta);
+})();
+</script>
+</body>
+</html>
