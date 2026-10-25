@@ -25,7 +25,7 @@ canvas#bana{position:fixed;inset:0;width:100vw;height:100vh;display:block}
   font:600 12px/26px "Inter",sans-serif;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.28);opacity:0;transform:scale(.4);transition:transform .35s ease,background .4s,color .4s}
 .nal.syns{transform:scale(1)}
 .nal.fjorton{background:var(--brons);color:var(--natt)}
-.scen{position:relative;height:330vh;z-index:3}
+.scen{position:relative;height:290vh;z-index:3}
 .steg{position:sticky;top:0;height:100vh;pointer-events:none}
 .kort{position:absolute;left:clamp(16px,6vw,96px);top:50%;transform:translateY(-50%);max-width:min(520px,38vw);opacity:0;transition:opacity .5s ease,margin .5s ease;margin-top:14px}
 .kort.pa{opacity:1;margin-top:0}
@@ -72,7 +72,7 @@ body.ute .morkslojan{opacity:1}
       <h2>Varje hål på sin plats. Varje träd där det står.</h2>
       <p>Golfarna känner igen sin bana på en sekund. De har bara aldrig sett den så här vacker.</p>
     </div>
-    <div class="kort sista" data-fran=".93" data-till="1.01">
+    <div class="kort sista" data-fran=".95" data-till="1.01">
       <span class="over">Hål 14</span>
       <h2>Utslaget alla pratar om efteråt.</h2>
       <p>Här vill ett lokalt företag synas. Vi gör hålet värt sitt namn, på skylten, i guiden och i flödet.</p>
@@ -109,7 +109,10 @@ body.ute .morkslojan{opacity:1}
   const tex=new THREE.TextureLoader().load('karta.webp');
   tex.anisotropy=renderer.capabilities.getMaxAnisotropy();
   tex.encoding=THREE.sRGBEncoding;renderer.outputEncoding=THREE.sRGBEncoding;
-  scene.add(new THREE.Mesh(geo,new THREE.MeshBasicMaterial({map:tex})));
+  // Trädkronorna är höjda till sin laseruppmätta höjd. Ett lågt kvällsljus från väster ger dem volym.
+  scene.add(new THREE.Mesh(geo,new THREE.MeshLambertMaterial({map:tex})));
+  scene.add(new THREE.AmbientLight(0xffffff,.74));
+  const sol=new THREE.DirectionalLight(0xfff1dc,.5);sol.position.set(-1,-.35,.55);scene.add(sol);
 
   // Markhöjd i scenkoordinater (x öst, y norr, meter från bildens mitt).
   function mark(x,y){
@@ -150,11 +153,11 @@ body.ute .morkslojan{opacity:1}
     const slutLut=THREE.MathUtils.radToDeg(Math.atan2(teeZ-sikteZ,150));
     N=[
       {f:0,  th:0,   fi:89,  d:start.d,      tx:start.tx, ty:start.ty},
-      {f:.3, th:110, fi:52,  d:start.d*.78,  tx:0,        ty:-40},
-      {f:.62,th:320, fi:34,  d:start.d*.5,   tx:140,      ty:-120},
-      {f:.84,th:500, fi:16,  d:300,          tx:sikte.x,  ty:sikte.y},
-      {f:.95,th:540, fi:slutLut, d:150,      tx:sikte.x,  ty:sikte.y},
-      {f:1,  th:540, fi:slutLut, d:150,      tx:sikte.x,  ty:sikte.y}
+      {f:.3, th:60,  fi:52,  d:start.d*.78,  tx:0,        ty:-40},
+      {f:.6, th:125, fi:34,  d:start.d*.5,   tx:140,      ty:-120},
+      {f:.82,th:170, fi:18,  d:330,          tx:sikte.x,  ty:sikte.y},
+      {f:.94,th:180, fi:slutLut, d:150,      tx:sikte.x,  ty:sikte.y},
+      {f:1,  th:180, fi:slutLut, d:150,      tx:sikte.x,  ty:sikte.y}
     ];
   }
   addEventListener('resize',storlek);storlek();
@@ -181,7 +184,7 @@ body.ute .morkslojan{opacity:1}
     // Något händer direkt: kameran sjunker in över banan och numren tänds ett i taget.
     if(!stilla){const k=smooth(Math.min(1,tid/2600));o.d*=1+(1-k)*.35*Math.max(0,1-f/.1);o.th+=(1-k)*-14*Math.max(0,1-f/.1);}
     const th=THREE.MathUtils.degToRad(o.th), fi=THREE.MathUtils.degToRad(o.fi);
-    const slut=Math.max(0,Math.min(1,(f-.84)/.11));
+    const slut=Math.max(0,Math.min(1,(f-.82)/.12));
     const tz=sikteZ*slut+(1-slut)*18;
     const pos=new THREE.Vector3(o.tx+o.d*Math.cos(fi)*Math.sin(th), o.ty-o.d*Math.cos(fi)*Math.cos(th), tz+o.d*Math.sin(fi));
     pos.z=Math.max(pos.z,mark(pos.x,pos.y)+1.6);
@@ -198,7 +201,7 @@ body.ute .morkslojan{opacity:1}
       p.el.style.opacity=syn;p.el.classList.toggle('syns',tänd);
       p.el.style.left=((v.x+1)/2*w)+'px';p.el.style.top=((1-v.y)/2*h)+'px';
     });
-    const fo=Math.max(0,Math.min(1,(f-.88)/.07));
+    const fo=Math.max(0,Math.min(1,(f-.865)/.065));
     foto.style.opacity=fo;
     document.body.classList.toggle('ute',fo>.5);
     kort.forEach(k=>k.classList.toggle('pa',f>=+k.dataset.fran&&f<+k.dataset.till));
