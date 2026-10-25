@@ -1,0 +1,65 @@
+<!--
+titel: Bli medlem · Glasrikets GK
+beskrivning: Bli medlem i Glasrikets Golfklubb i Växjö. Medlemskap för senior, junior, studerande, långboende och knattar, och för 12-hålsbanan. Betala på en gång eller i åtta delar.
+sokvag: bli-medlem/
+bild: img/hal-05-inspel-1600.webp
+-->
+<section class="sek sek-topp">
+  <div class="inne tva">
+    <div class="text">
+      <p class="over">Medlemskap {{mk_ar}}</p>
+      <h1>Bli medlem</h1>
+      <p class="ingress">En hel säsong i Fylleryd – med egen bokning, klubbens träningsområden och allt som händer i klubben. Känn dig varmt välkommen till Glasrikets GK!</p>
+      <ul class="punkter">
+        <li>{{mk_delbetalning}}</li>
+        <li>{{mk_friskvard}}</li>
+      </ul>
+      <div class="knappar">
+        <a class="knapp knapp-glod" href="#ansokan">Ansök om medlemskap</a>
+      </div>
+    </div>
+    <figure class="bild-ram">
+      <img src="/img/hal-05-inspel-800.webp" srcset="/img/hal-05-inspel-800.webp 800w, /img/hal-05-inspel-1600.webp 1600w" sizes="(min-width: 900px) 46vw, 92vw" width="800" height="537" alt="Inspelet på hål 5 med fairwaybunkern och greenen framför skogskanten" decoding="async">
+    </figure>
+  </div>
+</section>
+
+<section class="sek sek-ljus">
+  <div class="inne">
+    <div class="sek-huvud">
+      <h2>Avgifter {{mk_ar}}</h2>
+      <p class="ingress">{{mk_not}}</p>
+    </div>
+    {{mk_kort}}
+  </div>
+</section>
+
+<section class="sek">
+  <div class="inne tva tva-topp">
+    <div class="text">
+      <h2>Spelrätt</h2>
+      <p>{{mk_spelratt}}</p>
+      <h2 class="mellan">Aktivitetsavgift</h2>
+      <p>{{mk_aktivitet}}</p>
+    </div>
+    <form class="formular" id="ansokan" name="medlemsansokan" method="POST" action="/tack/" data-netlify="true" netlify-honeypot="bot-falt">
+      <h2>Ansök om medlemskap</h2>
+      <input type="hidden" name="form-name" value="medlemsansokan">
+      <p class="visuellt-dold"><label>Fyll inte i detta fält <input name="bot-falt" tabindex="-1" autocomplete="off"></label></p>
+      <div class="rad">
+        <label for="m-namn">Namn<input id="m-namn" name="namn" autocomplete="name" required></label>
+        <label for="m-golfid">Golf-ID (om du har)<input id="m-golfid" name="golf-id" inputmode="numeric" autocomplete="off"></label>
+      </div>
+      <div class="rad">
+        <label for="m-epost">E-post<input id="m-epost" name="epost" type="email" autocomplete="email" required></label>
+        <label for="m-telefon">Telefon<input id="m-telefon" name="telefon" type="tel" autocomplete="tel"></label>
+      </div>
+      <label for="m-form">Medlemsform
+        <select id="m-form" name="medlemsform" required>{{mk_val}}</select>
+      </label>
+      <label for="m-medd">Meddelande (valfritt)<textarea id="m-medd" name="meddelande" rows="3"></textarea></label>
+      <p class="liten">Vi använder uppgifterna bara för att hantera din ansökan. Läs mer i vår <a href="/integritet/">integritetspolicy</a>. Du kan också mejla ditt golf-ID och önskad medlemsform till <a href="mailto:{{epost}}">{{epost}}</a>.</p>
+      <button class="knapp knapp-glod" type="submit">Skicka ansökan</button>
+    </form>
+  </div>
+</section>

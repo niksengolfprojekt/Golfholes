@@ -1,0 +1,54 @@
+# Fröpunkter för hål 1 (SWEREF 99 TM, meter). Satta 2026-10-23 mot ortofoto 2025-07-01 (rutnätsutsnitt),
+# klubbens hålkarta H01-1 (banguide 2025), översiktskartan och Erics uppgifter (projektminnet).
+# Par 5 som börjar vid klubbhuset och går åt sydväst, svänger sedan vänster (söderut) förbi två
+# dammar till höger om fairway. Green med bunker till höger/bakom, som på klubbens karta.
+# Tees:
+#  56/60 = klippta ytan sydost om asfaltsgången nära klubbhuset ("där banan börjar"). Läget inom
+#          ytan är osäkert (±5 m); längden stämmer (439 m mot 442).
+#  52/49 = klippt yta på högra kanten bredvid gången (nordväst om gångens slut), som Eric beskrev.
+#  44    = liten rund klippt tee där fairway börjar.
+club: Glasrikets Golfklubb
+hole: 1
+par: 5
+index: 12
+orto: data/glasriket/orto/o63050_4900_25_mr25.tif
+tees:
+- {name: 56/60, point: [491714.0, 6306508.0], length_m: 442}
+- {name: 52/49, point: [491665.0, 6306497.0], length_m: 394}
+- {name: '44', point: [491595.0, 6306452.0], length_m: 303}
+centerline:
+- [491714.0, 6306508.0]
+- [491665.0, 6306490.0]
+- [491595.0, 6306440.0]
+- [491555.0, 6306390.0]
+- [491535.0, 6306320.0]
+- [491515.0, 6306250.0]
+- [491497.0, 6306163.0]
+green: [491497.0, 6306163.0]
+fairway:
+- [491565.0, 6306405.0]
+- [491552.0, 6306335.0]
+- [491530.0, 6306285.0]
+- [491510.0, 6306240.0]
+# Greenen: trollstaven tog med förgreenen och kragen. Kanten inritad ur fotot (ljusa ovalen
+# bredvid bunkern), ca 19 × 34 m.
+# 2026-10-23: kanten vid bunkern följer bunkerns synliga sand (E 491490–491496, N 6306152–6306161).
+green_polygon:
+- [491507.4, 6306165.3]
+- [491505.0, 6306173.6]
+- [491500.7, 6306179.2]
+- [491495.6, 6306180.8]
+- [491491.2, 6306177.9]
+- [491488.7, 6306171.3]
+- [491488.6, 6306162.7]
+- [491490.6, 6306161.2]
+- [491492.0, 6306159.2]
+- [491494.0, 6306157.4]
+- [491495.5, 6306155.2]
+- [491495.6, 6306152.5]
+- [491495.3, 6306148.8]
+- [491500.4, 6306147.2]
+- [491504.8, 6306150.1]
+- [491507.3, 6306156.7]
+laser: data/glasriket/laser/y26a023-63050_4900_25.copc.laz
+hojd: data/glasriket/hojd/m630_49.tif

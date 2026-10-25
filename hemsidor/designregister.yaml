@@ -1,0 +1,85 @@
+# Designregister för alla hemsidor TACADA gör.
+#
+# En post per sajt med klubbens val och inställningar. Syftet: vi tar med samma
+# grundpaket överallt (`gemensamt`), men själva utseendet ska vara unikt per klubb.
+# Kontroll: python -m golfholes designregister   (testerna kontrollerar själva reglerna)
+#
+# Arbetsgång för en ny klubb (skill "unik-klubbhemsida"):
+#   1. Fyll i `inventering`: 8–12 saker bara den här klubben har (fakta, inget påhittat).
+#   2. Välj riktning bland `riktningar` – den som bäst bär en sak ur inventeringen.
+#   3. Fyll i resten av posten och kör kontrollen. Den stoppar om sajten liknar en tidigare.
+#   4. Bygg, kör mätt kontroll + smakgranskning, visa Eric.
+
+# Det vi medvetet tar med på varje klubbsajt (innehåll och funktion, inte utseende).
+gemensamt:
+  - Hålsidor 1–18 byggda ur klubb.yaml och hålkorten, med klubbens egen flagga
+  - Knappen "Boka starttid" synlig på varje sida, länk till klubbens bokning
+  - Hålsponsorsida med [Företag]-hålet och klubbens pris
+  - Lantmäteriet-raden i sidfot eller krediter (licens)
+  - "Inga AI-stämplar; en rad Vissa bilder är visualiseringar bara på Om-sidan"
+  - Inga personer i bilder; sol och öppen bana framför skog
+  - Mobil först (390 px), text aldrig under 13 px, kontrast enligt WCAG AA
+  - Cookiefri besöksräknare, integritetspolicy, statisk sajt
+
+# Vad kontrollen kräver av en ny sajt jämfört med varje tidigare sajt.
+regler:
+  maste_skilja: [riktning, toppbild]          # får aldrig vara samma som en tidigare sajt
+  jamfor: [typsnitt, palett.huvud, halbildstil, halkortslayout]
+  minst_olika: 3                              # av fälten i `jamfor`
+  forbjudna_riktningar: [standardmall]        # helbild + liten versalrad + serifrubrik + två knappar
+
+# Kompositionsidéer att välja bland (utökas när vi hittar fler som fungerar).
+riktningar:
+  standardmall: Helbild, liten versalrad över stor rubrik, två knappar, sifferrad under. Förbjuden – ser ut som alla andra.
+  namnet-som-monument: Klubbens namn så stort att det blir arkitektur, kant till kant på första skärmen.
+  delad-scen: Halva skärmen står still (en hålbild eller banöversikt), andra halvan är en lugn läskolumn.
+  fast-affisch: Rubriken står kvar medan hålbilder passerar under den, ett hål per skärm.
+  kartan-forst: Banans verkliga kontur (ur Lantmäteriet) är startsidan; hålen väljs i kartan.
+  signaturhalet: Hela startsidan byggs kring ett enda signaturhål, resten av banan kommer efter.
+  arkivet: Klubbens historia och tryckta saker (gamla scorekort, märket, årtal) bär formen.
+  arstiderna: Sidan byter ton efter säsong; samma vy av banan i vår, sommar och höst.
+
+sajter:
+  - id: tacada
+    namn: TACADA
+    typ: företag
+    status: "förhandsvisning (PR 5, gren claude/project-thread-izm0ty)"
+    ide: Modern Heritage – mörk topografisk bakgrund, ordmärke i Marcellus.
+    riktning: ej-bedomd
+    toppbild: ej-bedomd
+    typsnitt: {rubrik: Marcellus, text: Inter}
+    palett: {huvud: "#183329", ljus: "#F3EDE2", accent: "#B7955E", ovriga: ["#571F30", "#101F2B"]}
+    halbildstil: blandat (visar alla sex stilar)
+    halkortslayout: null
+    rorelse: ej-bedomd
+    designfil: tacada/grafisk-profil (manual v1.2 i projektmappen)
+    anteckning: Riktning och toppbild fylls i efter mätt kontroll + smakgranskning.
+
+  - id: glasriket
+    namn: Glasrikets Golfklubb
+    typ: klubb
+    status: "startsidan v3 2026-10-25 (Erics synpunkter), väntar på klubbens stämningsfoto och OK"
+    inventering:
+      - Naturreservatet Fylleryd, äng och hagmark, vitsippor i maj
+      - 4,5 km nordost om Växjö centrum, långt från vägbruset
+      - Glasriket – regionens glashantverk, glasets färger och ljus
+      - Klubbens sigill "Småland"
+      - Hål 14, banans svåraste utslag, björkar längs hela högersidan
+      - Dammarna vid hål 17
+      - Stengärdsgårdar, enbuskar, ek och bok mellan hålen
+      - Rovfåglar över hagarna, djur som betar intill banan
+      - Nya bunkrar 2025 på hål 4, 7 och 13
+    ide: En skogsjuvel som följer säsongen – stämningsbild, sedan hela banan som den ser ut just nu, hål för hål.
+    riktning: arstiderna
+    toppbild: stamningsfoto
+    typsnitt: {rubrik: Spectral, text: Hanken Grotesk}
+    palett: {huvud: "#EEF3EC", ljus: "#FBF2ED", accent: "#D9A441", ovriga: ["#10202E", "#1D4756", "#9CC9C3"]}
+    halbildstil: målad (Glas och skog, mörk bakgrund)
+    halkortslayout: 3
+    rorelse: siffror som tänds hål för hål, toppbilden andas in, delar som glider in
+    designfil: hemsidor/glasriket/DESIGN.md
+    anteckning: >
+      v1 (standardmall: helbild, versalrad, två knappar, sifferrad) fälldes 2026-10-25 med 7 fel i mätt kontroll.
+      v2: 0 fel i båda verktygen; varning för antal textstorlekar (delade delar som sidhuvud och sidfot).
+      v3 (Eric 2026-10-25): flygfilmen bort (för låg kvalitet), stämningsfoto överst (hål 14 från tee tills klubbens
+      foto finns), kartan och alla hålbilder byter årstid efter datum (inga knappar), ruta för hålsponsorns logga.

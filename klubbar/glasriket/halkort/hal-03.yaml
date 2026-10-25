@@ -10,15 +10,14 @@ index: 16
 tees: [["52 · 56 · 60", 290], ["49", 274], ["44", 199]]
 bild: ../halbilder/hal-03-malad.webp
 typbild: false
-rubrik: Genvägen kräver 240 m
-beskrivning: >-
-  Ett kort par 4 som svänger höger mot en liten, inbunkrad green. Out längs hela högersidan
-  och en damm till höger om tee 49.
+rubrik: "Frestelsen heter 240 meter"
+beskrivning: "Ett kort par 4 som svänger höger mot en liten, inbunkrad green. Genvägen lockar redan på tee, men out följer hela högersidan. Hålet avgörs innan du slår: modigt eller klokt?"
 rad_rubrik: Råd från pro:n
 rad:
-  - Den långtslående genar mot greenen, men det krävs en carry på cirka 240 meter.
-  - Medelgolfaren slår sitt utslag cirka 170 meter rakt fram och får då ett inspel på cirka 100 meter.
-slutrad: Håll dig borta från högersidan – där är det out.
+  - "Den långtslående genar mot greenen, men det kräver en carry på cirka 240 meter."
+  - "Medelgolfaren slår cirka 170 meter rakt fram och får då ett inspel på cirka 100 meter mot den lilla greenen."
+slutrad: "Out längs hela högersidan."
+kortrad: "Ingen carry på 240 meter? Slå 170 rakt fram och spela in med 100 kvar."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Utslag cirka 170 meter rakt fram, sedan ett inspel på cirka 100 meter mot den lilla greenen.
   chansa: Gena mot greenen. Kräver en carry på cirka 240 meter, och högersidan är out.

@@ -1,0 +1,24 @@
+# Hålkort för Glasriket hål 16. Hålbilden är AI-målad på hålets exakta form ur Lantmäteriets
+# ortofoto; träd ur Laserdata Skog (python -m golfholes aiunderlag / aibild).
+# Råden är klubbens egna "Råd från PRO:n" ur banguiden 2025 (glasriketsgk.se/haloversikt),
+# lätt redigerade. Beskrivning och strategi är Claudes utkast ur hålfilen – klubben godkänner.
+club: Glasrikets Golfklubb
+bana: Fylleryd
+hole: 16
+par: 4
+index: 15
+tees: [["52 · 56 · 60", 297], ["49 · 44", 259]]
+bild: ../halbilder/hal-16-malad.webp
+typbild: false
+rubrik: "En snäll green bland vatten"
+beskrivning: "Ett kort par 4 som svänger höger upp mot greenen. Vattnet ramar in slutet, till vänster om greenen och i en damm till höger bakom. Ett kontrollerat utslag räcker långt. Flaggan avgör hur modig du ska vara."
+rad_rubrik: Råd från pro:n
+rad:
+  - "En lätt fade på cirka 170 meter från tee ger dig ett kort inspel."
+  - "Står flaggan till vänster krävs längdkontroll."
+  - "Säkerhet: slå bara ut när blixtlampan framme till höger är släckt. Tänd lampan när du lämnat tee och släck den med knappen innan du går in på greenen."
+slutrad: "Snäll green."
+kortrad: "En lätt fade på 170 meter – och slå bara när lampan är släckt."   # pro:ns råd i en mening (prospekt och inlägg)
+strategi:
+  sakert: Ett kontrollerat utslag på 170 m till fairway och ett kort inspel mot mitten av greenen.
+  chansa: Spela mot flaggan även när den står till vänster – men kort eller vänster väntar vattnet.

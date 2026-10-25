@@ -10,15 +10,15 @@ index: 9
 tees: [["60", 423], ["56", 383], ["52 · 49", 325], ["44", 270]]
 bild: ../halbilder/hal-18-malad.webp
 typbild: false
-rubrik: Precision från tee
-beskrivning: >-
-  Ett par 4 norrut hem mot klubbhuset. Två fairwaybunkrar ligger cirka 225–250 m från
-  tee 60, och bakom den svagt frånlutande greenen ligger övningsgreenen.
+rubrik: "Precision hela vägen hem"
+beskrivning: "Sista hålet går hem mot klubbhuset. Två fairwaybunkrar ligger cirka 225–250 meter från tee 60 och kräver ett klokt utslag. Sedan väntar ett långt andra slag mot en green som lutar svagt ifrån dig."
 rad_rubrik: Råd från pro:n
 rad:
-  - Placera gärna ditt utslag hitom bunkrarna för att inte tappa längd.
-  - Andra slaget är ganska långt, till en svagt frånlutande green.
-slutrad: Flyer från ruffen kan gå över greenen – där är marken hård.
+  - "Ett hål som kräver precision från tee. Lägg gärna utslaget hitom bunkrarna, så tappar du inte längd."
+  - "Andra slaget blir ganska långt, mot en svagt frånlutande green."
+  - "Se upp för flyers från ruffen. Bollen kan flyga över greenen, och där är det hård mark och övningsgreen."
+slutrad: "Spela in från fairway, inte från ruffen."
+kortrad: "Lägg utslaget hitom bunkrarna och spela in från fairway."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Utslag kort om bunkrarna, sedan ett långt järn in mot greenens framkant.
   chansa: Över bunkrarna ger ett kortare inspel, men bunkrarna tar längd om du missar.

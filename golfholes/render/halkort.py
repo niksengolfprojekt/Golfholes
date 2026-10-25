@@ -11,6 +11,8 @@ med `layout:` i `klubb.yaml` (en siffra eller en lista om de köper flera).
   4 Skärm      – liggande 16:9 för klubbhusskärm och webb, tre spalter.
   5 Banguide   – fickformat som en yardage book: Säkert/Chansa och rader för anteckningar.
   6 Sponsorhål – hålkortet med rubrik "[Sponsor]-hålet" och sponsorplatta.
+  7 Spelarvy   – stående mobilformat för webb/app: siffror på hålbilden, fågelväg per tee
+                 och förstorad green med djup och bredd. Spelarens version, inte skylten.
 
 Fälten har maxlängder (FIELD_LIMITS). `kontroll()` säger till om en text är för lång
 för mallen, i stället för att mallen krymper texten och hålet ser annorlunda ut.
@@ -63,7 +65,9 @@ class Halkort:
     typbild: bool = False
     farg_mork: str = "#142219"   # bakgrund i mörk layout; klubbens mörkaste färg
     halfil: Path | None = None   # hålfilen: tees och hinderavstånd ritas på bilden ur den
+    avstandslinjer: bool = False  # avståndsbågar vid fairwayhinder (standard av, Erics beslut)
     forklaring: str = ""         # t.ex. "Hinder: meter från tee 60, till – över"
+    spel: dict | None = None     # spelarvyns bilder och mått (foto.spelarvy), sätts av render()
 
     @classmethod
     def from_yaml(cls, path: str | Path) -> "Halkort":
@@ -73,18 +77,28 @@ class Halkort:
         typsnitt = d.get("typsnitt")
         klubb = path.parent.parent / "klubb.yaml"
         halfil = path.parent.parent / f"hal-{int(d['hole']):02d}.yaml"
-        if typsnitt is None and klubb.exists():
-            typsnitt = (yaml.safe_load(klubb.read_text(encoding="utf-8")) or {}).get("typsnitt")
+        kd = (yaml.safe_load(klubb.read_text(encoding="utf-8")) or {}) if klubb.exists() else {}
+        if typsnitt is None:
+            typsnitt = kd.get("typsnitt")
+        # mörk botten: hålkortets egen färg, annars klubbens mörkaste profilfärg
+        farg_mork = d.get("farg_mork") or kd.get("farg_mork") or \
+            ((kd.get("profil") or {}).get("farger") or {}).get("djup") or "#142219"
+        if d.get("bild"):
+            bild = (path.parent / d["bild"]).resolve()
+        else:  # ingen bild angiven: den målade hålbilden i klubbens stil
+            from ..stilar import klubbens_stil, malad_bild
+            bild = malad_bild(path.parent.parent, int(d["hole"]), klubbens_stil(path.parent.parent)).resolve()
         return cls(
             club=d["club"], hole=int(d["hole"]), par=int(d["par"]), index=int(d["index"]),
             tees=[(str(t[0]), int(t[1])) for t in d["tees"]],
-            image=(path.parent / d["bild"]).resolve(),
+            image=bild,
             bana=d.get("bana", ""), rubrik=d.get("rubrik", ""), beskrivning=d.get("beskrivning", ""),
             rad_rubrik=d.get("rad_rubrik", "Råd från pro:n"), rad=list(d.get("rad", [])),
             slutrad=d.get("slutrad", ""), sakert=d.get("strategi", {}).get("sakert", ""),
             chansa=d.get("strategi", {}).get("chansa", ""),
             sponsor=Sponsor(**sp) if sp else None, typbild=bool(d.get("typbild", False)),
-            farg_mork=d.get("farg_mork", "#142219"), typsnitt=typsnitt,
+            farg_mork=farg_mork, typsnitt=typsnitt,
+            avstandslinjer=bool(d.get("avstandslinjer", False)),
             halfil=(halfil if d.get("markera", True) and halfil.exists() and not d.get("typbild") else None),
         )
 
@@ -112,17 +126,20 @@ def _e(s) -> str:
 
 
 def _font_css() -> str:
-    f = FONTS.as_uri()
+    import base64
+
+    # inbäddade: file://-typsnitt laddas inte via Playwright, och då föll kortet tillbaka på Arial
+    f = {p.name: "data:font/ttf;base64," + base64.b64encode(p.read_bytes()).decode() for p in FONTS.glob("*.ttf")}
     return f"""
-@font-face{{font-family:'Cormorant Garamond';src:url('{f}/CormorantGaramond.ttf');font-weight:300 700}}
-@font-face{{font-family:'Cormorant Garamond';src:url('{f}/CormorantGaramond-Italic.ttf');font-weight:300 700;font-style:italic}}
-@font-face{{font-family:'DM Sans';src:url('{f}/DMSans.ttf');font-weight:100 1000}}
-@font-face{{font-family:'Spectral';src:url('{f}/Spectral-Regular.ttf');font-weight:400}}
-@font-face{{font-family:'Spectral';src:url('{f}/Spectral-Medium.ttf');font-weight:500 700}}
-@font-face{{font-family:'Spectral';src:url('{f}/Spectral-Italic.ttf');font-weight:400;font-style:italic}}
-@font-face{{font-family:'Hanken Grotesk';src:url('{f}/HankenGrotesk-Regular.ttf');font-weight:400}}
-@font-face{{font-family:'Hanken Grotesk';src:url('{f}/HankenGrotesk-Medium.ttf');font-weight:500}}
-@font-face{{font-family:'Hanken Grotesk';src:url('{f}/HankenGrotesk-SemiBold.ttf');font-weight:600 800}}
+@font-face{{font-family:'Cormorant Garamond';src:url('{f["CormorantGaramond.ttf"]}');font-weight:300 700}}
+@font-face{{font-family:'Cormorant Garamond';src:url('{f["CormorantGaramond-Italic.ttf"]}');font-weight:300 700;font-style:italic}}
+@font-face{{font-family:'DM Sans';src:url('{f["DMSans.ttf"]}');font-weight:100 1000}}
+@font-face{{font-family:'Spectral';src:url('{f["Spectral-Regular.ttf"]}');font-weight:400}}
+@font-face{{font-family:'Spectral';src:url('{f["Spectral-Medium.ttf"]}');font-weight:500 700}}
+@font-face{{font-family:'Spectral';src:url('{f["Spectral-Italic.ttf"]}');font-weight:400;font-style:italic}}
+@font-face{{font-family:'Hanken Grotesk';src:url('{f["HankenGrotesk-Regular.ttf"]}');font-weight:400}}
+@font-face{{font-family:'Hanken Grotesk';src:url('{f["HankenGrotesk-Medium.ttf"]}');font-weight:500}}
+@font-face{{font-family:'Hanken Grotesk';src:url('{f["HankenGrotesk-SemiBold.ttf"]}');font-weight:600 800}}
 *{{margin:0;padding:0;box-sizing:border-box}}
 html,body{{overflow:hidden}}
 body{{-webkit-font-smoothing:antialiased;font-kerning:normal;text-rendering:geometricPrecision}}
@@ -153,7 +170,17 @@ def _hole(c: Halkort, x: int, y: int, w: int, h: int, pos: str = "left top", fea
         g = "linear-gradient(to right,transparent 0,#000 14%,#000 86%,transparent 100%)"
         mask = f"-webkit-mask-image:{g};mask-image:{g};"
     return (f"<div class='hole' style='left:{fx:.1f}px;top:{fy:.1f}px;width:{fw:.1f}px;height:{fh:.1f}px;{mask}"
-            f"background-image:url(\"{c.image.as_uri()}\");background-size:100% 100%'></div>")
+            f"background-image:url(\"{_data_uri(c.image)}\");background-size:100% 100%'></div>")
+
+
+def _data_uri(p: Path) -> str:
+    """Bilden inbäddad i sidan: Playwright (set_content) och headless Chromium laddar inte
+    alltid file://-bilder i tid, och då blev kortet utan hålbild."""
+    import base64
+    import mimetypes
+
+    typ = mimetypes.guess_type(p.name)[0] or "image/png"
+    return f"data:{typ};base64," + base64.b64encode(Path(p).read_bytes()).decode()
 
 
 def _smal(c: Halkort, kvot: float) -> bool:
@@ -183,6 +210,9 @@ def layout_halkort(c: Halkort, dark: bool = False) -> tuple[str, int, int]:
         ink, body, head, rule, num = "#efe7d6", "rgba(239,231,214,.74)", "#c8a96b", "rgba(200,169,107,.55)", "#efe7d6"
         num_font = "'Cormorant Garamond',serif;font-weight:500"
         sans = "'DM Sans',sans-serif"
+        if c.typsnitt:  # klubbens profil gäller även på mörk botten
+            num_font = f"'{c.typsnitt.get('siffror', 'Cormorant Garamond')}',serif;font-weight:500"
+            sans = f"'{c.typsnitt.get('text', 'DM Sans')}',sans-serif"
         caps = "letter-spacing:.16em"
         last = "#efe7d6"
     else:
@@ -357,6 +387,63 @@ def _sponsorhal(c: Halkort):
     return layout_halkort(c)
 
 
+# ---------------------------------------------------------------- 7 Spelarvy
+def layout_spelarvy(c: Halkort) -> tuple[str, int, int]:
+    """Stående mobilformat. Hålet till vänster i full höjd, siffror och greenen till höger."""
+    W, H = 900, 1400
+    sp = c.spel or {}
+    num = f"'{(c.typsnitt or {}).get('siffror', 'Cormorant Garamond')}',serif"
+    sans = f"'{(c.typsnitt or {}).get('text', 'DM Sans')}',sans-serif"
+    fagel = dict(sp.get("fagelvag", []))
+    rows = "".join(f"<tr><td class='tn'>{_e(n)}</td><td>{m}</td><td class='fv'>{fagel.get(n.replace('/', ' · '), '')}</td></tr>"
+                   for n, m in c.tees)
+    green = (f"<div class='gr' style='background-image:url(\"{Path(sp['green']).as_uri()}\")'></div>"
+             f"<div class='gm'><span><b>{sp['djup']}</b> m djup</span><span><b>{sp['bredd']}</b> m bred</span></div>"
+             + "".join(f"<div class='gb'>{_e(b)}</div>" for b in sp.get("bunkrar", []))) if sp.get("green") else ""
+    css = f"""
+body{{background:#fbf4ec;color:#2d2a27}}
+.num{{position:absolute;left:520px;top:58px;font:500 150px/1 {num};letter-spacing:-.01em}}
+.par{{position:absolute;left:526px;top:226px;font:600 22px {sans};letter-spacing:.08em;text-transform:uppercase}}
+.rub{{position:absolute;left:526px;top:262px;width:340px;font:400 17px {sans};color:#57524c}}
+.tees{{position:absolute;left:526px;top:318px;width:340px;border-collapse:collapse;font:400 19px {sans}}}
+.tees th{{font:600 11.5px {sans};letter-spacing:.14em;text-transform:uppercase;color:#7b746c;text-align:left;
+  padding:0 0 8px;border-bottom:1px solid #2d2a27}}
+.tees td{{padding:9px 0;border-bottom:1px dotted #b9b0a4}}
+.tees .tn{{font-weight:600;width:118px}}
+.tees .fv{{color:#57524c}}
+.gr{{position:absolute;left:526px;top:{540 + 44 * max(0, len(c.tees) - 3)}px;width:340px;height:340px;background-size:100% 100%;
+  filter:drop-shadow(0 6px 14px rgba(40,34,26,.22))}}
+.gm{{position:absolute;left:526px;width:340px;top:{900 + 44 * max(0, len(c.tees) - 3)}px;display:flex;justify-content:center;gap:28px;
+  font:400 17px {sans};color:#57524c}}
+.gm b{{font:500 30px {num};color:#2d2a27;margin-right:2px}}
+.gb{{position:absolute;left:526px;width:340px;top:{948 + 44 * max(0, len(c.tees) - 3)}px;text-align:center;font:400 15.5px {sans};color:#57524c}}
+.st{{position:absolute;left:526px;width:340px;top:{1010 + 44 * max(0, len(c.tees) - 3)}px;font:400 15.5px/1.5 {sans};color:#3e3a35}}
+.st div{{margin-top:14px}}
+.st b{{display:block;font:600 11.5px {sans};letter-spacing:.14em;text-transform:uppercase;margin-bottom:2px}}
+.st .lg{{margin-top:30px;font:400 14.5px/1.55 {sans};color:#57524c;border-top:1px solid #2d2a27;padding-top:14px}}
+.st .lg div{{display:flex;align-items:center;gap:10px;margin-top:4px}}
+.dot{{width:13px;height:13px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 0 0 1.5px rgba(45,42,39,.55);flex:none}}
+.cr{{position:absolute;left:30px;bottom:24px;font:400 10px {sans};color:#57524c;opacity:.75}}
+"""
+    body = f"""
+{_hole(c, 0, 40, 500, 1300, 'center top')}
+<div class='num'>{c.hole}</div>
+<div class='par'>Par {c.par} · Index {c.index}</div>
+<div class='rub'>{_e(c.rubrik)}</div>
+<table class='tees'><tr><th>Tee</th><th>Spellinje</th><th>Fågelväg</th></tr>{rows}</table>
+{green}
+<div class='st'>{"".join(f"<div><b style='color:{f}'>{r}</b>{_e(t)}</div>" for r, f, t in (("Säkert", "#3f6b45", c.sakert), ("Chansa", "#9a6328", c.chansa)) if t)}
+<div class='lg'>
+  <div><span class='dot' style='background:#fff'></span>200 m kvar till greenens mitt</div>
+  <div><span class='dot' style='background:#f7c518'></span>150 m kvar till greenens mitt</div>
+  <div><span class='dot' style='background:#d62839'></span>100 m kvar till greenens mitt</div>
+  <div style='margin-top:10px'>Fågelväg = rakt mot greenens mitt, som en avståndsmätare visar.</div>
+</div></div>
+<div class='cr'>{_e(ATTRIBUTION)}</div>
+"""
+    return _page(css, body, W, H), W, H
+
+
 LAYOUTS = {
     1: ("Hålkort", layout_halkort),
     2: ("Poster", layout_poster),
@@ -364,6 +451,7 @@ LAYOUTS = {
     4: ("Skärm", layout_skarm),
     5: ("Banguide", layout_banguide),
     6: ("Sponsorhål", _sponsorhal),
+    7: ("Spelarvy", layout_spelarvy),
 }
 
 
@@ -431,12 +519,27 @@ def markera(c: Halkort) -> Halkort:
 
     hole = Hole.from_yaml(c.halfil)
     ut = ROOT / "output" / c.halfil.parent.name / "halbilder" / f"{c.image.stem}-markerad.png"
-    bild, forklaring = markera_halbild(hole, orto_for(ROOT / "data" / c.halfil.parent.name), c.image, ut)
+    bild, forklaring = markera_halbild(hole, orto_for(ROOT / "data" / c.halfil.parent.name), c.image, ut,
+                                       bagar=c.avstandslinjer)
     return replace(c, image=bild, forklaring=forklaring, halfil=None)
 
 
+def spelarvy(c: Halkort) -> Halkort:
+    """Kopia av kortet med spelarvyns hålbild (siffror) och förstorad green."""
+    if not c.halfil:
+        return c
+    from dataclasses import replace
+
+    from ..hole import Hole
+    from .foto import orto_for, spelarvy as rita
+
+    ut = ROOT / "output" / c.halfil.parent.name / "halbilder" / f"{c.image.stem}-spelarvy.png"
+    sp = rita(Hole.from_yaml(c.halfil), orto_for(ROOT / "data" / c.halfil.parent.name), c.image, ut)
+    return replace(c, image=sp["bild"], spel=sp, halfil=None)
+
+
 def render(c: Halkort, layout: int, out: str | Path, scale: float = 2.0) -> Path:
-    c = markera(c)
+    c = spelarvy(c) if layout == 7 else markera(c)
     page, w, h = render_html(c, layout)
     return to_png(page, w, h, out, scale)
 
