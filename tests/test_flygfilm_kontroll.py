@@ -79,3 +79,15 @@ def test_bakgrund_klubbens_morka_farg():
     from golfholes.render.flygfilm_kontroll import hexfarg, klubbens_bakgrund
     assert hexfarg("#10202E").tolist() == [16, 32, 46]
     assert klubbens_bakgrund(Path("klubbar/glasriket/hal-14.yaml")).tolist() == [16, 32, 46]
+
+
+def test_steg_plan_jamnar_ryck():
+    from golfholes.render.flygfilm_jamna import steg_plan
+    # var 5:e steg dubbelt så långt (som Wan-klippen), 150 bilder -> 120
+    m = np.array([2.0 if i % 5 == 4 else 1.0 for i in range(149)])
+    s = steg_plan(m, 120)
+    assert len(s) == 120 and abs(s[0]) < 1e-9 and abs(s[-1] - 149) < 1e-6
+    C = np.concatenate([[0.0], np.cumsum(m + 1e-3)])
+    steg = np.diff(np.interp(s, np.arange(150), C))
+    mitt = steg[20:-20]
+    assert mitt.std() / mitt.mean() < 0.02   # jämna steg, ingen puls
