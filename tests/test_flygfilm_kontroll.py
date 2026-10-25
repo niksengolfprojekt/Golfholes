@@ -102,3 +102,22 @@ def test_avstand_star_pa_tee_och_gar_bara_ned():
     assert m[4] == 220 and m[5] == 220 and m[6] == 110   # backar aldrig uppåt
     s = synlighet(48, 24, 0.5, 1.5)
     assert s[0] == 0 and s[24] == 1 and s[-1] == 0
+
+
+def test_slag_hal14_landar_pa_fairway():
+    import yaml
+    from golfholes.render.flygfilm_tracer import slag_plan
+
+    hal = yaml.safe_load(open("klubbar/glasriket/hal-14.yaml", encoding="utf-8"))
+    slag = slag_plan(hal)
+    assert [s.namn for s in slag] == ["Utslag", "Andra slaget", "Inspel"]
+    assert sum(s.langd_m for s in slag) == 335
+
+    def inne(p, poly):
+        c, (x, y) = False, p
+        for (x1, y1), (x2, y2) in zip(poly, poly[1:] + poly[:1]):
+            if (y1 > y) != (y2 > y) and x < (x2 - x1) * (y - y1) / (y2 - y1) + x1:
+                c = not c
+        return c
+    for s in slag[:-1]:   # alla nedslag utom det sista (green) ska ligga på fairway
+        assert any(inne(s.till, f) for f in hal["fairways"])

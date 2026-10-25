@@ -1734,4 +1734,7 @@ trees:
 # (ungefärlig); linjen ritas där skogen börjar (trädlinjen ur ortofotot). Klubben bekräftar exakt läge.
 ob:
 - {sida: vanster, fran_m: 110, till_m: 368}
-strategy: {}
+strategy:
+  kalla: "PRO-råd banguide 2025: Medelgolfare bör inte utmana på utslaget (out vänster, skog höger). Spela som par fem för säkerhet."
+  tee: '56'
+  slag: [150, 270]   # nedslag i meter från tee 56 (fairway 110–290 m); sista slaget till greenens mitt

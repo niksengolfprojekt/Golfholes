@@ -90,7 +90,9 @@ def skylt(meter: int, hojd: int, farger: dict, siffror: str, text: str) -> Image
     return im
 
 
-def branna_in(film: Path, meter: list[int], syn: np.ndarray, klubb: dict, ut: Path, crf: int = 16) -> Path:
+def branna_in(film: Path, meter: list[int], syn: np.ndarray, klubb: dict, ut: Path, crf: int = 16,
+              extra=None) -> Path:
+    """extra(ruta, bild, synlighet) -> bild ritar mer i varje ruta före nedräkningen (t.ex. slagkurvor)."""
     p = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v", "-show_entries",
                         "stream=width,height,r_frame_rate", "-of", "csv=p=0", str(film)],
                        capture_output=True, text=True, check=True).stdout.strip().split(",")
@@ -115,6 +117,8 @@ def branna_in(film: Path, meter: list[int], syn: np.ndarray, klubb: dict, ut: Pa
         if len(rad) < B * H * 3:
             break
         a = float(syn[min(i, len(syn) - 1)])
+        if extra is not None:
+            rad = extra(i, Image.frombuffer("RGB", (B, H), rad).copy(), a).tobytes()
         if a > 0:
             m = meter[min(i, len(meter) - 1)]
             if m not in cache:
