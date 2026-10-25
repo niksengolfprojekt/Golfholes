@@ -69,14 +69,14 @@ sajter:
       - Stengärdsgårdar, enbuskar, ek och bok mellan hålen
       - Rovfåglar över hagarna, djur som betar intill banan
       - Nya bunkrar 2025 på hål 4, 7 och 13
-    ide: En skogsjuvel som följer säsongen – stämningsbild med avståndet till flaggan på hål 14, sedan hela banan som den ser ut just nu, hål för hål.
+    ide: En skogsjuvel som följer säsongen – stämningsbild, sedan hela banan som den ser ut just nu, hål för hål.
     riktning: arstiderna
-    toppbild: stamningsfoto-med-avstand
+    toppbild: stamningsfoto
     typsnitt: {rubrik: Spectral, text: Hanken Grotesk}
     palett: {huvud: "#EEF3EC", ljus: "#FBF2ED", accent: "#D9A441", ovriga: ["#10202E", "#1D4756", "#9CC9C3"]}
     halbildstil: målad (Glas och skog, mörk bakgrund)
     halkortslayout: 3
-    rorelse: avstånd som räknas ner vid scroll, siffror som tänds hål för hål, toppbilden andas in, delar som glider in
+    rorelse: siffror som tänds hål för hål, toppbilden andas in, delar som glider in
     designfil: hemsidor/glasriket/DESIGN.md
     anteckning: >
       v1 (standardmall: helbild, versalrad, två knappar, sifferrad) fälldes 2026-10-25 med 7 fel i mätt kontroll.

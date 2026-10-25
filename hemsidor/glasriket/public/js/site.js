@@ -47,22 +47,6 @@
     });
   }
 
-  // Startsidan: avståndet till flaggan på hål 14 räknas ner medan man scrollar förbi toppbilden
-  var scen = document.querySelector('[data-scen]');
-  var tal = document.querySelector('[data-meter]');
-  if (scen && tal && !lugn) {
-    var fran = +tal.dataset.fran, text = document.querySelector('[data-meter-text]'), vantar = false;
-    var rakna = function () {
-      vantar = false;
-      var del = Math.min(1, Math.max(0, window.scrollY / (scen.offsetHeight * 0.85)));
-      var m = Math.round(fran * (1 - del));
-      tal.textContent = m;
-      text.textContent = m === fran ? 'från tee 56 till flaggan' : m > 0 ? 'kvar till flaggan' : 'i hål';
-    };
-    window.addEventListener('scroll', function () { if (!vantar) { vantar = true; requestAnimationFrame(rakna); } }, { passive: true });
-    rakna();
-  }
-
   // Startsidan: kartan visar årstidens bild (laddas bara den som behövs)
   var karta = document.querySelector('[data-karta]');
   if (karta) {

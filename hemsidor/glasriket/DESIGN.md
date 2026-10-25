@@ -1,14 +1,13 @@
 # Glasrikets GK – designfil
 
-**Idé:** En skogsjuvel som följer säsongen. Överst en stämningsbild från banan där avståndet till flaggan på
-hål 14 räknas ner när man scrollar. Sedan hela banan ovanifrån som den ser ut just nu – vår, sommar, höst
+**Idé:** En skogsjuvel som följer säsongen. Överst en stämningsbild från banan. Sedan hela banan ovanifrån som den ser ut just nu – vår, sommar, höst
 eller vinter efter datum – med alla 18 hål klickbara.
 
-Registrerad i `hemsidor/designregister.yaml` (riktning `arstiderna`, toppbild `stamningsfoto-med-avstand`).
+Registrerad i `hemsidor/designregister.yaml` (riktning `arstiderna`, toppbild `stamningsfoto`).
 
 ## Typsnitt (klubbens profil "Glas och skog")
 - Rubriker och siffror: Spectral 400/500. Brödtext och knappar: Hanken Grotesk 400–600.
-- Fem storlekar på startsidan: display `clamp(46px, 8vw, 112px)` (avståndet upp till 168 px), rubrik
+- Fem storlekar på startsidan: display `clamp(46px, 8vw, 112px)`, rubrik
   `clamp(34px, 4.6vw, 60px)`, ingress 21 px, brödtext 17 px, liten 13–15 px. Inget under 13 px.
 - Inga små versaler med spärrning ovanför rubriker. Rubriker balanseras (`text-wrap: balance`).
 
@@ -18,12 +17,12 @@ Registrerad i `hemsidor/designregister.yaml` (riktning `arstiderna`, toppbild `s
 | Sidans botten | dimma `#EEF3EC` |
 | Kartans botten (samma som banöversiktens papper) | `#FBF2ED` |
 | Text, mörka ytor | natt `#10202E`, djup `#1D4756` |
-| Glas (detaljer, avståndets enhet) | is `#9CC9C3` |
+| Glas (detaljer) | is `#9CC9C3` |
 | Knapp och vald hålsiffra | glöd `#D9A441` |
 
 ## Startsidan, avsnitt för avsnitt
 1. **Scenen:** stämningsbild över hela skärmen (andas in långsamt vid laddning). Rubrik, en mening, en knapp.
-   Avståndet "335 m från tee 56 till flaggan" på hål 14 räknas ner till 0 medan man scrollar förbi bilden.
+   Ingen nedräkning här (Eric 2026-10-25: svår att förstå på startsidan); den hör hemma i flygfilmerna på hålen.
    **Platshållare:** ögonhöjdsvyn av hål 14 från tee. Byt till klubbens eget foto genom att ändra
    `STAMNINGSBILD` i `forbered.py` och köra `python forbered.py stamning`. Fotot: sol, öppen bana, inga personer,
    liggande, minst 2400 px brett.
@@ -44,7 +43,7 @@ Registrerad i `hemsidor/designregister.yaml` (riktning `arstiderna`, toppbild `s
 
 ## Rörelse
 Bara transform och opacitet. Rubriken stiger in vid laddning, toppbilden zoomar sakta ut, delarna glider in när
-de syns. Allt stängs av med `prefers-reduced-motion` (då står avståndet still på 335 m).
+de syns. Allt stängs av med `prefers-reduced-motion`.
 
 ## Bilder
 Bara riktiga hål och riktiga vyer. Kartan och hålbilderna bygger på Lantmäteriets data; ytan är målad, formen
@@ -53,4 +52,4 @@ aldrig ändrad. Inga personer. Lantmäteriet-raden och "Vissa bilder är visuali
 ## Historik
 - v1 standardmall – fälld i mätt kontroll.
 - v2 flygfilm över hål 14 med nedräkning – filmen fälld av Eric (för låg kvalitet), nedräkningen behölls.
-- v3 (2026-10-25) stämningsbild, årstid efter datum, sponsorruta.
+- v3 (2026-10-25) stämningsbild, årstid efter datum, sponsorruta. Nedräkningen borttagen samma kväll.
