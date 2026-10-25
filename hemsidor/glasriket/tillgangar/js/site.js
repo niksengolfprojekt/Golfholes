@@ -25,58 +25,54 @@
     document.addEventListener('keydown', function (h) { if (h.key === 'Escape') meny.open = false; });
   }
 
-  // Startsidan: flygningen över hål 14. Avståndet till flaggan följer filmen (ett värde per kvarts sekund).
-  var film = document.querySelector('[data-film]');
-  var snal = navigator.connection && navigator.connection.saveData;
-  if (film && !lugn && !snal) {
-    var tal = document.querySelector('[data-meter]');
-    var text = document.querySelector('[data-meter-text]');
-    var knapp = document.querySelector('[data-film-knapp]');
-    var meter = null, pausad = false, ruta = 0;
-    fetch(film.querySelector('source').getAttribute('src').replace('flygning.mp4', 'avstand.json')).then(function (r) { return r.json(); }).then(function (m) { meter = m; });
-    film.preload = 'auto';
-    var rita = function () {
-      if (meter && tal) {
-        var t = film.currentTime, i = Math.min(meter.length - 1, Math.floor(t * 4));
-        tal.textContent = meter[i];
-        text.textContent = meter[i] < meter[0] ? 'kvar till flaggan' : 'från tee 56 till flaggan';
-        film.classList.toggle('tona', film.duration - t < 0.5);
-      }
-      if (!film.paused) ruta = requestAnimationFrame(rita);
-    };
-    film.addEventListener('play', function () { cancelAnimationFrame(ruta); ruta = requestAnimationFrame(rita); });
-    if (knapp) {
-      knapp.hidden = false;
-      knapp.addEventListener('click', function () {
-        pausad = !pausad;
-        knapp.setAttribute('aria-pressed', pausad);
-        knapp.setAttribute('aria-label', pausad ? 'Spela filmen' : 'Pausa filmen');
-        if (pausad) film.pause(); else film.play();
-      });
-    }
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function (e) {
-        if (e[0].isIntersecting && !pausad) { var p = film.play(); if (p) p.catch(function () {}); }
-        else film.pause();
-      }, { threshold: 0.25 }).observe(film);
-    } else { film.play(); }
+  // Årstiden styr bilderna: kartan och hålbilderna visas som banan ser ut just nu.
+  // Vår april–maj, sommar juni–augusti, höst september–oktober, vinter november–mars.
+  // ?arstid=vinter (osv.) visar en annan årstid under besöket – för granskning.
+  var arstid = ['vinter', 'vinter', 'vinter', 'var', 'var', 'sommar', 'sommar', 'sommar', 'host', 'host', 'vinter', 'vinter'][new Date().getMonth()];
+  try {
+    var vald = new URLSearchParams(location.search).get('arstid');
+    if (/^(var|sommar|host|vinter)$/.test(vald || '')) sessionStorage.setItem('arstid', vald);
+    arstid = sessionStorage.getItem('arstid') || arstid;
+  } catch (e) { /* utan lagring: dagens årstid */ }
+  document.documentElement.dataset.arstid = arstid;
+  if (arstid !== 'sommar') {
+    document.querySelectorAll('img[data-arstid-' + arstid + ']').forEach(function (img) {
+      var s = img.getAttribute('data-arstid-' + arstid);
+      if (img.hasAttribute('srcset')) img.srcset = s;
+      img.src = s.split(' ')[0];
+    });
+    document.querySelectorAll('[data-arstid-text]').forEach(function (p) {
+      var t = p.getAttribute('data-text-' + arstid);
+      if (t) p.textContent = t;
+    });
   }
 
-  // Startsidan: kartan i fyra årstider. Bilderna laddas först när någon väljer årstiden.
+  // Startsidan: avståndet till flaggan på hål 14 räknas ner medan man scrollar förbi toppbilden
+  var scen = document.querySelector('[data-scen]');
+  var tal = document.querySelector('[data-meter]');
+  if (scen && tal && !lugn) {
+    var fran = +tal.dataset.fran, text = document.querySelector('[data-meter-text]'), vantar = false;
+    var rakna = function () {
+      vantar = false;
+      var del = Math.min(1, Math.max(0, window.scrollY / (scen.offsetHeight * 0.85)));
+      var m = Math.round(fran * (1 - del));
+      tal.textContent = m;
+      text.textContent = m === fran ? 'från tee 56 till flaggan' : m > 0 ? 'kvar till flaggan' : 'i hål';
+    };
+    window.addEventListener('scroll', function () { if (!vantar) { vantar = true; requestAnimationFrame(rakna); } }, { passive: true });
+    rakna();
+  }
+
+  // Startsidan: kartan visar årstidens bild (laddas bara den som behövs)
   var karta = document.querySelector('[data-karta]');
   if (karta) {
-    document.querySelectorAll('[data-arstid]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        var a = b.dataset.arstid;
-        document.querySelectorAll('[data-arstid]').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
-        karta.querySelectorAll('[data-lager]').forEach(function (img) {
-          if (img.dataset.lager === a && img.dataset.src) {
-            img.srcset = img.dataset.srcset; img.src = img.dataset.src;
-            delete img.dataset.src;
-          }
-          img.classList.toggle('aktiv', img.dataset.lager === a);
-        });
-      });
+    karta.querySelectorAll('[data-lager]').forEach(function (img) {
+      var ratt = img.dataset.lager === arstid;
+      if (ratt && img.dataset.src) {
+        img.srcset = img.dataset.srcset; img.src = img.dataset.src;
+        delete img.dataset.src;
+      }
+      img.classList.toggle('aktiv', ratt);
     });
     // Siffrorna tänds en efter en, hål 1 till 18, första gången kartan syns
     if (!lugn && 'IntersectionObserver' in window) {
@@ -86,15 +82,30 @@
       o.observe(karta);
     }
     var ruta2 = document.querySelector('[data-karta-hal]');
+    var sponsorruta = document.querySelector('[data-sponsorruta]');
+    var sponsorsida = document.querySelector('a[href*="halsponsorer"]');
     var visa = function (pin) {
       karta.querySelectorAll('.pin.vald').forEach(function (p) { p.classList.remove('vald'); });
       pin.classList.add('vald');
       pin.visadTid = Date.now();
-      var d = pin.dataset;
-      ruta2.innerHTML = '<div class="karta-kort">' + (d.bild ? '<img src="' + d.bild + '" alt="" width="96" height="120">' : '<span></span>') +
+      var d = pin.dataset, bild = pin.getAttribute('data-bild-' + arstid) || d.bild;
+      ruta2.innerHTML = '<div class="karta-kort">' + (bild ? '<img src="' + bild + '" alt="" width="96" height="120">' : '<span></span>') +
         '<div><p class="karta-kort-nr">' + d.nr + '</p><p class="karta-kort-fakta">Par ' + d.par + ' · ' + d.langd + ' m</p>' +
         (d.rubrik ? '<p class="karta-kort-rubrik">' + d.rubrik + '</p>' : '') +
         '<a class="pil" href="' + pin.getAttribute('href') + '">Gå till hål ' + d.nr + '</a></div></div>';
+      // Rutan för hålsponsorn: loggan om den finns, annars namnet, annars en ledig plats
+      if (sponsorruta) {
+        var namn = d.sponsor, inne;
+        if (namn) {
+          inne = d.sponsorLogga ? '<img src="' + d.sponsorLogga + '" alt="' + namn + '">' : '<span class="sponsorruta-namn">' + namn + '</span>';
+          if (d.sponsorUrl) inne = '<a href="' + d.sponsorUrl + '" rel="noopener" data-hal="h' + ('0' + d.nr).slice(-2) + '">' + inne + '</a>';
+          sponsorruta.innerHTML = '<p class="sponsorruta-text">' + namn + '-hålet</p><div class="sponsorruta-logga">' + inne + '</div>';
+        } else {
+          sponsorruta.innerHTML = '<p class="sponsorruta-text">Hålsponsor</p><div class="sponsorruta-logga sponsorruta-ledig">' +
+            '<a class="pil" href="' + (sponsorsida ? sponsorsida.getAttribute('href') : '/halsponsorer/') + '">Ge ert företag hål ' + d.nr + '</a></div>';
+        }
+        sponsorruta.hidden = false;
+      }
     };
     karta.querySelectorAll('.pin').forEach(function (pin) {
       pin.addEventListener('mouseenter', function () { if (matchMedia('(hover: hover)').matches) visa(pin); });

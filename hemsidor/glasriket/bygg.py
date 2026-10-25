@@ -22,7 +22,7 @@ import sys
 from pathlib import Path
 
 import yaml
-from PIL import Image
+from PIL import Image, ImageFilter
 
 ROT = Path(__file__).resolve().parent
 REPO = ROT.parents[1]
@@ -31,6 +31,8 @@ SIDOR = ROT / "sidor"
 DATA = ROT / "innehall"
 TILLG = ROT / "tillgangar"
 CACHE = ROT / "cache"
+ARSTIDSKOD = ROT / "arstid.py"
+ARSTIDER = ("var", "sommar", "host", "vinter")   # samma namn som kartans lager och site.js
 UT = ROT / "public"
 
 # --- Inställningar (flaggor) som ändras när beslut fattas ---------------------------------
@@ -119,6 +121,33 @@ def _data_mapp() -> Path | None:
     return next((k for k in kandidater if (k / "lantmateriet.json").exists()), None)
 
 
+def _i_arstid(n: int, kalla: Path, markerad: Path, arstid: str) -> Path:
+    """Hålbilden i årstidens färger (arstid.py). Målningen färgas om i sajtens storlek; tees och
+    namnrutor tas sedan oförändrade från den markerade bilden (där den skiljer sig från målningen)."""
+    nyckel = hashlib.sha1(markerad.read_bytes() + kalla.read_bytes() + ARSTIDSKOD.read_bytes() + arstid.encode()).hexdigest()[:10]
+    cache = CACHE / "arstid" / f"hal-{n:02d}-{arstid}-{nyckel}.webp"
+    if cache.exists():
+        return cache
+    import numpy as np
+    from arstid import arstidsbild
+
+    mark = Image.open(markerad).convert("RGBA")
+    malning = Image.open(kalla).convert("RGBA").resize(mark.size, Image.LANCZOS)
+    ny = arstidsbild(malning, arstid)
+    a, b = np.asarray(mark).astype(np.int16), np.asarray(malning).astype(np.int16)
+    andrat = np.abs(a - b).max(-1) > 24
+    if andrat.mean() > 0.06:   # bilden passar inte målningen (t.ex. beskuren) – hellre sommarbilden än fel
+        varningar.append(f"Hål {n}: {arstid} kunde inte färgas om – sommarbilden visas")
+        return markerad
+    skydd = Image.fromarray((andrat * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(3))
+    ny.paste(mark, (0, 0), skydd)
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    for gammal in cache.parent.glob(f"hal-{n:02d}-{arstid}-*.webp"):
+        gammal.unlink()
+    ny.save(cache, quality=84, method=6)
+    return cache
+
+
 def _markerad(n: int, kalla: Path) -> Path:
     """Hålbilden med tees inritade (romb + namn), sparad i cache/ så att bygget går utan Lantmäteriets data.
     Nyckeln är bildens och hålfilens innehåll: ändras någon av dem ritas bilden om."""
@@ -173,22 +202,27 @@ def halbilder_bygg(hal: list[dict]) -> None:
             varningar.append(f"Hål {n}: ingen färdig hålbild ännu (klubbar/glasriket/halbilder/hal-{n:02d}-malad.webp) – hålsidan byggs utan bild")
             continue
         try:
-            cache = _markerad(n, kalla)
-            im = Image.open(cache)
-            im.load()
+            per_arstid = {}
+            markerad = _markerad(n, kalla)
+            for arstid in ARSTIDER:
+                cache = _i_arstid(n, kalla, markerad, arstid)
+                im = Image.open(cache)
+                im.load()
+                storlekar = []
+                for hojd in (*BILDHOJDER, KORTHOJD):
+                    hojd = min(hojd, im.height)
+                    b = round(im.width * hojd / im.height)
+                    fil = mal / f"{cache.stem}-{hojd}.webp"
+                    if not fil.exists():
+                        im.resize((b, hojd), Image.LANCZOS).save(fil, quality=82, method=4)
+                    behall.add(fil.name)
+                    storlekar.append((fil.name, b, hojd))
+                per_arstid[arstid] = storlekar
         except Exception as fel:  # noqa: BLE001
             varningar.append(f"Hål {n}: hålbilden går inte att läsa ({fel}) – hålsidan byggs utan bild")
             continue
-        storlekar = []
-        for hojd in (*BILDHOJDER, KORTHOJD):
-            hojd = min(hojd, im.height)
-            b = round(im.width * hojd / im.height)
-            fil = mal / f"{cache.stem}-{hojd}.webp"
-            if not fil.exists():
-                im.resize((b, hojd), Image.LANCZOS).save(fil, quality=82, method=4)
-            behall.add(fil.name)
-            storlekar.append((fil.name, b, hojd))
-        h["bild"] = {"stora": storlekar[:-1], "kort": storlekar[-1], "kvot": im.width / im.height}
+        s = per_arstid["sommar"]
+        h["bild"] = {"stora": s[:-1], "kort": s[-1], "kvot": s[0][1] / s[0][2], "arstider": per_arstid}
     for fil in mal.glob("*"):
         if fil.name not in behall:
             fil.unlink()
@@ -293,11 +327,23 @@ def bildtagg(h: dict, storlek: str = "stor", lazy: bool = True, klass: str = "")
     if storlek == "kort":
         namn, w, hh = b["kort"]
         return (f'<img class="{klass}" src="/img/hal/{namn}" width="{w}" height="{hh}" alt="{e(alt)}"'
-                f'{" loading=\"lazy\"" if lazy else ""} decoding="async">')
+                f'{arstid_attr(h, "kort")}{" loading=\"lazy\"" if lazy else ""} decoding="async">')
     srcset = ", ".join(f"/img/hal/{n} {w}w" for n, w, _ in b["stora"])
     namn, w, hh = b["stora"][0]
     return (f'<img class="{klass}" src="/img/hal/{namn}" srcset="{srcset}" sizes="(min-width: 900px) 34vw, 60vw"'
-            f' width="{w}" height="{hh}" alt="{e(alt)}"{" loading=\"lazy\"" if lazy else ""} decoding="async">')
+            f' width="{w}" height="{hh}" alt="{e(alt)}"{arstid_attr(h, "stora")}{" loading=\"lazy\"" if lazy else ""} decoding="async">')
+
+
+def arstid_attr(h: dict, storlek: str) -> str:
+    """Hålbildens andra årstider som data-arstid-var="srcset" osv. Skriptet byter till dagens årstid;
+    utan skript syns sommarbilden."""
+    ut = []
+    for a, s in h["bild"].get("arstider", {}).items():
+        if a == "sommar":
+            continue
+        val = [s[-1]] if storlek == "kort" else s[:-1]
+        ut.append(f' data-arstid-{a}="' + ", ".join(f"/img/hal/{n} {w}w" for n, w, _ in val) + '"')
+    return "".join(ut)
 
 
 def langst(h: dict) -> int:
@@ -338,9 +384,18 @@ def karta_pins(hal: list[dict]) -> str:
     for h in hal:
         x, y = KARTA_LAGEN[h["nr"]]
         bild = f"/img/hal/{h['bild']['kort'][0]}" if h["bild"] else ""
+        extra = "".join(f' data-bild-{a}="/img/hal/{s[-1][0]}"' for a, s in h["bild"]["arstider"].items()
+                       if a != "sommar") if h["bild"] else ""
+        sp = h["sponsor"] or {}
+        if sp:   # hålsponsorn i rutan under hålet (loggan kopieras av hålsidan till /img/sponsorer/)
+            extra += f' data-sponsor="{e(sp["name"])}"'
+            if sp.get("url"):
+                extra += f' data-sponsor-url="{e(sp["url"])}"'
+            if sp.get("logo") and (KLUBB / sp["logo"]).exists():
+                extra += f' data-sponsor-logga="/img/sponsorer/hal-{h["nr"]:02d}{Path(sp["logo"]).suffix.lower()}"'
         pins.append(
             f'<a class="pin" href="/banan/hal-{h["nr"]:02d}/" style="left:{x}%;top:{y}%;--n:{h['nr']}" data-nr="{h["nr"]}" '
-            f'data-par="{h["par"]}" data-langd="{langst(h)}" data-rubrik="{e(h["rubrik"])}" data-bild="{bild}">'
+            f'data-par="{h["par"]}" data-langd="{langst(h)}" data-rubrik="{e(h["rubrik"])}" data-bild="{bild}"{extra}>'
             f'<span class="visuellt-dold">Hål {h["nr"]}, par {h["par"]}, {langst(h)} meter</span></a>')
     return "".join(pins)
 
@@ -575,13 +630,13 @@ def kontrollera(lansering: bool = False) -> list[str]:
         for img in re.findall(r"<img\b[^>]*>", text):
             if 'alt="' not in img:
                 fel.append(f"{namn}: bild utan alt-text: {img[:80]}")
-        for lank in re.findall(r'(?:href|src)="(/[^"#?]*)', text):
+        for lank in re.findall(r'(?:href|src|data-src|data-bild(?:-\w+)?|data-sponsor-logga)="(/[^"#?]*)', text):
             mal = UT / lank.lstrip("/")
             if lank.endswith("/"):
                 mal = mal / "index.html"
             if not mal.exists():
                 fel.append(f"{namn}: trasig länk {lank}")
-        for srcset in re.findall(r'srcset="([^"]+)"', text):
+        for srcset in re.findall(r'(?:srcset|data-arstid-\w+)="([^"]+)"', text):
             for bit in srcset.split(","):
                 vag = bit.strip().split(" ")[0]
                 if vag.startswith("/") and not (UT / vag.lstrip("/")).exists():
@@ -623,8 +678,9 @@ def forhandsvisning(mal) -> Path:
             return f'{attr}="{rel}{vag}'
 
         text = fil.read_text(encoding="utf-8")
-        text = re.sub(r'(href|src|action|poster|data-src|data-bild)="/([^"]*?)(?=["#?])', lank, text)
-        text = re.sub(r'srcset="([^"]+)"', lambda m: 'srcset="' + m.group(1).replace("/img/", rel + "img/") + '"', text)
+        text = re.sub(r'(href|src|action|poster|data-src|data-bild(?:-\w+)?|data-sponsor-logga)="/([^"]*?)(?=["#?])', lank, text)
+        text = re.sub(r'(srcset|data-arstid-\w+)="([^"]+)"',
+                      lambda m: f'{m.group(1)}="' + m.group(2).replace("/img/", rel + "img/") + '"', text)
         fil.write_text(text, encoding="utf-8")
     css = mal / "css" / "site.css"
     css.write_text(css.read_text(encoding="utf-8").replace("url(/fonts/", "url(../fonts/").replace("url(/film/", "url(../film/"),

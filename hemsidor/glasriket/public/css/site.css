@@ -303,10 +303,10 @@ address{font-style:normal;margin:0 0 1em}
 
 
 /* ---------------------------------------------------------------- startsidan: skogsjuvelen */
-/* Scenen: flygningen över hål 14 med avståndet till flaggan som räknas ner i takt med filmen */
-.scen{position:relative;min-height:min(92svh,860px);display:flex;align-items:flex-end;background:var(--natt) url(/film/hal-14-stillbild-800.webp) center/cover;color:var(--vit);overflow:hidden;isolation:isolate}
-.scen-film{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:opacity .5s}
-.scen-film.tona{opacity:0}
+/* Scenen: en stämningsbild över hela skärmen; avståndet till flaggan på hål 14 räknas ner när man scrollar */
+.scen{position:relative;min-height:min(92svh,860px);display:flex;align-items:flex-end;background:var(--natt);color:var(--vit);overflow:hidden;isolation:isolate}
+.scen-bild{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%;z-index:-2;animation:andas 14s cubic-bezier(.2,.6,.3,1) both}
+@keyframes andas{from{transform:scale(1.08)}to{transform:none}}
 .scen::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(16,32,46,.05) 25%,rgba(16,32,46,.88) 100%),linear-gradient(90deg,rgba(16,32,46,.5) 0%,rgba(16,32,46,0) 55%)}
 .scen-inne{display:grid;gap:36px;padding-top:140px;padding-bottom:40px}
 .scen h1{color:var(--vit);font-size:clamp(46px,8vw,112px);line-height:.98;letter-spacing:-.02em;max-width:12ch;margin-bottom:.32em;animation:stig 1.1s cubic-bezier(.2,.7,.2,1) both}
@@ -321,23 +321,15 @@ address{font-style:normal;margin:0 0 1em}
 .matare-tal{font:400 clamp(76px,13vw,168px)/.9 var(--serif);letter-spacing:-.03em;color:var(--vit)}
 .matare-tal small{font:500 .28em/1 var(--sans);letter-spacing:0;margin-left:.2em;color:var(--is)}
 .matare-text{font:400 17px/1.4 var(--sans);color:rgba(248,250,246,.86)}
-.film-knapp{position:absolute;right:var(--gutter);top:84px;width:48px;height:48px;border-radius:50%;border:0;background:rgba(16,32,46,.55);cursor:pointer;display:grid;place-items:center}
-.film-knapp span{width:14px;height:16px;border-left:4px solid var(--vit);border-right:4px solid var(--vit)}
-.film-knapp[aria-pressed=true] span{width:0;height:0;border:0;border-left:14px solid var(--vit);border-top:9px solid transparent;border-bottom:9px solid transparent;margin-left:4px}
 @media (min-width:900px){
   .scen-inne{grid-template-columns:1.5fr 1fr;align-items:end;padding-bottom:72px}
   .matare{justify-items:end;text-align:right}
-  .film-knapp{top:auto;bottom:72px;right:auto;left:calc(50% - 24px)}
 }
 
-/* Kartan: banan ovanifrån i fyra årstider, varje siffra öppnar hålet */
+/* Kartan: banan ovanifrån i dagens årstid, varje siffra öppnar hålet */
 .karta{background:#FBF2ED;padding:72px 0}
 .karta-grid{display:grid;gap:32px}
-.karta-text h2{font-size:clamp(34px,4.6vw,60px);line-height:1.02;max-width:12ch}
-.arstid{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 28px}
-.arstid button{font:500 17px/1 var(--sans);min-height:44px;padding:0 18px;border-radius:999px;border:0;background:rgba(16,32,46,.07);color:var(--natt);cursor:pointer;transition:background .2s,color .2s}
-.arstid button:hover{background:rgba(16,32,46,.14)}
-.arstid button[aria-pressed=true]{background:var(--natt);color:var(--vit)}
+.karta-text h2{font-size:clamp(34px,4.6vw,60px);line-height:1.02;max-width:14ch}
 .karta-hal{min-height:150px}
 .karta-hal-tom{font:400 21px/1.5 var(--serif);color:var(--djup);max-width:30ch}
 .karta-kort{display:grid;grid-template-columns:96px 1fr;gap:18px;align-items:center;animation:in .35s ease-out}
@@ -345,6 +337,14 @@ address{font-style:normal;margin:0 0 1em}
 .karta-kort-nr{font:400 56px/.9 var(--serif);color:var(--natt);margin:0}
 .karta-kort-fakta{font:500 17px/1.4 var(--sans);color:var(--sjo-text);margin:4px 0 6px}
 .karta-kort-rubrik{font:400 21px/1.35 var(--serif);color:var(--natt);margin:0 0 10px}
+/* Rutan för hålsponsorn under hålet */
+.sponsorruta{margin-top:20px;display:grid;gap:8px;animation:in .35s ease-out}
+.sponsorruta-text{font:500 15px/1.3 var(--sans);color:var(--sjo-text);margin:0}
+.sponsorruta-logga{display:grid;place-items:center;min-height:112px;padding:20px 24px;border-radius:var(--radie);background:var(--vit)}
+.sponsorruta-logga img{max-width:220px;max-height:72px;width:auto;height:auto}
+.sponsorruta-logga a:not(.pil){display:grid;place-items:center}
+.sponsorruta-namn{font:500 24px/1.2 var(--serif);color:var(--natt)}
+.sponsorruta-ledig{background:rgba(255,255,255,.55)}
 .karta-bild{position:relative;align-self:start}
 .karta-bild img{width:100%;mix-blend-mode:darken}
 .karta-lager{transition:opacity .7s ease}
@@ -399,5 +399,4 @@ address{font-style:normal;margin:0 0 1em}
 }
 @media (max-width:899px){
   .scen::after{background:linear-gradient(180deg,rgba(16,32,46,.6) 0%,rgba(16,32,46,0) 34%,rgba(16,32,46,0) 48%,rgba(16,32,46,.9) 100%)}
-  .film-knapp{top:auto;bottom:40px;right:var(--gutter)}
 }

@@ -1,13 +1,11 @@
 <!--
 titel: Glasrikets Golfklubb · Golf i naturreservatet Fylleryd, Växjö
-beskrivning: Arton hål genom naturreservatet Fylleryd, 4,5 km från Växjö centrum. Flyg över hål 14, gå banan i förväg i fyra årstider och boka din starttid.
+beskrivning: Arton hål genom naturreservatet Fylleryd, 4,5 km från Växjö centrum. Gå banan i förväg, hål för hål, och boka din starttid.
 sokvag:
-bild: film/hal-14-stillbild-1600.webp
+bild: img/stamning-1600.webp
 -->
-<section class="scen" aria-labelledby="scen-rubrik">
-  <video class="scen-film" muted playsinline loop preload="none" poster="/film/hal-14-stillbild-1600.webp" aria-hidden="true" data-film>
-    <source src="/film/hal-14-flygning.mp4" type="video/mp4">
-  </video>
+<section class="scen" aria-labelledby="scen-rubrik" data-scen>
+  <img class="scen-bild" src="/img/stamning-1600.webp" srcset="/img/stamning-800.webp 800w, /img/stamning-1600.webp 1600w, /img/stamning-2400.webp 2400w" sizes="100vw" width="1600" height="1073" alt="Hål 14 sett från tee: fairway i kvällssol mellan granskog och björkar" fetchpriority="high" decoding="async">
   <div class="inne scen-inne">
     <div class="scen-text">
       <h1 id="scen-rubrik">Ett smycke i&nbsp;skogen</h1>
@@ -16,36 +14,31 @@ bild: film/hal-14-stillbild-1600.webp
     </div>
     <div class="matare" aria-hidden="true">
       <p class="matare-hal">Hål 14 · par 4</p>
-      <p class="matare-tal"><span data-meter>335</span><small>m</small></p>
+      <p class="matare-tal"><span data-meter data-fran="335">335</span><small>m</small></p>
       <p class="matare-text" data-meter-text>från tee 56 till flaggan</p>
     </div>
   </div>
-  <button class="film-knapp" type="button" data-film-knapp aria-label="Pausa filmen" hidden>
-    <span aria-hidden="true"></span>
-  </button>
 </section>
 
 <section class="karta" id="kartan" aria-labelledby="karta-rubrik">
   <div class="inne karta-grid">
     <div class="karta-text" data-visa>
-      <h2 id="karta-rubrik">En bana, fyra årstider</h2>
-      <p class="ingress">Vitsippor i maj, guld i oktober och spår i snön när banan vilar. Byt årstid och tryck på ett hål, så går du rundan i förväg.</p>
-      <div class="arstid" role="group" aria-label="Visa banan på">
-        <button type="button" data-arstid="var" aria-pressed="false">Våren</button>
-        <button type="button" data-arstid="sommar" aria-pressed="true">Sommaren</button>
-        <button type="button" data-arstid="host" aria-pressed="false">Hösten</button>
-        <button type="button" data-arstid="vinter" aria-pressed="false">Vintern</button>
-      </div>
+      <h2 id="karta-rubrik">Gå rundan i förväg</h2>
+      <p class="ingress" data-arstid-text
+         data-text-var="Vitsipporna är på väg upp i Fylleryd. Tryck på ett hål och se hur det spelas."
+         data-text-host="Björkarna längs hål 14 har gått i guld. Tryck på ett hål och se hur det spelas."
+         data-text-vinter="Banan vilar under snön och väntar på våren. Tryck på ett hål och planera säsongens första runda.">Långa kvällar och fairways i solnedgång. Tryck på ett hål och se hur det spelas.</p>
       <div class="karta-hal" data-karta-hal aria-live="polite">
         <p class="karta-hal-tom">Arton hål, par {{par}}, {{total}}&nbsp;meter från de bakre tee. Hål 14 har banans svåraste utslag.</p>
       </div>
+      <div class="sponsorruta" data-sponsorruta hidden></div>
       <p class="mer"><a class="pil" href="/banan/">Alla 18 hål</a></p>
     </div>
     <div class="karta-bild" data-karta>
-      <img class="karta-lager aktiv" data-lager="sommar" src="/img/karta-sommar-1200.webp" srcset="/img/karta-sommar-1200.webp 800w, /img/karta-sommar-2000.webp 1334w" sizes="(min-width: 900px) 46vw, 92vw" width="800" height="1200" alt="Glasrikets 18-hålsbana ovanifrån en sommarkväll, med hålens nummer" loading="lazy" decoding="async">
-      <img class="karta-lager" data-lager="var" data-src="/img/karta-var-1200.webp" data-srcset="/img/karta-var-1200.webp 800w, /img/karta-var-2000.webp 1334w" sizes="(min-width: 900px) 46vw, 92vw" width="800" height="1200" alt="Banan ovanifrån på våren" decoding="async">
-      <img class="karta-lager" data-lager="host" data-src="/img/karta-host-1200.webp" data-srcset="/img/karta-host-1200.webp 800w, /img/karta-host-2000.webp 1334w" sizes="(min-width: 900px) 46vw, 92vw" width="800" height="1200" alt="Banan ovanifrån på hösten" decoding="async">
-      <img class="karta-lager" data-lager="vinter" data-src="/img/karta-vinter-1200.webp" data-srcset="/img/karta-vinter-1200.webp 800w, /img/karta-vinter-2000.webp 1334w" sizes="(min-width: 900px) 46vw, 92vw" width="800" height="1200" alt="Banan ovanifrån i snö" decoding="async">
+      <img class="karta-lager aktiv" data-lager="sommar" src="/img/karta-sommar-1200.webp" srcset="/img/karta-sommar-1200.webp 800w, /img/karta-sommar-2000.webp 1334w" sizes="(min-width: 900px) 46vw, 92vw" width="800" height="1200" alt="Glasrikets 18-hålsbana ovanifrån, med hålens nummer" loading="lazy" decoding="async">
+      <img class="karta-lager" data-lager="var" data-src="/img/karta-var-1200.webp" data-srcset="/img/karta-var-1200.webp 800w, /img/karta-var-2000.webp 1334w" sizes="(min-width: 900px) 46vw, 92vw" width="800" height="1200" alt="Glasrikets 18-hålsbana ovanifrån på våren, med hålens nummer" decoding="async">
+      <img class="karta-lager" data-lager="host" data-src="/img/karta-host-1200.webp" data-srcset="/img/karta-host-1200.webp 800w, /img/karta-host-2000.webp 1334w" sizes="(min-width: 900px) 46vw, 92vw" width="800" height="1200" alt="Glasrikets 18-hålsbana ovanifrån på hösten, med hålens nummer" decoding="async">
+      <img class="karta-lager" data-lager="vinter" data-src="/img/karta-vinter-1200.webp" data-srcset="/img/karta-vinter-1200.webp 800w, /img/karta-vinter-2000.webp 1334w" sizes="(min-width: 900px) 46vw, 92vw" width="800" height="1200" alt="Glasrikets 18-hålsbana ovanifrån i snö, med hålens nummer" decoding="async">
       {{karta_pins}}
     </div>
   </div>

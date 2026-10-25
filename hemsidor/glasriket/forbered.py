@@ -97,9 +97,9 @@ def foton():
 
 
 ARSTIDER = ("var", "sommar", "host", "vinter")
-FILM = KALLA / "flygfilm-test" / "v3" / "hal-14-flygfilm-v3-720p.mp4"
-KAMERABANA = KALLA / "flygfilm-test" / "v2" / "hal-14-oversikt-kamerabana.json"   # samma bana som v3
-FILM_START, FILM_SLUT = 3.6, 19.4   # sekunder ur filmen: ner i skogsgatan, längs fairway, fram till green
+# Stämningsbilden överst på startsidan. Tills klubbens eget foto finns: hål 14 från tee i ögonhöjd
+# (godkänd vy, byggd på Lantmäteriets höjddata). Byt bara sökvägen när fotot är taget.
+STAMNINGSBILD = KALLA / "ogonhojd" / "v2" / "h14-tee.jpg"
 
 
 def arstider():
@@ -112,64 +112,17 @@ def arstider():
                 UT / "img" / f"karta-{a}-{h}.webp", quality=78, method=6)
 
 
-def film():
-    """Toppfilmen på startsidan: en bit av flygfilmen över hål 14, en stillbild och avståndet till flaggan.
-
-    Avståndet räknas ur kamerans läge i varje ruta, längs hålets mittlinje, skalat så att tee 56 = scorekortets
-    längd. Sparas som en lista med ett värde per kvarts sekund av klippet (meter, heltal)."""
-    import json
-    import math
-    import subprocess
-
-    import yaml
-
-    (UT / "film").mkdir(parents=True, exist_ok=True)
-    ut = UT / "film" / "hal-14-flygning.mp4"
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", str(FILM_START), "-to", str(FILM_SLUT),
-                    "-i", str(FILM), "-an", "-c:v", "libx264", "-preset", "slow", "-crf", "24",
-                    "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(ut)], check=True)
-    for b in (800, 1600):
-        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", str(FILM_START + 1.1), "-i", str(FILM),
-                        "-frames:v", "1", "-vf", f"scale={b}:-2", "-c:v", "libwebp", "-quality", "80",
-                        str(UT / "film" / f"hal-14-stillbild-{b}.webp")], check=True)
-
-    hal = yaml.safe_load((ROT.parents[1] / "klubbar" / "glasriket" / "hal-14.yaml").read_text(encoding="utf-8"))
-    linje = hal["centerline"]
-    tee = next(t for t in hal["tees"] if t["name"] == "56")
-
-    def langs(p):
-        """Sträckan längs mittlinjen (m) till punktens närmaste läge på linjen."""
-        bast, s0 = (1e18, 0.0), 0.0
-        for (ax, ay), (bx, by) in zip(linje, linje[1:]):
-            dx, dy = bx - ax, by - ay
-            L = math.hypot(dx, dy)
-            t = max(0.0, min(1.0, ((p[0] - ax) * dx + (p[1] - ay) * dy) / (L * L)))
-            d = math.hypot(ax + t * dx - p[0], ay + t * dy - p[1])
-            if d < bast[0]:
-                bast = (d, s0 + t * L)
-            s0 += L
-        return bast[1], s0
-
-    s_tee, total = langs(tee["point"])
-    skala = tee["length_m"] / (total - s_tee)
-    bana = json.loads(KAMERABANA.read_text(encoding="utf-8"))
-    rutor, sek = bana["kameror"], bana["info"]["sekunder"]
-    meter = []
-    t = FILM_START
-    while t <= FILM_SLUT + 1e-6:
-        k = rutor[min(len(rutor) - 1, round(t / sek * (len(rutor) - 1)))]
-        s, _ = langs((k["e"], k["n"]))
-        meter.append(max(0, min(tee["length_m"], round((total - max(s, s_tee)) * skala))))
-        t += 0.25
-    # Kameran sjunker in över hålet innan den står vid tee: där visas tee-längden. Sedan bara nedåt.
-    forsta = meter.index(tee["length_m"]) if tee["length_m"] in meter else 0
-    meter[:forsta] = [tee["length_m"]] * forsta
-    for i in range(1, len(meter)):
-        meter[i] = min(meter[i], meter[i - 1])
-    (UT / "film" / "hal-14-avstand.json").write_text(json.dumps(meter), encoding="utf-8")
+def stamning():
+    """Toppbilden i tre bredder (mobil, dator, stor skärm)."""
+    (UT / "img").mkdir(parents=True, exist_ok=True)
+    im = Image.open(STAMNINGSBILD).convert("RGB")
+    for b in (800, 1600, 2400):
+        b = min(b, im.width)
+        im.resize((b, round(im.height * b / im.width)), Image.LANCZOS).save(
+            UT / "img" / f"stamning-{b}.webp", quality=80, method=6)
 
 
 if __name__ == "__main__":
-    delar = sys.argv[1:] or ["typsnitt", "sigill", "foton", "arstider", "film"]
+    delar = sys.argv[1:] or ["typsnitt", "sigill", "foton", "arstider", "stamning"]
     for d in delar:
         globals()[d]()

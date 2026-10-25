@@ -58,7 +58,7 @@ sajter:
   - id: glasriket
     namn: Glasrikets Golfklubb
     typ: klubb
-    status: "startsidan omgjord 2026-10-25 (v2), väntar på Erics och klubbens OK"
+    status: "startsidan v3 2026-10-25 (Erics synpunkter), väntar på klubbens stämningsfoto och OK"
     inventering:
       - Naturreservatet Fylleryd, äng och hagmark, vitsippor i maj
       - 4,5 km nordost om Växjö centrum, långt från vägbruset
@@ -69,15 +69,17 @@ sajter:
       - Stengärdsgårdar, enbuskar, ek och bok mellan hålen
       - Rovfåglar över hagarna, djur som betar intill banan
       - Nya bunkrar 2025 på hål 4, 7 och 13
-    ide: En skogsjuvel du flyger in i – signaturhålet 14 med avståndet till flaggan, sedan banan i fyra årstider.
-    riktning: signaturhalet
-    toppbild: flygfilm-med-avstand
+    ide: En skogsjuvel som följer säsongen – stämningsbild med avståndet till flaggan på hål 14, sedan hela banan som den ser ut just nu, hål för hål.
+    riktning: arstiderna
+    toppbild: stamningsfoto-med-avstand
     typsnitt: {rubrik: Spectral, text: Hanken Grotesk}
     palett: {huvud: "#EEF3EC", ljus: "#FBF2ED", accent: "#D9A441", ovriga: ["#10202E", "#1D4756", "#9CC9C3"]}
     halbildstil: målad (Glas och skog, mörk bakgrund)
     halkortslayout: 3
-    rorelse: film med nedräkning, siffror som tänds hål för hål, årstider som tonas, delar som glider in
+    rorelse: avstånd som räknas ner vid scroll, siffror som tänds hål för hål, toppbilden andas in, delar som glider in
     designfil: hemsidor/glasriket/DESIGN.md
     anteckning: >
       v1 (standardmall: helbild, versalrad, två knappar, sifferrad) fälldes 2026-10-25 med 7 fel i mätt kontroll.
       v2: 0 fel i båda verktygen; varning för antal textstorlekar (delade delar som sidhuvud och sidfot).
+      v3 (Eric 2026-10-25): flygfilmen bort (för låg kvalitet), stämningsfoto överst (hål 14 från tee tills klubbens
+      foto finns), kartan och alla hålbilder byter årstid efter datum (inga knappar), ruta för hålsponsorns logga.
