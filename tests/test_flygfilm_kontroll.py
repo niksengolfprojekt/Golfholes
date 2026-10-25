@@ -91,3 +91,14 @@ def test_steg_plan_jamnar_ryck():
     steg = np.diff(np.interp(s, np.arange(150), C))
     mitt = steg[20:-20]
     assert mitt.std() / mitt.mean() < 0.02   # jämna steg, ingen puls
+
+
+def test_avstand_star_pa_tee_och_gar_bara_ned():
+    from golfholes.render.flygfilm_avstand import avstand_per_ruta, synlighet
+    hal = {"centerline": [[0.0, 0.0], [0.0, 300.0]], "tees": [{"name": "56", "point": [0.0, 0.0], "length_m": 330}]}
+    kam = [{"e": 0.0, "n": 150.0}] * 3 + [{"e": 0.0, "n": n} for n in (0.0, 100.0, 90.0, 200.0)]
+    m = avstand_per_ruta(hal, kam, "56", vid_tee=3)
+    assert m[:4] == [330, 330, 330, 330]          # hänger över hålet: tee-längden
+    assert m[4] == 220 and m[5] == 220 and m[6] == 110   # backar aldrig uppåt
+    s = synlighet(48, 24, 0.5, 1.5)
+    assert s[0] == 0 and s[24] == 1 and s[-1] == 0
