@@ -144,6 +144,51 @@ def bygg_scen(orto: Path, dem_fil: Path, laz: Path | None, bbox, res: float = 0.
     return Scen(rgb, H.astype(np.float32), mark, e0, n0, res, pyr, r0)
 
 
+def sudda_linjer(scen: Scen, linjer: list) -> int:
+    """Suddar ut smala linjer i ortofotot (bara ytan, inte höjden) innan filmen renderas:
+    t.ex. ett körspår i ruffen som AI:n annars gör till en grusgång (hål 14, Eric 2026-10-25:
+    "ingen grusgång längs högersidan, det är rough"). `linjer` = [[bredd_m, [[e, n], ...]], ...]
+    i SWEREF 99 TM. Ytan inom bredden fylls med medelfärgen runt omkring (normerad
+    utjämning som hoppar över själva linjen) plus lite korn. Ingen form ändras."""
+    from PIL import ImageDraw, ImageFilter
+    h, w = scen.rgb.shape[:2]
+    mk = Image.new("L", (w, h), 0)
+    d = ImageDraw.Draw(mk)
+    r = scen.rgb_res
+    for bredd, pts in linjer:
+        px = [((e - scen.e0) / r, (scen.n0 - n) / r) for e, n in pts]
+        bp = bredd / r
+        d.line(px, fill=255, width=max(1, int(round(bp))))
+        for x, y in px:
+            d.ellipse([x - bp / 2, y - bp / 2, x + bp / 2, y + bp / 2], fill=255)
+    m = np.asarray(mk) > 0
+    if not m.any():
+        return 0
+    ys, xs = np.nonzero(m)
+    k = int(round(4.0 / r))                                   # 4 m runt omkring
+    y0, y1 = max(ys.min() - 2 * k, 0), min(ys.max() + 2 * k, h)
+    x0, x1 = max(xs.min() - 2 * k, 0), min(xs.max() + 2 * k, w)
+    sub = scen.rgb[y0:y1, x0:x1].astype(np.float32)
+    ms = m[y0:y1, x0:x1]
+    vikt = (~ms).astype(np.float32)
+    rad = k / 2
+
+    t = np.arange(-int(3 * rad), int(3 * rad) + 1)
+    kern = np.exp(-0.5 * (t / rad) ** 2)
+    kern /= kern.sum()
+
+    def blur(a):
+        a = np.apply_along_axis(lambda v: np.convolve(v, kern, mode="same"), 1, a)
+        return np.apply_along_axis(lambda v: np.convolve(v, kern, mode="same"), 0, a)
+    nv = blur(vikt)
+    fyll = np.stack([blur(sub[..., c] * vikt) for c in range(3)], -1) / np.maximum(nv, 1e-4)[..., None]
+    fyll += np.random.default_rng(3).normal(0, 3.0, fyll.shape)
+    mjuk = np.asarray(Image.fromarray((ms * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.6 / r)),
+                      np.float32)[..., None] / 255
+    scen.rgb[y0:y1, x0:x1] = np.clip(sub * (1 - mjuk) + fyll * mjuk, 0, 255).astype(np.uint8)
+    return int(m.sum())
+
+
 # ---------------------------------------------------------------- kamera
 @dataclass
 class Kamera:
@@ -509,6 +554,23 @@ def _rendera_ruta(arg):
     p = Path(mapp) / f"r{i:04d}.png"
     im.save(p, compress_level=1)
     return str(p)
+
+
+def rendera_rutor(scen: Scen, kams: list[Kamera], rutor: tuple[int, int], ut: Path, fps: int = 24,
+                  bredd: int = 1280, hojd_px: int = 720, ss: float = 1.5, processer: int | None = None) -> Path:
+    """Renderar om rutorna a–b-1 (t.ex. med suddat körspår) till en egen MP4, samma
+    inställningar som den råa filmen. Används som förlaga till en AI-del."""
+    global _SCEN
+    _SCEN = scen
+    tmp = Path(tempfile.mkdtemp(prefix="rutor-"))
+    jobb = [(j, kams[i], bredd, hojd_px, str(tmp), ss) for j, i in enumerate(range(*rutor))]
+    import multiprocessing as mp
+    with mp.get_context("fork").Pool(processer or os.cpu_count() or 2) as pool:
+        pool.map(_rendera_ruta, jobb, chunksize=2)
+    subprocess.run([ffmpeg_bin(), "-y", "-loglevel", "error", "-framerate", str(fps), "-i", str(tmp / "r%04d.png"),
+                    "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "14", "-preset", "medium", str(ut)], check=True)
+    shutil.rmtree(tmp, ignore_errors=True)
+    return ut
 
 
 def ffmpeg_bin() -> str | None:

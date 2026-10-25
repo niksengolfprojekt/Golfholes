@@ -62,3 +62,20 @@ def test_tvatt_tar_bort_paahittad_sand_bara_i_omradet():
     assert n > 0
     assert ut[45:55, 60:80].astype(int).mean(axis=(0, 1))[0] < 130     # ingen sandfärg kvar
     assert (ut[150:170, 200:240] == bild[150:170, 200:240]).all()
+
+
+def test_stig_tas_bort_bara_langs_linjen():
+    from golfholes.render.flygfilm_kontroll import ta_bort_stig
+    rng = np.random.default_rng(2)
+    bild = np.clip(np.array([60, 90, 50]) + rng.normal(0, 5, (120, 200, 3)), 0, 255).astype(np.uint8)
+    bild[:, 98:104] = (140, 130, 115)                    # grå "grusgång" rakt ner
+    ut = ta_bort_stig(bild, [[12, -30, [[101, 0], [101, 119]]]])
+    assert ut[:, 99:103].astype(int).mean(axis=(0, 1))[0] < 80    # ingen grusfärg kvar
+    assert (ut[:, :80] == bild[:, :80]).all()                     # resten orört
+
+
+def test_bakgrund_klubbens_morka_farg():
+    from pathlib import Path
+    from golfholes.render.flygfilm_kontroll import hexfarg, klubbens_bakgrund
+    assert hexfarg("#10202E").tolist() == [16, 32, 46]
+    assert klubbens_bakgrund(Path("klubbar/glasriket/hal-14.yaml")).tolist() == [16, 32, 46]
