@@ -100,13 +100,16 @@ def test_gemensam_presentation_kryss_och_pris():
     k.sponsring = {**k.sponsring, "status": {**(k.sponsring.get("status") or {}), 3: "såld", 14: "bokad"}}
     sidor, hal, _ = prospekt_gemensam.sidor(k, dt.date(2026, 10, 24), Halkort.from_yaml)
     assert len(sidor) == prospekt_gemensam.SIDOR and len(hal) == 18
-    valj = sidor[4]
+    valj = sidor[prospekt_gemensam.KRYSS_SIDA]
     assert "Vilket blir ert hål?" in valj and "16 av 18 hål lediga" in valj
     assert valj.count("<path d='M1.6 5.4") == 2           # två tryckta kryss
     assert ">Sålt</div>" in valj and ">Bokat</div>" in valj
     allt = "".join(sidor)
     assert kr(25000) in allt and ATTRIBUTION in allt and _utan_ai(allt)
     assert not re.search(r"GameBook|Emtec", allt)
+    # hålet först, tillvalen efter (Erics beslut 2026-10-25)
+    assert allt.index("Vilket blir ert hål?") < allt.index("Mer att synas med.") < allt.index("Allt börjar med ett hål.")
+    assert "Rangen" in allt and "Hole-in-one-tavlan" in allt
     # kryssrutorna ligger inom sidan och överlappar inte varandra
     lagen = [prospekt_gemensam.ruta_lage(i) for i in range(18)]
     assert all(0 < x < 1920 - s and 0 < y < 1080 - s for x, y, s in lagen)
