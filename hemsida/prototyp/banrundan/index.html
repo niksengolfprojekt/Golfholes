@@ -42,9 +42,17 @@ canvas#bana{position:fixed;inset:0;width:100vw;height:100vh;display:block}
 body.ute .topp,body.ute .kalla{color:var(--elfenben)}
 body.ute .slojan{opacity:0}
 body.ute .morkslojan{opacity:1}
+.hud{position:fixed;top:104px;right:clamp(16px,4vw,48px);z-index:4;text-align:right;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--elfenben);opacity:0;transition:opacity .5s;line-height:1.7}
+.hud b{display:block;font-family:"Marcellus",Georgia,serif;font-weight:400;font-size:30px;letter-spacing:.06em}
+.boka{position:fixed;right:clamp(16px,4vw,48px);bottom:clamp(14px,3vh,28px);z-index:5;background:#571F30;color:var(--elfenben);text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:14px 22px;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.accent{color:var(--morkbrons)}
 .efter{position:relative;z-index:3;background:#FCF2EB;padding:120px clamp(16px,6vw,96px)}
 .efter h2{font-family:"Marcellus",Georgia,serif;font-weight:400;text-transform:uppercase;letter-spacing:.06em;color:var(--tallgron);font-size:clamp(28px,4vw,52px);margin:0 0 16px}
 @media (max-width:760px){
+  .kort,.kort.sista{bottom:88px}
+  .kalla{bottom:12px;right:170px;font-size:10px}
+  .boka{bottom:12px;padding:12px 16px;font-size:12px}
+  .hud{top:70px}
   .meny{display:none}
   .slojan{background:linear-gradient(to top,rgba(252,242,235,.98) 0%,rgba(252,242,235,.92) 32%,rgba(252,242,235,0) 48%)}
   .kort{top:auto;bottom:clamp(40px,8vh,80px);transform:none;max-width:none;right:16px}
@@ -65,11 +73,11 @@ body.ute .morkslojan{opacity:1}
   <div class="steg">
     <div class="kort" data-fran="0" data-till=".26">
       <span class="over">Vi skapar värde till varje hål</span>
-      <h1>Ni har byggt en fantastisk bana. Nu ska alla se den.</h1>
+      <h1>Ni har byggt en fantastisk bana. Nu ska <span class="accent">alla</span> se den.</h1>
       <p>Arton hål i kvällsljus, sedda ovanifrån. Scrolla, så tar vi en runda.</p>
     </div>
     <div class="kort" data-fran=".3" data-till=".7">
-      <h2>Varje hål på sin plats. Varje träd där det står.</h2>
+      <h2>Varje hål på sin plats. Varje <span class="accent">träd</span> där det står.</h2>
       <p>Golfarna känner igen sin bana på en sekund. De har bara aldrig sett den så här vacker.</p>
     </div>
     <div class="kort sista" data-fran=".95" data-till="1.01">
@@ -81,6 +89,8 @@ body.ute .morkslojan{opacity:1}
   </div>
 </section>
 <section class="efter"><h2>Resten av sidan fortsätter här</h2><p>Paketet, stilarna, räkneexemplet och kontakt, i samma uttryck.</p></section>
+<div class="hud" id="hud" aria-hidden="true"><b>Hål 14</b>Par 4<br>369 · 335 · 290 m</div>
+<a class="boka" href="#">Boka ett möte</a>
 <div class="kalla">Underlag: Ortofoto och Markhöjdmodell ©Lantmäteriet, bearbetat, CC BY 4.0</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -132,7 +142,7 @@ body.ute .morkslojan{opacity:1}
   const teeZ=mark(tee.x,tee.y)+1.6, sikteZ=mark(sikte.x,sikte.y);
 
   const scen=document.getElementById('scen'), kort=[...document.querySelectorAll('.kort')];
-  const foto=document.getElementById('foto');
+  const foto=document.getElementById('foto'), hud=document.getElementById('hud');
   const stilla=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const t0=performance.now();
   let start={d:2600,tx:0,ty:0};
@@ -203,6 +213,7 @@ body.ute .morkslojan{opacity:1}
     });
     const fo=Math.max(0,Math.min(1,(f-.865)/.065));
     foto.style.opacity=fo;
+    hud.style.opacity=fo;
     document.body.classList.toggle('ute',fo>.5);
     kort.forEach(k=>k.classList.toggle('pa',f>=+k.dataset.fran&&f<+k.dataset.till));
     requestAnimationFrame(ruta);
