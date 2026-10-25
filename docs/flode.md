@@ -37,6 +37,7 @@
 - [ ] Signatur med riktigt ortofoto (koden är klar; visar platshållare när `data/<klubb>/` saknas i sessionen)
 - [ ] Glasriket hål 5 får inte gå till klubben: alla tre tees 3,2–3,4 % korta mot scorekortet (gräns ±3 %), och AI-målningen har breddat fairway åt höger, gjort om greenen och dammen och lagt till gångvägar. Hålfilen rättas i ritverktyget och hålet målas om. Jämförelse: `output/glasriket/hal-05-jamforelse.jpg` (lokal).
 - [x] Texturrendering: Klassisk och Nordisk ritas med texturkit (gräs, vatten, lövverk, penseldrag) klippta efter exakta masker – demo-kit utklippt ur AI-skisserna
+- [x] Designregister för hemsidorna (2026-10-25): `hemsidor/designregister.yaml` sparar varje sajts val (inventering, idé, riktning, toppbild, typsnitt, palett, hålbildsstil, hålkortslayout) och vad alla klubbsajter delar. `python -m golfholes designregister` stoppar en sajt som liknar en tidigare. Glasriket v1 fäller i dag (standardmallen) – startsidan ska göras om.
 - [ ] Högupplösta texturkit för tryck (genereras som rena texturer, inte hela hål) + kit för Arv och Signatur-ljussättning
 - [ ] Ritverktyget: fler lager som skisserna visar – gångvägar, broar, solitärträd, ruffkant
 - [ ] Malin granskar de fyra stilarna (typsnitt, färger, ornament) – akvarell och gravyr är kodritade och mindre måleriska än AI-skisserna

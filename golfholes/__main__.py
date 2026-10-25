@@ -13,6 +13,7 @@ Stil väljs i klubb.yaml med `stil: 1–4`:  1 Signatur · 2 Klassisk · 3 Arv �
 Layout väljs i klubb.yaml med `layout: 1` (eller en lista, t.ex. [1, 4]):
   1 Hålkort (spikad) · 2 Poster · 3 Mörk · 4 Skärm · 5 Banguide · 6 Sponsorhål
   python -m golfholes webb     klubbar/<klubb>                      → output/<klubb>/webb/
+  python -m golfholes designregister [hemsidor/designregister.yaml]  → är varje hemsida unik nog?
   python -m golfholes utsnitt  klubbar/<klubb> data/<klubb>/orto/*.tif  → data/<klubb>/utsnitt/orto.jpg + .jgw
 """
 from __future__ import annotations
@@ -294,6 +295,8 @@ def main(argv: list[str] | None = None) -> int:
     hk.add_argument("--layout", default=None, help="1–6 (standard: klubbens val i klubb.yaml)")
     sub.add_parser("layoutprov", help="Samma hål i alla layouter – för klubbens val").add_argument("fil")
     sub.add_parser("webb", help="Digital banguide för en klubb").add_argument("klubbmapp")
+    dr = sub.add_parser("designregister", help="Kontrollera att varje hemsida har en unik design")
+    dr.add_argument("fil", nargs="?", default=None)
     u = sub.add_parser("utsnitt", help="Klipp ut banan ur Lantmäteriets ortofoto")
     u.add_argument("klubbmapp")
     u.add_argument("tiffar", nargs="+")
@@ -336,6 +339,9 @@ def main(argv: list[str] | None = None) -> int:
         return layoutprov(a.fil)
     if a.cmd == "webb":
         return webb(a.klubbmapp)
+    if a.cmd == "designregister":
+        from .designregister import REGISTER, rapport as designrapport
+        return designrapport(a.fil or REGISTER)
     if a.cmd == "utsnitt":
         return utsnitt(a.klubbmapp, a.tiffar, a.upplosning)
     return 2
