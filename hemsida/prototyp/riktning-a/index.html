@@ -15,7 +15,7 @@ canvas#moln{position:fixed;inset:0;width:100vw;height:100vh;display:block}
 .ordmarke{font-family:"Marcellus",Georgia,serif;font-size:22px;letter-spacing:.14em}
 .meny{display:flex;gap:28px;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
 .meny a{color:var(--elfenben);text-decoration:none;opacity:.85}
-.scen{position:relative;height:420vh;z-index:2}
+.scen{position:relative;height:230vh;z-index:2}
 .steg{position:sticky;top:0;height:100vh;display:grid;align-items:end;padding:0 clamp(16px,6vw,96px) clamp(48px,10vh,110px);pointer-events:none}
 .kort{max-width:760px;opacity:0;transition:opacity .5s ease,transform .5s ease}
 .kort h1,.kort h2{font-family:"Marcellus",Georgia,serif;font-weight:400;text-transform:uppercase;letter-spacing:.05em;line-height:1.06;margin:0 0 18px}
@@ -43,15 +43,15 @@ canvas#moln{position:fixed;inset:0;width:100vw;height:100vh;display:block}
 
 <section class="scen" id="scen">
   <div class="steg">
-    <div class="lager kort" data-fran="0" data-till=".3">
+    <div class="lager kort" data-fran="0" data-till=".2">
       <h1>Ni har byggt en fantastisk bana. Nu ska alla se den.</h1>
-      <p>Ett riktigt hål från en riktig bana i Småland. Scrolla, så går vi ut på det.</p>
+      <p>Ett riktigt hål från en riktig bana i Småland. Följ med ut på det.</p>
     </div>
-    <div class="lager kort" data-fran=".3" data-till=".62">
+    <div class="lager kort" data-fran=".2" data-till=".55">
       <h2>Varje träd. Varje bunker. Där de står.</h2>
       <p>Ingen skiss och ingen gissning. Hålet så som golfaren möter det på tee, ner till minsta svacka.</p>
     </div>
-    <div class="lager kort" data-fran=".62" data-till="1.01">
+    <div class="lager kort" data-fran=".55" data-till="1.01">
       <h2>Sedan gör vi det vackert.</h2>
       <p>I den stil klubben väljer, på skylten, i guiden, på hemsidan och i flödet. Lika genomarbetat som banan.</p>
       <a class="knapp" href="#">Se ett av era egna hål</a>
@@ -106,6 +106,7 @@ canvas#moln{position:fixed;inset:0;width:100vw;height:100vh;display:block}
   const malad=document.getElementById('malad');
   const stilla=matchMedia('(prefers-reduced-motion: reduce)').matches;
   let t0=performance.now();
+  const intro=new THREE.Vector3(-120,-620,760);
 
   function storlek(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);cam.aspect=w/h;cam.fov=w<h?58:38;cam.updateProjectionMatrix();}
   addEventListener('resize',storlek);storlek();
@@ -117,10 +118,16 @@ canvas#moln{position:fixed;inset:0;width:100vw;height:100vh;display:block}
     const lt=ease(f*(banor.length-1)-seg);
     const a=banor[seg],b=banor[seg+1];
     const p=a.p.clone().lerp(b.p,lt), m=a.m.clone().lerp(b.m,lt);
-    if(!stilla && f<.02){const v=(nu-t0)/14000;p.x=Math.sin(v)*260;p.y=-Math.cos(v)*260;}
+    // Något händer direkt: kameran glider in när sidan öppnas och kretsar sakta tills man scrollar.
+    if(!stilla){
+      const tid=nu-t0, vikt=Math.max(0,1-f/.12), v=tid/9000*vikt, c=Math.cos(v), s=Math.sin(v);
+      const x=p.x*c-p.y*s, y=p.x*s+p.y*c; p.x=x; p.y=y;
+      const k=ease(Math.min(1,tid/2600));
+      if(k<1){p.lerp(intro,1-k);}
+    }
     cam.position.copy(p);cam.lookAt(m);
-    mat.opacity=f>.7?lerp(1,.18,Math.min(1,(f-.7)/.2)):1;
-    malad.style.opacity=f>.72?Math.min(1,(f-.72)/.15):0;
+    mat.opacity=f>.6?lerp(1,.18,Math.min(1,(f-.6)/.2)):1;
+    malad.style.opacity=f>.62?Math.min(1,(f-.62)/.15):0;
     kort.forEach(k=>{const on=f>=+k.dataset.fran&&f<+k.dataset.till;k.style.opacity=on?1:0;k.style.transform=on?'none':'translateY(14px)';});
     renderer.render(scene,cam);
     requestAnimationFrame(ruta);
