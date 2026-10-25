@@ -50,6 +50,23 @@ sponsring:
   exempelhal: 17
   omslagshal: [14, 17, 9]
   sponsorsida: https://www.glasriketsgk.se/halsponsorer/   # QR-koden på sista sidan
+  # Tillval efter hålet (sidorna 8–9 i den gemensamma presentationen). Klubben sätter priserna.
+  # finns: klubbens anläggning i dag (glasriketsgk.se, 2026-10-25). nytt: förslag på nya produkter.
+  tillval:
+    finns:
+      - {namn: Rangen, text: "Där varje runda börjar. Er logotyp vid utslagsplatserna och på bollkorgarna, med ert namn på hela övningsområdet."}
+      - {namn: 12-hålsbanan, text: "Lilla banan, där nya golfare slår sina första slag. Ge den ert namn och var med från början."}
+      - {namn: Fotbollsgolfen, text: "Arton hål för familjer, barnkalas och kollegor hela sommaren. Er skylt mitt i leken."}
+      - {namn: Kiosken vid nian, text: "Halvvägsstoppet där alla stannar. Er logotyp precis där rundan tar paus."}
+      - {namn: Klubbens tävlingar, text: "Ge en tävling ert namn och dela ut priserna själva. Ni syns i startlistan, resultatet och vid prisbordet."}
+      - {namn: Juniorerna, text: "Er logotyp på träningströjorna hos klubbens unga golfare. Lokal stolthet som syns varje vecka."}
+    nytt:
+      - {namn: Hole-in-one-tavlan, text: "Vid banans par 3-hål. Varje hole-in-one hamnar på tavlan, med ert namn överst."}
+      - {namn: Företagsdagen, text: "Kunder eller kollegor på banan: prova på med klubbens tränare, en runda och middag. Klubben ordnar allt."}
+      - {namn: Skärmen i klubbhuset, text: "Hålen, dagens resultat och er logotyp, där alla samlas efter rundan."}
+      - {namn: Scorekortet, text: "Varje runda börjar med ett scorekort i handen. Er logotyp på baksidan, hela säsongen."}
+      - {namn: Första tee, text: "Varje runda på Fylleryd börjar här. Er skylt möter alla som slår ut på ettan."}
+      - {namn: Hjärtstartaren, text: "Tryggheten på banan, med ert namn. En sponsring alla förstår värdet av."}
   # Kryssrutorna på sidan "Vilket blir ert hål?": ledig, bokad eller såld. Ändra och kör kommandot igen.
   status:
     1: ledig

@@ -2,9 +2,12 @@
 
   python -m golfholes prospekt klubbar/<klubb> --gemensam [--ut mapp]
 
-Sex sidor, samma mall som prospektet per hål (prospekt.py) men utan ett bestämt hål:
-  1 Omslag   2 Skylten vid tee   3 Digitalt   4 Rapporten   5 Vilket blir ert hål?   6 Det här ingår + pris
-Sidorna 2–4 visar ett exempelhål (`sponsring.exempelhal`). Sidan 5 visar alla hål med nummer, par,
+En komplett säljpresentation, samma mall som prospektet per hål (prospekt.py) men utan ett bestämt hål.
+Allt börjar med hålsponsorskapet; resten är tillval (Erics beslut 2026-10-25):
+  1 Omslag   2 Skylten vid tee   3 Digitalt   4 Rapporten   5 Allt som ingår   6 Vilket blir ert hål?
+  7 Pris och nästa steg   8 Mer att synas med (klubbens anläggning)   9 Nya sätt att synas   10 Avslutning
+Sidorna 8–9 läses ur `sponsring.tillval` i klubb.yaml (`finns` och `nytt`, varje post namn + text);
+klubben sätter priserna på tillvalen. Sidorna 2–4 visar ett exempelhål (`sponsring.exempelhal`). Sidan 6 visar alla hål med nummer, par,
 längd och en kryssruta. Kryssen kommer ur `sponsring.status` i klubb.yaml (ledig, bokad, såld): klubben
 ändrar där och kör kommandot igen. Rutorna för lediga hål är också riktiga kryssrutor i PDF:en
 (AcroForm), så att klubben kan kryssa direkt i en PDF-läsare.
@@ -22,7 +25,8 @@ from .halkort import Halkort
 from .klubbmaterial import ATTRIBUTION, Klubb, Webblasare, e, hal_i_ruta, halkort_markerat, kontaktark, kr, qr
 
 W, H, M = P.W, P.H, P.M
-SIDOR = 6
+SIDOR = 10
+KRYSS_SIDA = 5      # 0-baserad: sidan "Vilket blir ert hål?"
 MANADER = ("januari februari mars april maj juni juli augusti september oktober november december").split()
 
 # Rutnätet på sidan "Vilket blir ert hål?" (px på sidan). Kryssrutornas lägen räknas ut här och
@@ -137,7 +141,7 @@ def s5_valj(k: Klubb, hal: list[dict], idag: dt.date) -> str:
     lage = (f"Läget {_datum(idag)}: {lediga} av {len(hal)} hål lediga." if lediga < len(hal)
             else f"Läget {_datum(idag)}: alla hål är lediga.")
     return f"""<div class='pg'>
-{_hd(k, 5)}
+{_hd(k, 6)}
 <div class='abs' style='left:{M}px;top:120px;width:1100px'>
  <div class='ey'>Välj hål</div>
  <h1>Vilket blir ert hål?</h1></div>
@@ -148,42 +152,131 @@ def s5_valj(k: Klubb, hal: list[dict], idag: dt.date) -> str:
 <div class='src' style='left:{M}px;right:{M}px;bottom:24px'>Längder från främsta till bakersta tee. {ATTRIBUTION}</div></div>"""
 
 
-def s6_erbjudande(k: Klubb, c: Halkort, qr_svg: str, url: str) -> str:
+def s_allt(k: Klubb, c: Halkort) -> str:
+    """Sidan 5: allt som ingår, med räkneexemplet krona per visning vid tee."""
+    pris = k.sponsring.get("pris_per_hal")
+    ronder, _ = k.ronder()
+    siffra, forklaring = P._uppskattning(k)
+    per = ""
+    if pris and ronder:
+        per = (f"<div style='font:400 26px/1.4 var(--sans);color:#D3E3E0;margin-top:26px'>Med {kr(pris)}&nbsp;kr per år "
+               f"blir det ungefär <b style='color:var(--glod);font-weight:500'>{pris / ronder:.2f}&nbsp;kr per visning</b>"
+               f", bara vid tee.</div>").replace(f"{pris / ronder:.2f}", f"{pris / ronder:.2f}".replace(".", ","))
+    poster = [
+        ("Ert namn på hålet", "<i>[Ert företag]-hålet</i>, i hålguiden, på webben och i flödet. Hela säsongen."),
+        ("Skylten vid tee", "70 × 100 cm med er logotyp. Varje utslag på hålet slås framför den."),
+        ("QR-koden på skylten", "Golfaren skannar och landar på hålets sida, där ni presenterar hålet."),
+        ("Hålets sida på webben", "”Presenteras av” och er logotyp, i mobilen hos alla som planerar rundan."),
+        ("Klubbens Instagram och Facebook", "Hålet med er logotyp i klubbens egna inlägg."),
+        ("Ett färdigt inlägg till er", "Klart att publicera i era kanaler. Ni behöver inte ta fram något själva."),
+        ("Rapporten efter säsongen", "Visningarna kanal för kanal. Svart på vitt, att visa för styrelsen."),
+        ("Flygfilmen över hålet", "Er logotyp när kameran landar över green. <span style='color:#5B6E73'>Under utveckling.</span>"),
+    ]
+    rutor = "".join(
+        f"<div style='padding:22px 0 20px;border-top:1px solid rgba(16,32,46,.16)'>"
+        f"<div style='font:600 21px/1.25 var(--sans);color:var(--djup)'>{a}</div>"
+        f"<div style='font:400 19px/1.45 var(--sans);color:#33454B;margin-top:6px'>{b}</div></div>" for a, b in poster)
+    return f"""<div class='pg'>
+{_hd(k, 5, M, 700)}
+<div class='abs' style='left:{M}px;top:130px;width:1060px'>
+ <div class='ey'>Det här ingår</div>
+ <h1>Allt det här, för ett enda hål.</h1>
+ <div style='display:grid;grid-template-columns:1fr 1fr;column-gap:56px;margin-top:40px'>{rutor}</div>
+ <p class='p' style='margin-top:26px;font-size:21px'>Ni godkänner allt innan det syns. Kansliet tar hand om resten.</p></div>
+<div class='abs dark' style='left:{W - 600}px;top:0;width:600px;height:1080px;background:var(--djup)'>
+ <div class='abs' style='left:64px;right:64px;top:150px'>
+  <div class='ey'>Vid tee, per säsong</div>
+  <div style='font:400 96px/1 var(--serif);margin-top:30px'>{siffra}</div>
+  <div style='font:400 24px/1.4 var(--sans);color:var(--is);margin-top:14px'>visningar av er skylt<span class='tag' style='color:var(--glod)'>Uppskattning</span></div>
+  {per}
+  <div style='font:400 14px/1.5 var(--sans);color:var(--is);opacity:.8;margin-top:34px'>Räkneexempel, inte ett löfte. {forklaring}</div></div>
+ {hal_i_ruta(c.image, 64, 680, 472, 360, 'center bottom', max_px=1200)}</div></div>"""
+
+
+def s_pris(k: Klubb, c: Halkort, qr_svg: str, url: str) -> str:
+    """Sidan 7: pris, tre steg och kontakt."""
     sp = k.sponsring
     pris = sp.get("pris_per_hal")
-    prisruta = (f"<div style='font:400 72px/1 var(--serif)'>{kr(pris)}&nbsp;kr</div>"
-                f"<div style='font:400 22px/1.4 var(--sans);color:var(--is);margin-top:14px'>{e(sp.get('pris_villkor', 'per år'))}</div>"
-                if pris else "<div style='font:400 34px/1.2 var(--serif)'>Pris enligt överenskommelse</div>")
+    prisruta = (f"<div style='font:400 88px/1 var(--serif)'>{kr(pris)}&nbsp;kr</div>"
+                f"<div style='font:400 24px/1.4 var(--sans);color:var(--is);margin-top:14px'>{e(sp.get('pris_villkor', 'per år'))} och hål</div>"
+                if pris else "<div style='font:400 40px/1.2 var(--serif)'>Pris enligt överenskommelse</div>")
     kontakt = sp.get("kontakt") or k.web
+    steg = [("Ni väljer hål.", "Ett kryss på sidan innan och ett samtal till kansliet. Mer än så behövs inte."),
+            ("Vi tar fram allt.", "Skylt, hålets sida och inlägg med er logotyp. Ni ser och godkänner allt innan det syns."),
+            ("Hålet är ert.", f"Från första start {k.sasong} bär hålet ert namn, ända till säsongens sista putt.")]
+    rader = "".join(
+        f"<div style='display:flex;gap:30px;padding:28px 0;border-top:1px solid rgba(16,32,46,.16)'>"
+        f"<div style='font:400 54px/1 var(--serif);color:var(--glas);width:48px'>{i}</div>"
+        f"<div><div style='font:400 38px/1.15 var(--serif)'>{a}</div>"
+        f"<div style='font:400 21px/1.5 var(--sans);color:#33454B;margin-top:10px;max-width:760px'>{b}</div></div></div>"
+        for i, (a, b) in enumerate(steg, 1))
     return f"""<div class='pg'>
-{_hd(k, 6, M, 760)}
-<div class='abs' style='left:{M}px;top:150px;width:1000px'>
- <div class='ey'>Det här ingår</div>
- <h1>Ett hål. En hel säsong. Ert namn.</h1>
- <ul class='d' style='margin-top:46px'>
-  <li>Hålet bär ert namn: <i>[Ert företag]-hålet</i></li>
-  <li>Er logotyp på skylten vid tee, med QR-kod till hålets sida</li>
-  <li>”Presenteras av” på hålets sida på klubbens webb</li>
-  <li>Hålet med er logotyp i klubbens inlägg på Instagram och Facebook</li>
-  <li>Ett färdigt inlägg att dela i era egna kanaler</li>
-  <li>En rapport över visningarna efter säsongen</li>
-  <li>Er logotyp i flygfilmen över hålet <span style='color:#5B6E73'>(under utveckling)</span></li></ul>
- <div style='margin-top:34px;padding-top:28px;border-top:1px solid rgba(16,32,46,.18)'>
-  <div class='ey' style='font-size:14px'>Ni väljer hål. Vi gör resten.</div>
-  <div style='font:500 26px/1.4 var(--sans);margin-top:14px'>{e(kontakt)}</div></div></div>
+{_hd(k, 7, M, 760)}
+<div class='abs' style='left:{M}px;top:140px;width:960px'>
+ <div class='ey'>Så blir hålet ert</div>
+ <h1>Ni väljer hål. Vi gör resten.</h1>
+ <div style='margin-top:40px'>{rader}</div>
+ <div style='padding-top:26px;border-top:1px solid rgba(16,32,46,.16);font:500 26px/1.4 var(--sans)'>{e(kontakt)}</div></div>
 <div class='abs dark' style='left:{W - 680}px;top:0;width:680px;height:1080px;background:var(--djup)'>
- <div class='abs' style='left:70px;top:110px'><div class='ey'>Pris per hål</div><div style='margin-top:26px'>{prisruta}</div></div>
- <div class='abs' style='left:70px;right:70px;top:370px;border-top:1px solid rgba(156,201,195,.3)'></div>
- {hal_i_ruta(c.image, 60, 420, 300, 560, 'left center', max_px=1400)}
- <div class='abs' style='left:400px;top:560px;width:210px'>
+ <div class='abs' style='left:70px;top:120px'><div class='ey'>Pris per hål</div><div style='margin-top:28px'>{prisruta}</div></div>
+ <div class='abs' style='left:70px;right:70px;top:400px;border-top:1px solid rgba(156,201,195,.3)'></div>
+ {hal_i_ruta(c.image, 60, 440, 300, 560, 'left center', max_px=1400)}
+ <div class='abs' style='left:400px;top:580px;width:210px'>
   <div style='width:210px;height:210px;background:var(--kristall);padding:16px'>{qr_svg}</div>
   <div style='font:500 17px/1.4 var(--sans);color:var(--is);margin-top:16px'>Se alla hål</div>
   <div style='font:400 13px/1.4 var(--sans);color:var(--is);opacity:.75;word-break:break-all'>{e(url.replace('https://', ''))}</div></div>
- <div class='src' style='left:70px;right:70px;bottom:44px;font-size:13px'>Hål {c.hole}. {ATTRIBUTION}</div></div>
-<div class='abs' style='left:{M}px;bottom:52px;display:flex;align-items:center;gap:16px'>
- <img src='{k.logga("ljus")}' style='width:58px;height:58px'>
- <div style='font:400 15px/1.5 var(--sans);color:#5B6E73'>{e(k.namn)} · {e(k.web.replace('https://', ''))}<br>
- <span style='font-size:13px;opacity:.8'>Material: TACADA</span></div></div></div>"""
+ <div class='src' style='left:70px;right:70px;bottom:44px;font-size:13px'>Hål {c.hole}. {ATTRIBUTION}</div></div></div>"""
+
+
+def _tillval_kort(poster: list[dict], dark: bool) -> str:
+    ram = "rgba(156,201,195,.28)" if dark else "rgba(16,32,46,.16)"
+    text = "#C9DAD6" if dark else "#33454B"
+    nr = "var(--glod)" if dark else "var(--glas)"
+    return "".join(
+        f"<div style='border-top:1px solid {ram};padding-top:26px'>"
+        f"<div style='font:600 14px/1 var(--sans);letter-spacing:.22em;color:{nr}'>{i:02d}</div>"
+        f"<div style='font:400 44px/1.12 var(--serif);margin-top:16px'>{e(p['namn'])}</div>"
+        f"<div style='font:400 23px/1.5 var(--sans);color:{text};margin-top:14px'>{e(p['text'])}</div></div>"
+        for i, p in enumerate(poster, 1))
+
+
+def s_tillval(k: Klubb, nr: int, poster: list[dict], ey: str, rubrik: str, ingress: str, dark: bool) -> str:
+    """Sidorna 8–9: tillval efter hålet, upp till sex kort i tre kolumner. Tom lista = ingen sida."""
+    if not poster:
+        return ""
+    kontakt = k.sponsring.get("kontakt") or k.web
+    return f"""<div class='pg{' dark' if dark else ''}'>
+{_hd(k, nr)}
+<div class='abs' style='left:{M}px;top:130px;width:1100px'>
+ <div class='ey'>{ey}</div>
+ <h1>{rubrik}</h1>
+ <p class='lead' style='margin-top:22px;max-width:1040px;font-size:25px'>{ingress}</p></div>
+<div class='abs' style='left:{M}px;right:{M}px;top:420px;display:grid;grid-template-columns:repeat(3,1fr);column-gap:64px;row-gap:56px'>
+ {_tillval_kort(poster[:6], dark)}</div>
+<div class='src{' ljus' if dark else ''}' style='left:{M}px;right:{M}px;bottom:40px'>Tillvalen prissätts av klubben. Fråga kansliet: {e(kontakt)}</div></div>"""
+
+
+def s_slut(k: Klubb, omslag: list[Halkort], qr_svg: str, url: str) -> str:
+    """Sidan 10: avslutning."""
+    kontakt = k.sponsring.get("kontakt") or k.web
+    bilder = "".join(hal_i_ruta(c.image, 1060 + i * 250, 120, 236, 840, "center center", max_px=1400)
+                     for i, c in enumerate(omslag[:3]))
+    return f"""<div class='pg dark'>
+{bilder}
+<div class='abs' style='left:{M}px;top:120px;display:flex;align-items:center;gap:22px'>
+ <img src='{k.logga("mork")}' style='width:84px;height:84px'>
+ <div style='font:600 15px/1.5 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--is)'>{e(k.namn)}<br>
+ <span style='color:var(--glod)'>{e(k.bana)}</span></div></div>
+<div class='abs' style='left:{M}px;top:320px;width:840px'>
+ <div class='ey'>Säsongen {k.sasong}</div>
+ <h1 class='xl'>Allt börjar med ett hål.</h1>
+ <p class='lead' style='max-width:760px'>Välj hålet först. Det är grunden, och det är ert hela säsongen.
+ Resten bygger ni på när ni vill, i den takt som passar er.</p>
+ <div style='display:flex;align-items:center;gap:30px;margin-top:56px'>
+  <div style='width:150px;height:150px;background:var(--kristall);padding:12px;flex:none'>{qr_svg}</div>
+  <div><div style='font:500 26px/1.4 var(--sans)'>{e(kontakt)}</div>
+  <div style='font:400 17px/1.4 var(--sans);color:var(--is);margin-top:8px'>{e(url.replace('https://', ''))}</div></div></div></div>
+<div class='src' style='left:{M}px;right:{M}px;bottom:40px'>{ATTRIBUTION} · Material: TACADA</div></div>"""
 
 
 # ------------------------------------------------------------------ bygg
@@ -207,12 +300,20 @@ def sidor(k: Klubb, idag: dt.date | None = None, markerat=halkort_markerat) -> t
     url = sponsorsida(k)
     qr_svg, akta = qr(url, k.farger["djup"])
     qr_halet, akta2 = qr(k.qr_lank(c.hole), k.farger["djup"])
+    tv = k.sponsring.get("tillval") or {}
     s = [s1_omslag(k, omslag, len(hal)), P.s3_skylt(k, c, d, qr_halet), P.s4_digitalt(k, c, d), P.s5_rapport(k, c, d),
-         s5_valj(k, hal, idag or dt.date.today()), s6_erbjudande(k, c, qr_svg, url)]
+         s_allt(k, c), s5_valj(k, hal, idag or dt.date.today()), s_pris(k, c, qr_svg, url),
+         s_tillval(k, 8, tv.get("finns") or [], "När hålet är ert", "Mer att synas med.",
+                   f"Hålet är grunden. Den som vill synas mer kan bygga vidare på {e(k.bana)}, "
+                   "på rangen, vid kiosken och långt utanför fairway.", False),
+         s_tillval(k, 9, tv.get("nytt") or [], "Nya sätt att synas", "Fler platser att sätta sin prägel.",
+                   "Sex idéer för företag som vill ett steg längre. Klubben berättar gärna mer.", True),
+         s_slut(k, omslag, qr_svg, url)]
+    s = [x for x in s if x]
     return s, hal, akta and akta2
 
 
-def kryssrutor(pdf: Path, hal: list[dict], sida: int = 4) -> int:
+def kryssrutor(pdf: Path, hal: list[dict], sida: int = KRYSS_SIDA) -> int:
     """Lägg in riktiga kryssrutor (AcroForm) över de lediga hålens rutor på sidan `sida` (0-baserad).
     Returnerar antalet fält. Kräver pypdf; utan pypdf blir rutorna bara tryckta (0)."""
     try:
