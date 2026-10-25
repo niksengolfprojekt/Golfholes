@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TACADA · Banrundan</title>
+<style>
+@font-face{font-family:"Marcellus";src:url(fonts/marcellus-latin.woff2) format("woff2");font-display:swap}
+@font-face{font-family:"Inter";src:url(fonts/inter-latin.woff2) format("woff2");font-weight:400 600;font-display:swap}
+:root{--tallgron:#183329;--natt:#101F2B;--elfenben:#F3EDE2;--brons:#B7955E;--morkbrons:#7F6640;--kol:#292D28}
+*{box-sizing:border-box}
+html,body{margin:0;background:#FCF2EB;color:var(--kol);font-family:"Inter",system-ui,sans-serif}
+canvas#bana{position:fixed;inset:0;width:100vw;height:100vh;display:block}
+.foto{position:fixed;inset:0;z-index:1;background:url(tee14.webp) center 60%/cover no-repeat;opacity:0;pointer-events:none}
+.slojan{position:fixed;inset:0;z-index:2;pointer-events:none;transition:opacity .6s ease;
+  background:linear-gradient(to right,rgba(252,242,235,.96) 0%,rgba(252,242,235,.82) 30%,rgba(252,242,235,0) 52%)}
+.morkslojan{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .6s ease;
+  background:linear-gradient(to top,rgba(16,31,43,.82) 0%,rgba(16,31,43,.4) 34%,rgba(16,31,43,0) 60%)}
+.topp{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:22px clamp(16px,4vw,48px);z-index:4;transition:color .6s}
+.ordmarke{font-family:"Marcellus",Georgia,serif;font-size:22px;letter-spacing:.14em}
+.meny{display:flex;gap:28px;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+.meny a{color:inherit;text-decoration:none;opacity:.85}
+.nalar{position:fixed;inset:0;z-index:1;pointer-events:none}
+.nal{position:absolute;left:0;top:0;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:#F7F4EE;color:#1E2A22;
+  font:600 12px/26px "Inter",sans-serif;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.28);opacity:0;transform:scale(.4);transition:transform .35s ease,background .4s,color .4s}
+.nal.syns{transform:scale(1)}
+.nal.fjorton{background:var(--brons);color:var(--natt)}
+.scen{position:relative;height:330vh;z-index:3}
+.steg{position:sticky;top:0;height:100vh;pointer-events:none}
+.kort{position:absolute;left:clamp(16px,6vw,96px);top:50%;transform:translateY(-50%);max-width:min(520px,38vw);opacity:0;transition:opacity .5s ease,margin .5s ease;margin-top:14px}
+.kort.pa{opacity:1;margin-top:0}
+.over{font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--morkbrons)}
+.kort h1,.kort h2{font-family:"Marcellus",Georgia,serif;font-weight:400;text-transform:uppercase;letter-spacing:.05em;line-height:1.08;margin:14px 0 18px;color:var(--tallgron)}
+.kort h1{font-size:clamp(34px,4.2vw,62px)}
+.kort h2{font-size:clamp(30px,3.8vw,56px)}
+.kort p{font-size:clamp(16px,1.4vw,19px);line-height:1.6;margin:0;max-width:42ch}
+.kort.sista{top:auto;bottom:clamp(48px,10vh,110px);transform:none;max-width:640px}
+.kort.sista h2,.kort.sista p{color:var(--elfenben)}
+.kort.sista .over{color:var(--brons)}
+.knapp{pointer-events:auto;display:inline-block;margin-top:26px;background:var(--brons);color:var(--natt);text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:16px 24px}
+.kalla{position:fixed;left:clamp(16px,4vw,48px);bottom:14px;font-size:11px;color:#6B6E66;z-index:4;transition:color .6s}
+body.ute .topp,body.ute .kalla{color:var(--elfenben)}
+body.ute .slojan{opacity:0}
+body.ute .morkslojan{opacity:1}
+.efter{position:relative;z-index:3;background:#FCF2EB;padding:120px clamp(16px,6vw,96px)}
+.efter h2{font-family:"Marcellus",Georgia,serif;font-weight:400;text-transform:uppercase;letter-spacing:.06em;color:var(--tallgron);font-size:clamp(28px,4vw,52px);margin:0 0 16px}
+@media (max-width:760px){
+  .meny{display:none}
+  .slojan{background:linear-gradient(to top,rgba(252,242,235,.98) 0%,rgba(252,242,235,.92) 32%,rgba(252,242,235,0) 48%)}
+  .kort{top:auto;bottom:clamp(40px,8vh,80px);transform:none;max-width:none;right:16px}
+  .nal{width:22px;height:22px;margin:-11px 0 0 -11px;font-size:11px;line-height:22px}
+}
+@media (prefers-reduced-motion:reduce){.kort,.nal{transition:none}}
+</style>
+</head>
+<body>
+<canvas id="bana" aria-hidden="true"></canvas>
+<div class="foto" id="foto" role="img" aria-label="Utsikten från tee på hål 14: fairway mellan granar och björkar i kvällssol"></div>
+<div class="nalar" id="nalar" aria-hidden="true"></div>
+<div class="slojan" aria-hidden="true"></div>
+<div class="morkslojan" aria-hidden="true"></div>
+<header class="topp"><span class="ordmarke">TACADA</span><nav class="meny"><a href="#">Golfklubbar</a><a href="#">Hålsponsorer</a><a href="#">Studio</a><a href="#">Kontakt</a></nav></header>
+
+<section class="scen" id="scen">
+  <div class="steg">
+    <div class="kort" data-fran="0" data-till=".26">
+      <span class="over">Vi skapar värde till varje hål</span>
+      <h1>Ni har byggt en fantastisk bana. Nu ska alla se den.</h1>
+      <p>Arton hål i kvällsljus, sedda ovanifrån. Scrolla, så tar vi en runda.</p>
+    </div>
+    <div class="kort" data-fran=".3" data-till=".7">
+      <h2>Varje hål på sin plats. Varje träd där det står.</h2>
+      <p>Golfarna känner igen sin bana på en sekund. De har bara aldrig sett den så här vacker.</p>
+    </div>
+    <div class="kort sista" data-fran=".93" data-till="1.01">
+      <span class="over">Hål 14</span>
+      <h2>Utslaget alla pratar om efteråt.</h2>
+      <p>Här vill ett lokalt företag synas. Vi gör hålet värt sitt namn, på skylten, i guiden och i flödet.</p>
+      <a class="knapp" href="#">Se ett av era egna hål</a>
+    </div>
+  </div>
+</section>
+<section class="efter"><h2>Resten av sidan fortsätter här</h2><p>Paketet, stilarna, räkneexemplet och kontakt, i samma uttryck.</p></section>
+<div class="kalla">Underlag: Ortofoto och Markhöjdmodell ©Lantmäteriet, bearbetat, CC BY 4.0</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(async function(){
+  // Banbilden ligger på Lantmäteriets höjdmodell: 0,372 m per pixel, SWEREF 99 TM.
+  const PINS={"1":[491711.0,6306516.8],"2":[491588.3,6306140.3],"3":[491538.8,6305904.5],"4":[491735.1,6305612.3],"5":[491755.2,6305433.5],"6":[492000.4,6305517.4],"7":[491820.7,6305799.4],"8":[491955.1,6305757.7],"9":[491827.9,6306003.0],"10":[491888.4,6306368.7],"11":[492047.3,6306044.3],"12":[492126.9,6305610.2],"13":[492180.1,6306122.8],"14":[492311.8,6305911.1],"15":[492092.0,6305560.4],"16":[491783.1,6305799.4],"17":[491733.3,6305972.3],"18":[491733.3,6306104.6]};
+  const canvas=document.getElementById('bana');
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setClearColor(0xFCF2EB,1);
+  const scene=new THREE.Scene();
+  // Dimman i samma papperston som banbildens kant, så att bildens ram inte syns.
+  scene.fog=new THREE.Fog(new THREE.Color(0xFCF2EB).convertSRGBToLinear(),2000,5000);
+  const cam=new THREE.PerspectiveCamera(36,1,1,9000);
+  cam.up.set(0,0,1);
+
+  const T=await (await fetch('terrang.json')).json();
+  const raw=Uint8Array.from(atob(T.data),c=>c.charCodeAt(0));
+  const hz=new Uint16Array(raw.buffer);
+  const cE=T.E0+T.B/2, cN=T.N0-T.H/2;
+  const geo=new THREE.PlaneGeometry(T.B,T.H,T.nx-1,T.ny-1);
+  const pa=geo.attributes.position;
+  for(let i=0;i<pa.count;i++)pa.setZ(i,hz[i]/100);
+  geo.computeVertexNormals();
+  const tex=new THREE.TextureLoader().load('karta.webp');
+  tex.anisotropy=renderer.capabilities.getMaxAnisotropy();
+  tex.encoding=THREE.sRGBEncoding;renderer.outputEncoding=THREE.sRGBEncoding;
+  scene.add(new THREE.Mesh(geo,new THREE.MeshBasicMaterial({map:tex})));
+
+  // Markhöjd i scenkoordinater (x öst, y norr, meter från bildens mitt).
+  function mark(x,y){
+    const gx=(x+T.B/2)/T.steg, gy=(T.H/2-y)/T.steg;
+    const x0=Math.max(0,Math.min(T.nx-2,Math.floor(gx))), y0=Math.max(0,Math.min(T.ny-2,Math.floor(gy)));
+    const fx=gx-x0, fy=gy-y0, h=(i,j)=>hz[j*T.nx+i]/100;
+    return h(x0,y0)*(1-fx)*(1-fy)+h(x0+1,y0)*fx*(1-fy)+h(x0,y0+1)*(1-fx)*fy+h(x0+1,y0+1)*fx*fy;
+  }
+  const nalar=document.getElementById('nalar');
+  const nal=Object.entries(PINS).map(([n,[e,no]])=>{
+    const el=document.createElement('div');el.className='nal'+(n==='14'?' fjorton':'');el.textContent=n;nalar.appendChild(el);
+    const x=e-cE,y=no-cN;return {n:+n,el,p:new THREE.Vector3(x,y,mark(x,y)+3)};
+  });
+
+  // Tee 56 på hål 14 och siktet 150 m ut längs mittlinjen.
+  const tee={x:492313-cE,y:6305911-cN}, sikte={x:492312.5-cE,y:6305761-cN};
+  const teeZ=mark(tee.x,tee.y)+1.6, sikteZ=mark(sikte.x,sikte.y);
+
+  const scen=document.getElementById('scen'), kort=[...document.querySelectorAll('.kort')];
+  const foto=document.getElementById('foto');
+  const stilla=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const t0=performance.now();
+  let start={d:2600,tx:0,ty:0};
+
+  function storlek(){
+    const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();
+    const tv=Math.tan(THREE.MathUtils.degToRad(cam.fov/2));
+    if(w>760){ // Dator: banan till höger om texten.
+      const d=T.H*.53/tv; start={d,tx:-d*tv*cam.aspect*.32,ty:0};
+    }else{     // Mobil: banan överst, texten under.
+      const d=T.B*.6/(tv*cam.aspect), hv=d*tv; start={d,tx:0,ty:-(hv-T.H*.5-hv*.1)};
+    }
+    byggNycklar();
+  }
+  // Nyckelbilder: tid i scroll, vinkel runt banan, lutning, avstånd, siktpunkt.
+  let N=[];
+  function byggNycklar(){
+    const slutLut=THREE.MathUtils.radToDeg(Math.atan2(teeZ-sikteZ,150));
+    N=[
+      {f:0,  th:0,   fi:89,  d:start.d,      tx:start.tx, ty:start.ty},
+      {f:.3, th:110, fi:52,  d:start.d*.78,  tx:0,        ty:-40},
+      {f:.62,th:320, fi:34,  d:start.d*.5,   tx:140,      ty:-120},
+      {f:.84,th:500, fi:16,  d:300,          tx:sikte.x,  ty:sikte.y},
+      {f:.95,th:540, fi:slutLut, d:150,      tx:sikte.x,  ty:sikte.y},
+      {f:1,  th:540, fi:slutLut, d:150,      tx:sikte.x,  ty:sikte.y}
+    ];
+  }
+  addEventListener('resize',storlek);storlek();
+
+  const smooth=t=>t*t*(3-2*t);
+  function interp(f){
+    let i=0;while(i<N.length-2&&f>N[i+1].f)i++;
+    const a=N[Math.max(0,i-1)],b=N[i],c=N[i+1],d=N[Math.min(N.length-1,i+2)];
+    const t=Math.min(1,Math.max(0,(f-b.f)/(c.f-b.f)));
+    const o={};
+    // Catmull-Rom ger jämn fart genom nyckelbilderna i stället för stopp vid varje.
+    for(const k of ['th','fi','d','tx','ty']){
+      const p0=a[k],p1=b[k],p2=c[k],p3=d[k],t2=t*t,t3=t2*t;
+      o[k]=.5*((2*p1)+(-p0+p2)*t+(2*p0-5*p1+4*p2-p3)*t2+(-p0+3*p1-3*p2+p3)*t3);
+    }
+    if(i===N.length-2)for(const k of ['th','fi','d','tx','ty'])o[k]=b[k]+(c[k]-b[k])*smooth(t);
+    return o;
+  }
+  function framsteg(){const r=scen.getBoundingClientRect();return Math.min(1,Math.max(0,-r.top/(r.height-innerHeight)));}
+  const v=new THREE.Vector3();
+  function ruta(nu){
+    const f=framsteg(), tid=nu-t0;
+    const o=interp(f);
+    // Något händer direkt: kameran sjunker in över banan och numren tänds ett i taget.
+    if(!stilla){const k=smooth(Math.min(1,tid/2600));o.d*=1+(1-k)*.35*Math.max(0,1-f/.1);o.th+=(1-k)*-14*Math.max(0,1-f/.1);}
+    const th=THREE.MathUtils.degToRad(o.th), fi=THREE.MathUtils.degToRad(o.fi);
+    const slut=Math.max(0,Math.min(1,(f-.84)/.11));
+    const tz=sikteZ*slut+(1-slut)*18;
+    const pos=new THREE.Vector3(o.tx+o.d*Math.cos(fi)*Math.sin(th), o.ty-o.d*Math.cos(fi)*Math.cos(th), tz+o.d*Math.sin(fi));
+    pos.z=Math.max(pos.z,mark(pos.x,pos.y)+1.6);
+    cam.position.copy(pos);cam.lookAt(o.tx,o.ty,tz);
+    scene.fog.near=o.d*.9+200;scene.fog.far=o.d*2.4+600;
+    renderer.render(scene,cam);
+
+    const w=innerWidth,h=innerHeight;
+    const nalSyn=f<.7?1:Math.max(0,1-(f-.7)/.1);
+    nal.forEach((p,i)=>{
+      v.copy(p.p).project(cam);
+      const tänd=stilla||tid>500+i*90;
+      const syn=(p.n===14?Math.max(0,1-Math.max(0,f-.82)/.06):nalSyn)*(v.z<1?1:0)*(tänd?1:0);
+      p.el.style.opacity=syn;p.el.classList.toggle('syns',tänd);
+      p.el.style.left=((v.x+1)/2*w)+'px';p.el.style.top=((1-v.y)/2*h)+'px';
+    });
+    const fo=Math.max(0,Math.min(1,(f-.88)/.07));
+    foto.style.opacity=fo;
+    document.body.classList.toggle('ute',fo>.5);
+    kort.forEach(k=>k.classList.toggle('pa',f>=+k.dataset.fran&&f<+k.dataset.till));
+    requestAnimationFrame(ruta);
+  }
+  requestAnimationFrame(ruta);
+})();
+</script>
+</body>
+</html>
