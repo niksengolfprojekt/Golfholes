@@ -1,5 +1,7 @@
 # Produktionsflödet steg för steg
 
+Ny klubb från början till leverans: [ny-klubb.md](ny-klubb.md) (skillen `ny-golfklubb`).
+
 | Steg | Vad | Kommando / verktyg | Klart när |
 | --- | --- | --- | --- |
 | 1. Underlag | Se vilka bildår som finns, hämta nyaste ortofoto + markhöjdmodell för området i `klubb.yaml` direkt från Lantmäteriets API (gör utsnittet automatiskt). Hämta scorekort och hålkartor. | `python -m golfholes sok klubbar/<klubb>` (öppet) och `python -m golfholes hamta klubbar/<klubb>` (kräver Geotorget-inloggningen som nätverkshemlighet för `dl1.lantmateriet.se` i molnmiljön, eller miljövariablerna `LM_ANVANDARE`/`LM_LOSENORD`) | `data/<klubb>/lantmateriet.json` + utsnitt |
