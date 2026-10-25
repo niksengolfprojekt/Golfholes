@@ -1,0 +1,24 @@
+# Hålkort för Glasriket hål 15. Hålbilden är AI-målad på hålets exakta form ur Lantmäteriets
+# ortofoto; träd ur Laserdata Skog (python -m golfholes aiunderlag / aibild).
+# Råden är klubbens egna "Råd från PRO:n" ur banguiden 2025 (glasriketsgk.se/haloversikt),
+# lätt redigerade. Beskrivning och strategi är Claudes utkast ur hålfilen – klubben godkänner.
+club: Glasrikets Golfklubb
+bana: Fylleryd
+hole: 15
+par: 4
+index: 7
+tees: [["60", 324], ["56 · 52", 296], ["49 · 44", 265]]
+bild: ../halbilder/hal-15-malad.webp
+typbild: false
+rubrik: "Följ den vänstra björken"
+beskrivning: "Inte en enda bunker, och ändå index 7. Out följer högersidan, fairway smalnar av mellan granarna och framför greenen står en gran som ett plank. Här vinner den som läser hålet rätt."
+rad_rubrik: Råd från pro:n
+rad:
+  - "Bästa linjen är rakt över den vänstra björken. Då hamnar du mitt i fairway."
+  - "Undvik högersidan, där det är out."
+  - "Håll inspelet högt. Granen före greenen fungerar som ett plank, och greenen är liten."
+slutrad: "Björken från tee, högt inspel in."
+kortrad: "Sikta över den vänstra björken och håll inspelet högt över granen."   # pro:ns råd i en mening (prospekt och inlägg)
+strategi:
+  sakert: Utslag mot vänstra halvan av fairway, sedan ett högt inspel över granen mot mitten av greenen.
+  chansa: Ett långt utslag ger ett kort inspel – men ett slag ut till höger är out.

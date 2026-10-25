@@ -1,0 +1,24 @@
+# Hålkort för Glasriket hål 6. Hålbilden är AI-målad på hålets exakta form ur Lantmäteriets
+# ortofoto; träd ur Laserdata Skog (python -m golfholes aiunderlag / aibild).
+# Råden är klubbens egna "Råd från PRO:n" (glasriketsgk.se/haloversikt, hämtad 2026-10-20),
+# lätt redigerade. Beskrivning och strategi är Claudes utkast ur hålfilen – klubben godkänner.
+# Tee 60 ligger under träden och syns inte på fotot – placerad "+30" bakom 56/52 som på kartan.
+club: Glasrikets Golfklubb
+bana: Fylleryd
+hole: 6
+par: 4
+index: 2
+tees: [["60", 331], ["56 · 52", 301], ["49 · 44", 245]]
+bild: ../halbilder/hal-06-malad.webp
+typbild: false
+rubrik: "Vänster först, sedan platån"
+beskrivning: "Index 2, och det märks. Fairway viker av åt höger bakom en rad träd som är mycket svåra att slå över. Greenen är stor men har platåer, så hålet är inte klart förrän bollen ligger på rätt nivå."
+rad_rubrik: Råd från pro:n
+rad:
+  - "Håll vänster med utslaget. Träden på högersidan är mycket svåra att slå över."
+  - "Placera inspelet på rätt platå, annars väntar lätt en treputt."
+slutrad: "Rätt platå sparar slag."
+kortrad: "Håll vänster från tee och lägg inspelet på rätt platå."   # pro:ns råd i en mening (prospekt och inlägg)
+strategi:
+  sakert: Utslag mot vänstra halvan av fairway, där svängen öppnar upp för inspelet.
+  chansa: Ett utslag nära träden till höger kortar hålet, men en boll i träden kostar slag.

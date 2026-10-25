@@ -2,7 +2,7 @@
 
 Från Lantmäteriets data till exakta hålbilder, avstånd, tee-vyer och hålsponsorskyltar för golfklubbar.
 
-En datagrund per klubb – fyra grafiska stilar ovanpå. Allt mäts i SWEREF 99 TM (meter) och alla avstånd räknas längs spellinjen, så som golfare mäter.
+En datagrund per klubb – klubbens valda stil ovanpå (sex målade stilar). Allt mäts i SWEREF 99 TM (meter) och alla avstånd räknas längs spellinjen, så som golfare mäter.
 
 ## Flödet
 
@@ -10,7 +10,7 @@ En datagrund per klubb – fyra grafiska stilar ovanpå. Allt mäts i SWEREF 99 
 2. **Vektorisera** – fairway, green, bunkrar, vatten, tees och spellinje per hål → `klubbar/<klubb>/hal-NN.yaml`.
 3. **Räkna och kontrollera** – avstånd till hinder och green, längd mot scorekort (±3 %), kamera för tee-vyn.
 4. **Klubben godkänner** varje hål.
-5. **Rendera** hålbild i vald stil, tee-vy och flygfilm (filmerna renderas på Mac Pro).
+5. **Rendera** hålbild i vald stil, tee-vy och flygfilm (rå film ur data med `flygfilm`, ytan byts sedan av AI).
 6. **Mallar** – skylt 70 × 100 cm (tre plattor), digital banguide, tryckfiler.
 
 Mer i [docs/flode.md](docs/flode.md).
@@ -22,8 +22,9 @@ Installation på Mac: se [docs/mac.md](docs/mac.md).
 ```bash
 python -m golfholes rapport klubbar/exempel-ekbacka/hal-07.yaml   # avstånd + kontroll
 python -m golfholes halbild klubbar/exempel-ekbacka/hal-07.yaml   # hålbild
-python -m golfholes stilprov klubbar/exempel-ekbacka/hal-07.yaml  # alla fyra stilar – klubben väljer 1–4
-python -m golfholes skylt   klubbar/exempel-ekbacka/hal-07.yaml   # skylt 70 × 100 cm i klubbens stil (--stil 1-4 för att prova)
+python -m golfholes stilprov klubbar/exempel-ekbacka            # de sex stilarna – klubben väljer en
+python -m golfholes skylt   klubbar/exempel-ekbacka/hal-07.yaml   # skylt 70 × 100 cm i klubbens stil (--stil Gravyr för att prova)
+python -m golfholes flygfilm klubbar/glasriket/hal-14.yaml --data data/glasriket   # rå flygfilm (MP4)
 python -m golfholes webb    klubbar/exempel-ekbacka               # digital banguide
 python -m pytest
 ```
@@ -32,16 +33,14 @@ Ritverktyget för att digitalisera hål från ortofoto: öppna `verktyg/ritverkt
 
 ## Stilar
 
-Klubben väljer en stil i `klubb.yaml` med `stil: 1–4`:
+Klubben väljer en stil i `klubb.yaml` med `stil:` och ett av namnen (Erics beslut 2026-10-22):
 
-| Nr | Stil | Hålbild | Ram och typografi |
-| --- | --- | --- | --- |
-| 1 | Signatur | Ortofoto ovanifrån | Mörk träram, linne, klubbmärke, smal versal sans |
-| 2 | Klassisk | Akvarell | Ljus ekram, mörkgrön kursiv antikva, eklöv |
-| 3 | Arv | Gravyr på pergament, kompassros, skalstock | Valnöt med guldlist, rivna kanter, kartusch |
-| 4 | Nordisk | Mjuk illustration, 3D-träd | Smal svart ram, stor hålsiffra, guldbrun antikva |
+**Akvarell · Sommarakvarell · Gravyr · Mjuk 3D · Arkitektskiss · Papperssnitt**
 
-Alla fyra ritas från samma vektorer – bunkrar och vatten ligger exakt lika i alla.
+Tabellen `STILAR` i `golfholes/stilar.py` har AI-prompt och stilprov per stil. AI:n byter bara ytan på hålets
+eget fotounderlag; `aibild` kontrollerar att formen är kvar. Glasriket har sin egen fotostil (`stil: foto`).
+Gamla `stil: 1–4` läses med en varning. De fyra kodritade ritmotorerna i `render/styles.py` är bara reserv
+tills hålet är målat.
 
 ## Struktur
 

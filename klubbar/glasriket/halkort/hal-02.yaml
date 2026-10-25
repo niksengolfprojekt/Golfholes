@@ -1,0 +1,25 @@
+# Hålkort för Glasriket hål 2. Hålbilden är AI-målad på hålets exakta form ur Lantmäteriets
+# ortofoto (python -m golfholes aiunderlag / aibild). Stenarna i ruffen (klubbens karta) är
+# retuscherade till ruffgräs i AI-underlaget så att målningen inte gör bunkrar av dem.
+# Råden är klubbens egna "Råd från PRO:n" ur banguiden 2025 (glasriketsgk.se/haloversikt),
+# lätt redigerade. Beskrivning och strategi är Claudes utkast ur hålfilen – klubben godkänner.
+# Tee 60 syns inte på fotot: placerad 37 m bakom tee 56/52 enligt klubbens karta (beräknad).
+club: Glasrikets Golfklubb
+bana: Fylleryd
+hole: 2
+par: 4
+index: 4
+tees: [["60", 355], ["56 · 52", 318], ["49", 284], ["44", 248]]
+bild: ../halbilder/hal-02-malad.webp
+typbild: false
+rubrik: "Dammen bestämmer längden"
+beskrivning: "Hålet ser rakt och öppet ut. Men cirka 220 meter från tee 56 skär en fyrkantig damm tvärs över fairway, och hela högersidan fram till dammen är rött pliktområde. Index 4. Här vinner den som känner sin längd."
+rad_rubrik: Råd från pro:n
+rad:
+  - "Lägg utslaget kort om den fyrkantiga dammen, som ligger cirka 220 meter från tee 56."
+  - "Då återstår ungefär 120 meter till en green som sluttar åt höger."
+slutrad: "Högersidan fram till dammen är rött pliktområde."
+kortrad: "Stanna kort om dammen och spela in med 120 meter kvar."   # pro:ns råd i en mening (prospekt och inlägg)
+strategi:
+  sakert: Ett utslag på 180–200 m från tee 56 stannar kort om dammen – kvar blir ca 120 m in.
+  chansa: Att bära dammen ger ett kort inspel, men ett slag till höger hamnar i pliktområdet.

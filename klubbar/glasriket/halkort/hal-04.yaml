@@ -1,0 +1,27 @@
+# Hålkort för Glasriket hål 4. Hålbilden är AI-målad på hålets exakta form ur Lantmäteriets
+# ortofoto (python -m golfholes aiunderlag / aibild). I AI-underlaget är trädskuggan till höger
+# om högra greenbunkern (färgad som vatten) och en brun skuggfläck i greenkanten retuscherade,
+# så att målningen inte gör damm/bunker av dem (laserdata: mark och granar, ingen damm).
+# Råden är klubbens egna "Råd från PRO:n" ur banguiden 2025 (glasriketsgk.se/haloversikt),
+# lätt redigerade. Beskrivning och strategi är Claudes utkast ur hålfilen – klubben godkänner.
+# Tees: 56/52 och 49/44 beräknade på scorekortets längd, 60 osäker – klubben bekräftar.
+# Bunkerlayouten byggdes om 2025 (fotot juli 2025) – klubben bekräftar bunkrarna.
+club: Glasrikets Golfklubb
+bana: Fylleryd
+hole: 4
+par: 3
+index: 14
+tees: [["60", 176], ["56 · 52", 140], ["49 · 44", 125]]
+bild: ../halbilder/hal-04-malad.webp
+typbild: false
+rubrik: "Rakt genom skogsgatan"
+beskrivning: "Ett fint par 3 genom en smal skogsgata. Två bunkrar vaktar greenens framkant, en på var sida, och skogen står tätt inpå. Hålet begär bara ett rakt slag. Det är svårare än det låter."
+rad_rubrik: Råd från pro:n
+rad:
+  - "Ett fint korthål där en sak gäller: spela rakt."
+  - "Bunkern till höger fångar de flesta bollar som går åt höger, så du slipper leta."
+slutrad: "Rakt är rätt på det här hålet."
+kortrad: "Spela rakt. Missar du höger fångar bunkern bollen."   # pro:ns råd i en mening (prospekt och inlägg)
+strategi:
+  sakert: Sikta mitt på greenen – båda bunkrarna ligger vid framkanten på sidorna.
+  chansa: Flaggan nära en bunker lockar, men ett slag som drar iväg hamnar i sand eller skog.

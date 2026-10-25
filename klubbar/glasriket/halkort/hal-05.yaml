@@ -1,7 +1,8 @@
 # Hålkort för Glasriket hål 5. Hålbilden är AI-målad på hålets exakta form ur Lantmäteriets
 # ortofoto (python -m golfholes aiunderlag / aibild). Råden är klubbens egna "Råd från PRO:n"
 # ur banguiden 2025 (glasriketsgk.se/haloversikt), lätt redigerade – klubben godkänner.
-# Tees: bara 49/44 syns på fotot; längdkontrollen ligger 3,2–3,4 % kort – klubben markerar tees.
+# Tees: 49/44 och 56/52 syns som teeplattor (foto + höjdskuggning); 60 är beräknad 35 m bakom 56/52.
+# Längdkontroll 2026-10-23: −0,8 / −0,9 / −2,5 % (inom ±3 %). Klubben bekräftar tee 60.
 club: Glasrikets Golfklubb
 bana: Fylleryd
 hole: 5
@@ -10,15 +11,14 @@ index: 8
 tees: [["60", 355], ["56 · 52", 320], ["49 · 44", 277]]
 bild: ../halbilder/hal-05-malad.webp
 typbild: false
-rubrik: Mer plats än det ser ut
-beskrivning: >-
-  Ett rakt par 4 österut mot en stor green. Dammen ligger till vänster framför tee och
-  en bunker vaktar vänstra sidan av fairway en bit före greenen.
+rubrik: "Mer plats än du tror"
+beskrivning: "Från tee ser fairway smalare ut än den är. En damm tidigt till vänster och en bunker längre fram på samma sida drar blicken åt fel håll. Den som litar på högersidan får en stor green att sikta på."
 rad_rubrik: Råd från pro:n
 rad:
-  - Det finns mer plats på höger sida än vad som syns från tee.
-  - Sneddar du för tight på vänstersidan blir du lätt mask.
-slutrad: Greenen är stor och lätträffad.
+  - "Det finns mer plats på högersidan än vad som syns från tee. Använd den."
+  - "Sneddar du för tight längs vänstersidan blir du lätt mask."
+slutrad: "Greenen är stor och lätträffad."
+kortrad: "Lita på högersidan – där finns mer plats än det ser ut."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Sikta till höger om mitten från tee – där finns mer plats än det ser ut.
   chansa: Linjen längs vänstersidan kortar hålet, men där väntar dammen och bunkern.

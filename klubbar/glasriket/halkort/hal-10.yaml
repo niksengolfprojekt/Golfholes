@@ -1,0 +1,24 @@
+# Hålkort för Glasriket hål 10. Hålbilden är AI-målad på hålets exakta form ur Lantmäteriets
+# ortofoto; träd ur Laserdata Skog (python -m golfholes aiunderlag / aibild).
+# Råden är klubbens egna "Råd från PRO:n" (glasriketsgk.se/haloversikt, hämtad 2026-10-20),
+# lätt redigerade. Beskrivning och strategi är Claudes utkast ur hålfilen – klubben godkänner.
+# Alla tees ligger under trädkronor på fotot; 56/60 satta på teeplattan i höjdmodellen – klubben bekräftar.
+club: Glasrikets Golfklubb
+bana: Fylleryd
+hole: 10
+par: 3
+index: 11
+tees: [["60", 175], ["56", 165], ["52 · 49 · 44", 140]]
+bild: ../halbilder/hal-10-malad.webp
+typbild: false
+rubrik: "Läs flaggan, känn vinden"
+beskrivning: "Ett långt par 3 ut ur skogen mot en smal green som är över 40 meter lång. Bunkrar vaktar både sidan och baksidan. Var flaggan står kan skilja flera klubbor, och vinden vill alltid vara med."
+rad_rubrik: Råd från pro:n
+rad:
+  - "Ett bra korthål. Ta reda på var pinnen står innan du väljer klubba."
+  - "Känn efter hur vinden rör sig innan du slår."
+slutrad: "Greenen är väl inbunkrad."
+kortrad: "Kolla pinnen, känn vinden – sedan väljer du klubba."   # pro:ns råd i en mening (prospekt och inlägg)
+strategi:
+  sakert: Välj klubba efter flaggan och sikta mitt i greenen – den långa greenen förlåter längd mer än sidled.
+  chansa: Flaggan långt bak lockar, men bunkern vänster bakom straffar ett för långt slag.

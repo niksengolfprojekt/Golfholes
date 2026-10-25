@@ -10,15 +10,14 @@ index: 13
 tees: [["60", 494], ["56", 446], ["52 · 49", 384], ["44", 320]]
 bild: ../halbilder/hal-11-malad.webp
 typbild: false
-rubrik: Smal ränna från tee
-beskrivning: >-
-  En rak par 5 söderut genom en smal tee-ränna mellan träden. Efter dungarna
-  vidgar sig fairway, och hålet slutar vid en liten, upphöjd green strax till höger.
+rubrik: "Nålsögat från tee"
+beskrivning: "Utslaget går genom en smal ränna mellan träden. Klara den, så öppnar sig hålet efter dungarna med gott om plats på båda sidor. Sist väntar en liten, upphöjd green som kräver rätt längd."
 rad_rubrik: Råd från pro:n
 rad:
-  - Väldigt smalt från tee, men det finns mycket plats efter dungarna på båda sidor.
-  - Placera ditt transportslag med precision, för inspelet kräver längdkontroll.
-slutrad: Greenen är liten och upphöjd.
+  - "Väldigt smalt från tee, men efter dungarna finns det mycket plats på båda sidor."
+  - "Placera transportslaget med precision, för inspelet kräver längdkontroll."
+slutrad: "Liten, upphöjd green – längden avgör."
+kortrad: "Ta dig ut ur rännan – sedan öppnar hålet upp sig."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Rakt ut ur rännan, sedan ett transportslag som lämnar en bekväm längd in.
   chansa: Ett långt andra slag nära greenen kräver exakt längd mot den upphöjda greenen.
