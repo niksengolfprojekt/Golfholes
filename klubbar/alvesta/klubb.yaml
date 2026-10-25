@@ -1,0 +1,107 @@
+# Alvesta Golfklubb – referensklubb (test av ny-klubb-flödet, Eric 2026-10-25: hål 1 och 10)
+# Scorekort: alvestagolf.se/wp-content/uploads/2026/06/Scorekort-Alvesta-GK.pdf (juni 2026), hämtat 2026-10-25.
+# Webbsidans tabell (alvestagolf.se/scorekort) har samma längder men annat index på hål 10–18 (t.ex. hål 10 index 9
+# på webben, 7 i PDF:en) – PDF:en är nyare och används. Fråga klubben.
+club: Alvesta Golfklubb
+web: https://alvestagolf.se
+contact: kansli@alvestagolf.se, 0472-401 40
+stil: A              # stil A (kvällsljus) tills klubben valt
+layout: 3
+kortnamn: Alvesta GK
+filnamn: Alvesta
+bana: Kronobergshed
+tees: [{namn: "63", farg: vit}, {namn: "59", farg: gul}, {namn: "54", farg: bla}, {namn: "49", farg: rod}, {namn: "40", farg: orange}]
+bbox_sweref99tm: {e_min: 472600, n_min: 6312600, e_max: 474950, n_max: 6314950}   # grov ruta runt klubbens adress (golf.se 56.9682, 14.5703), krymps när banan är hittad
+
+# Scorekortet (PDF juni 2026). Tee 49 på hål 12 och 13 (310 / 115) ser omkastat ut i klubbens egen tabell – fråga klubben.
+holes:
+  - hole: 1
+    par: 4
+    index: 4
+    tees: {"63": 380, "59": 360, "54": 315, "49": 285, "40": 245}
+    geometry: null
+  - hole: 2
+    par: 4
+    index: 6
+    tees: {"63": 385, "59": 365, "54": 320, "49": 320, "40": 250}
+    geometry: null
+  - hole: 3
+    par: 5
+    index: 8
+    tees: {"63": 485, "59": 465, "54": 420, "49": 420, "40": 360}
+    geometry: null
+  - hole: 4
+    par: 3
+    index: 16
+    tees: {"63": 145, "59": 135, "54": 130, "49": 115, "40": 50}
+    geometry: null
+  - hole: 5
+    par: 4
+    index: 2
+    tees: {"63": 370, "59": 360, "54": 305, "49": 270, "40": 235}
+    geometry: null
+  - hole: 6
+    par: 5
+    index: 14
+    tees: {"63": 480, "59": 460, "54": 395, "49": 370, "40": 330}
+    geometry: null
+  - hole: 7
+    par: 4
+    index: 10
+    tees: {"63": 340, "59": 320, "54": 295, "49": 265, "40": 220}
+    geometry: null
+  - hole: 8
+    par: 3
+    index: 18
+    tees: {"63": 145, "59": 120, "54": 120, "49": 115, "40": 70}
+    geometry: null
+  - hole: 9
+    par: 4
+    index: 12
+    tees: {"63": 350, "59": 335, "54": 330, "49": 295, "40": 245}
+    geometry: null
+  - hole: 10
+    par: 4
+    index: 7
+    tees: {"63": 385, "59": 350, "54": 315, "49": 295, "40": 235}
+    geometry: null
+  - hole: 11
+    par: 4
+    index: 11
+    tees: {"63": 380, "59": 345, "54": 325, "49": 305, "40": 245}
+    geometry: null
+  - hole: 12
+    par: 3
+    index: 15
+    tees: {"63": 170, "59": 140, "54": 135, "49": 310, "40": 70}
+    geometry: null
+  - hole: 13
+    par: 4
+    index: 1
+    tees: {"63": 380, "59": 350, "54": 345, "49": 115, "40": 235}
+    geometry: null
+  - hole: 14
+    par: 5
+    index: 5
+    tees: {"63": 490, "59": 470, "54": 410, "49": 390, "40": 315}
+    geometry: null
+  - hole: 15
+    par: 4
+    index: 9
+    tees: {"63": 370, "59": 355, "54": 300, "49": 300, "40": 265}
+    geometry: null
+  - hole: 16
+    par: 3
+    index: 13
+    tees: {"63": 150, "59": 145, "54": 145, "49": 105, "40": 65}
+    geometry: null
+  - hole: 17
+    par: 5
+    index: 17
+    tees: {"63": 510, "59": 485, "54": 475, "49": 410, "40": 380}
+    geometry: null
+  - hole: 18
+    par: 4
+    index: 3
+    tees: {"63": 385, "59": 355, "54": 325, "49": 290, "40": 245}
+    geometry: null

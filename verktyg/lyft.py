@@ -33,7 +33,7 @@ from golfholes.render.foto import _mjuk, fotounderlag, orto_for  # noqa: E402
 SOL_AZIMUT = 235.0   # grader från norr medurs: sydväst, sen eftermiddag
 SOL_HOJD = 30.0      # grader över horisonten
 RES = 0.5            # m per ruta för laser och skuggor
-LAZ = utsnitt.LM / "laser" / "y26a023-63050_4900_25.copc.laz"
+LAZ = sorted((utsnitt.LM / "laser").glob("*.copc.laz"))[-1]  # nyaste skanningen
 DEM = utsnitt.LM / "hojd.tif"
 BOTTEN = np.array([17, 30, 48], np.float32)  # klubbens mörka marinblå (layout 3)
 
@@ -177,6 +177,12 @@ def lyft(halfil: Path, bild: Path, ut: Path) -> Path:
         if h.kind == "water" and len(h.polygon) > 2:
             dv.polygon([px(*p) for p in h.polygon], fill=255)
     vat = np.asarray(vatten.filter(ImageFilter.GaussianBlur(1.5 / m_per_px)), np.float32) / 255
+    sand = Image.new("L", (W, H), 0)
+    ds = ImageDraw.Draw(sand)
+    for h in hole.hazards:
+        if h.kind == "bunker" and len(h.polygon) > 2:
+            ds.polygon([px(*p) for p in h.polygon], fill=255)
+    sand = np.asarray(sand.filter(ImageFilter.GaussianBlur(0.8 / m_per_px)), np.float32) / 255
     nara = np.asarray(spel.filter(ImageFilter.GaussianBlur(22 / m_per_px)), np.float32) / 255
     fokus = np.clip(nara * 3.0, 0, 1)
     fokus = np.maximum(fokus, vat)  # dammar i hålet hör till spelet
@@ -194,6 +200,7 @@ def lyft(halfil: Path, bild: Path, ut: Path) -> Path:
     rgb *= (1 - 0.16 * A * gras)[..., None]
     # 3 skuggor: blåaktiga, genomskinliga (aldrig svarta), mjukare i vatten
     s = (S * (1 - 0.35 * vat) * (1 - 0.75 * np.clip(T / 6, 0, 1)) * (1 + 0.35 * gras))[..., None]  # mest på gräset
+    s *= (1 - 0.6 * sand)[..., None]  # sand i skugga blir annars blågrå och läses som vatten (Alvesta hål 1)
     skuggfarg = np.array([0.55, 0.64, 0.80], np.float32)
     rgb = rgb * (1 - s * (1 - skuggfarg))
     # 4 vatten: djupare, klarare, ljusare mot solsidan

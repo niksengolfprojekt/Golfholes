@@ -1,0 +1,38 @@
+# Fröpunkter för Alvesta GK hål 1 (SWEREF 99 TM, meter). Satta 2026-10-25 mot ortofoto 2025-07-02
+# (o63125_4725_25_mr25). Klubben har ingen hålbild; riktning kontrollerad mot ortofotot och en allmän
+# banöversikt (internt, publiceras aldrig): tee strax väster om klubbhuset, spelar nordväst längs skogskanten
+# och svänger norrut mot en klöverformad green med bunker vänster och höger fram.
+# Tees: stora teeplatsen vid korsningen bär 63 (bakre delen) och 59 (främre delen) – antagande, fråga klubben.
+# 54 och 49 syns som egna teeplatser. 40 syns inte på fotot.
+club: Alvesta Golfklubb
+hole: 1
+par: 4
+index: 4
+orto: data/alvesta/orto/o63125_4725_25_mr25.tif
+tees:
+- {name: '63', point: [473742.0, 6313487.0], length_m: 380}   # bakre delen av stora teeplatsen (antagande)
+- {name: '59', point: [473727.0, 6313497.0], length_m: 360}   # främre delen av stora teeplatsen (antagande)
+- {name: '54', point: [473688.0, 6313517.0], length_m: 315}
+- {name: '49', point: [473663.0, 6313537.0], length_m: 285}
+- {name: '40', point: [473629.0, 6313552.0], length_m: 245}   # beräknad, syns inte på fotot
+centerline:
+- [473742.0, 6313487.0]
+- [473640.0, 6313545.0]
+- [473560.0, 6313598.0]
+- [473522.0, 6313650.0]
+- [473506.0, 6313700.0]
+- [473502.0, 6313745.0]
+- [473500.0, 6313760.0]
+green: [473502.0, 6313745.0]
+fairway:
+- [473590.0, 6313578.0]
+- [473545.0, 6313615.0]
+- [473515.0, 6313680.0]
+fairway_tol: 0.75   # 1.0 tar med den ljusa ruffen öster om fairway vid tee
+green_tol: 1.4
+bunker_v: 150      # disigt foto: sanden vid greenen har V ~165 (Glasriket 172)
+laser: data/alvesta/laser/y26a022-63125_4725_25.copc.laz
+hojd: data/alvesta/hojd/m631_47.tif
+# Högra greenbunkern ligger i halvskugga och delas av trollstaven – inritad ur fotot (rutnät 10 m).
+bunker_polygoner:
+- [[473518.9, 6313744.6], [473521.7, 6313745.1], [473524.0, 6313737.7], [473522.3, 6313732.0], [473521.7, 6313726.3], [473520.0, 6313721.7], [473516.6, 6313721.1], [473514.3, 6313724.0], [473514.9, 6313728.6], [473516.3, 6313733.1], [473516.0, 6313740.0]]
