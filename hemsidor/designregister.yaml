@@ -58,25 +58,26 @@ sajter:
   - id: glasriket
     namn: Glasrikets Golfklubb
     typ: klubb
-    status: byggd v1 (gren claude/project-thread-y276kb) – startsidan ska göras om
+    status: "startsidan omgjord 2026-10-25 (v2), väntar på Erics och klubbens OK"
     inventering:
       - Naturreservatet Fylleryd, äng och hagmark, vitsippor i maj
       - 4,5 km nordost om Växjö centrum, långt från vägbruset
       - Glasriket – regionens glashantverk, glasets färger och ljus
       - Klubbens sigill "Småland"
-      - Hål 14, banans svåraste utslag
+      - Hål 14, banans svåraste utslag, björkar längs hela högersidan
       - Dammarna vid hål 17
+      - Stengärdsgårdar, enbuskar, ek och bok mellan hålen
+      - Rovfåglar över hagarna, djur som betar intill banan
       - Nya bunkrar 2025 på hål 4, 7 och 13
-    ide: null
-    riktning: standardmall
-    toppbild: helbild-med-rubrik
+    ide: En skogsjuvel du flyger in i – signaturhålet 14 med avståndet till flaggan, sedan banan i fyra årstider.
+    riktning: signaturhalet
+    toppbild: flygfilm-med-avstand
     typsnitt: {rubrik: Spectral, text: Hanken Grotesk}
-    palett: {huvud: "#10202E", ljus: "#EEF3EC", accent: "#D9A441", ovriga: ["#1D4756", "#3F7F86", "#9CC9C3"]}
+    palett: {huvud: "#EEF3EC", ljus: "#FBF2ED", accent: "#D9A441", ovriga: ["#10202E", "#1D4756", "#9CC9C3"]}
     halbildstil: målad (Glas och skog, mörk bakgrund)
     halkortslayout: 3
-    rorelse: ingen
-    designfil: null
+    rorelse: film med nedräkning, siffror som tänds hål för hål, årstider som tonas, delar som glider in
+    designfil: hemsidor/glasriket/DESIGN.md
     anteckning: >
-      Mätt kontroll 2026-10-25: 7 fel (småetiketter över rubriker, textskugga, tunna linjer,
-      ramade rutor, text under 13 px, 16 textstorlekar, ingen rörelse). Typsnitt, färger och
-      inventering behålls; riktning och toppbild väljs om.
+      v1 (standardmall: helbild, versalrad, två knappar, sifferrad) fälldes 2026-10-25 med 7 fel i mätt kontroll.
+      v2: 0 fel i båda verktygen; varning för antal textstorlekar (delade delar som sidhuvud och sidfot).

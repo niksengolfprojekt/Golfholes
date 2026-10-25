@@ -324,6 +324,27 @@ def utvalda_hal(hal: list[dict], antal: int = 4) -> str:
     return halkort_lista(sorted(ordning, key=lambda h: h["nr"]))
 
 
+# Var siffrorna står i banöversikten (procent av bildens bredd och höjd). Samma läge i alla fyra årstider.
+KARTA_LAGEN = {
+    1: (30.0, 20.6), 2: (18.0, 45.4), 3: (13.2, 60.8), 4: (32.4, 79.8), 5: (34.5, 91.6), 6: (59.0, 86.0),
+    7: (41.0, 67.8), 8: (54.2, 70.5), 9: (41.7, 55.0), 10: (47.4, 30.3), 11: (63.2, 51.6), 12: (71.3, 80.0),
+    13: (76.2, 46.5), 14: (89.3, 60.4), 15: (67.7, 83.3), 16: (37.4, 68.2), 17: (31.5, 57.3), 18: (32.4, 48.6),
+}
+
+
+def karta_pins(hal: list[dict]) -> str:
+    """Klickytor över siffrorna i banöversikten. Utan skript är de vanliga länkar till hålsidan."""
+    pins = []
+    for h in hal:
+        x, y = KARTA_LAGEN[h["nr"]]
+        bild = f"/img/hal/{h['bild']['kort'][0]}" if h["bild"] else ""
+        pins.append(
+            f'<a class="pin" href="/banan/hal-{h["nr"]:02d}/" style="left:{x}%;top:{y}%;--n:{h['nr']}" data-nr="{h["nr"]}" '
+            f'data-par="{h["par"]}" data-langd="{langst(h)}" data-rubrik="{e(h["rubrik"])}" data-bild="{bild}">'
+            f'<span class="visuellt-dold">Hål {h["nr"]}, par {h["par"]}, {langst(h)} meter</span></a>')
+    return "".join(pins)
+
+
 def tee_tabell(h: dict) -> str:
     rader = "".join(f'<tr><th scope="row">{e(n)}</th><td>{m}&nbsp;m</td></tr>' for n, m in h["tees"])
     return f'<table class="tees"><caption>Tee och längd</caption><tbody>{rader}</tbody></table>'
@@ -444,6 +465,7 @@ def ersatt(text: str, f: dict, hal: list[dict], oversikt: str) -> str:
         "bandesigner": e(bana["bandesigner"]), "banarkitekt": e(bana["banarkitekt"]),
         "sasong": e(bana["sasong"]), "pay_play": e(bana["pay_play"]),
         "utvalda_hal": utvalda_hal(hal),
+        "karta_pins": karta_pins(hal),
         "alla_hal": halkort_lista(hal),
         "oversikt": oversikt,
         "gf_ar": str(gf["giltig"]),
@@ -601,11 +623,12 @@ def forhandsvisning(mal) -> Path:
             return f'{attr}="{rel}{vag}'
 
         text = fil.read_text(encoding="utf-8")
-        text = re.sub(r'(href|src|action)="/([^"]*?)(?=["#?])', lank, text)
+        text = re.sub(r'(href|src|action|poster|data-src|data-bild)="/([^"]*?)(?=["#?])', lank, text)
         text = re.sub(r'srcset="([^"]+)"', lambda m: 'srcset="' + m.group(1).replace("/img/", rel + "img/") + '"', text)
         fil.write_text(text, encoding="utf-8")
     css = mal / "css" / "site.css"
-    css.write_text(css.read_text(encoding="utf-8").replace("url(/fonts/", "url(../fonts/"), encoding="utf-8")
+    css.write_text(css.read_text(encoding="utf-8").replace("url(/fonts/", "url(../fonts/").replace("url(/film/", "url(../film/"),
+                   encoding="utf-8")
     return mal
 
 
