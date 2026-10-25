@@ -50,5 +50,7 @@
 - [ ] Webbsidorna i klubbens stil (använder ännu Nordisk)
 - [ ] Klubbmärke (SVG) från klubben till rubriken i stil 1
 - [ ] Tee-vy och flygfilm (3D, Mac Pro)
+- [x] TACADA:s egen hemsida tacada.se, åtta sidor (2026-10-22): `hemsida/` (`python hemsida/bygg.py`). Inga priser (Erics beslut), Glasriket dold till styrelsens beslut 2026-12-08, stilmenyn med de sex stilarna som runda utsnitt.
+- [ ] Hemsidan live: bolagsuppgifter, Om oss-text, Glasrikets ok för hålbilden utan namn, hosting och domän, sedan `LANSERAD = True` och `bygg.py --lansering` utan fel
 - [x] Ögonhöjdsvy ur data (`golfholes/render/perspektiv.py`): höjdmodell + ortofoto + skogsmassa, spellinjen hålls öppen. AI (OpenArt) målar vyn till foto. Glasriket hål 3, 5, 14: `/mnt/project-files/glasriket/ogonhojd/` – väntar på Erics godkännande. Visas som "Visualisering", aldrig som foto.
 - [ ] Ecosigns tryckspecifikation in i `SignSpec` (mått, utfall, PDF/X)

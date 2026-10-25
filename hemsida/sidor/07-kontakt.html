@@ -1,0 +1,43 @@
+<!--
+titel: Kontakt · TACADA
+beskrivning: Boka ett möte med TACADA om er golfbana, hålsponsring eller ett uppdrag för Studio.
+sokvag: kontakt/
+huvud: ljus
+-->
+<section class="sek">
+  <div class="inne tva">
+    <div class="rubrikgrupp">
+      <span class="over">Kontakt</span>
+      <h1 style="font-size:clamp(32px,5vw,54px);color:var(--tallgron)">Boka en visning</h1>
+      <p class="ingress">Berätta kort om klubben eller företaget. Vi svarar inom två arbetsdagar.</p>
+      <dl class="kontaktuppgifter" style="margin-top:12px">
+        <div><dt>E-post</dt><dd>{{epost}}</dd></div>
+        <div><dt>Ort</dt><dd>{{ort}}</dd></div>
+      </dl>
+    </div>
+    <form class="formular" name="kontakt" method="POST" action="/kontakt/tack/" data-netlify="true" netlify-honeypot="bot-falt">
+      <input type="hidden" name="form-name" value="kontakt">
+      <p class="visuellt-dold"><label>Fyll inte i detta fält <input name="bot-falt" tabindex="-1" autocomplete="off"></label></p>
+      <div class="rad">
+        <label for="namn">Namn<input id="namn" name="namn" autocomplete="name" required></label>
+        <label for="organisation">Klubb eller företag<input id="organisation" name="organisation" autocomplete="organization" required></label>
+      </div>
+      <div class="rad">
+        <label for="epost">E-post<input id="epost" name="epost" type="email" autocomplete="email" required></label>
+        <label for="telefon">Telefon (valfritt)<input id="telefon" name="telefon" type="tel" autocomplete="tel"></label>
+      </div>
+      <label for="arende">Det gäller
+        <select id="arende" name="arende">
+          <option>Vår golfbana</option>
+          <option>Hålsponsring</option>
+          <option>Studio: profil, hemsida eller sociala medier</option>
+          <option>Editions: posters och tavlor</option>
+          <option>Annat</option>
+        </select>
+      </label>
+      <label for="meddelande">Meddelande<textarea id="meddelande" name="meddelande" placeholder="Till exempel antal hål, när ni vill komma igång och vem som är kontaktperson."></textarea></label>
+      <p class="liten">Vi använder uppgifterna bara för att svara dig. Läs mer i vår <a href="/integritet/">integritetspolicy</a>.</p>
+      <button class="knapp" type="submit">Skicka</button>
+    </form>
+  </div>
+</section>
