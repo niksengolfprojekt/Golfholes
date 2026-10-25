@@ -50,8 +50,9 @@ def _dem(bbox):
     s, _, _, _, e0, n0 = (float(v) for v in DEM.with_suffix(".tfw").read_text().split())
     a = np.asarray(Image.open(DEM), np.float32)
     E0, N0 = e0 - s / 2, n0 + s / 2
-    x0, y0 = int((bbox[0] - E0) / s), int((N0 - bbox[3]) / s)
-    x1, y1 = int(np.ceil((bbox[2] - E0) / s)), int(np.ceil((N0 - bbox[1]) / s))
+    x0, y0 = max(0, int((bbox[0] - E0) / s)), max(0, int((N0 - bbox[3]) / s))
+    x1 = min(a.shape[1], int(np.ceil((bbox[2] - E0) / s)))
+    y1 = min(a.shape[0], int(np.ceil((N0 - bbox[1]) / s)))  # utsnittet slutar vid banans kant
     return a[y0:y1, x0:x1], E0 + x0 * s, N0 - y0 * s, s
 
 
