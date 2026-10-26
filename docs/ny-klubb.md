@@ -82,6 +82,8 @@ inga människor, soligt. Bildtexter i `texter.md`.
   sedan tillvalen) och vid behov `--alla` (en PDF per hål).
 - Statistik: `docs/statistik.md`, `sponsorrapport`. Exponering = visningar, inte personer. Lova aldrig fler
   ronder, medlemmar eller högre sponsorpriser.
+- Partnerprogram (hela sponsorerbjudandet, inte bara hålen): kopiera `klubbar/glasriket/partnerprogram.yaml`,
+  anpassa och kör `python -m golfholes partnerprogram klubbar/<slug>`. Se `docs/partnerprogram.md`.
 
 ## 7. Flygfilm (bara efter Erics OK och kredittak)
 

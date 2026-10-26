@@ -1,0 +1,534 @@
+# TACADA:s partnerprogram – standardbiblioteket.
+#
+# Samma produkter, texter och leveranslogik för varje klubb. Klubbens egen fil
+# (klubbar/<klubb>/partnerprogram.yaml) väljer vilka produkter som är aktiva, sätter priser och
+# skriver över det som skiljer sig. Allt i {klammer} fylls i från klubbens filer:
+#   {kortnamn} {klubb} {bana} {sasong} {premiumhal} {partnervecka_platser} {golfvecka}
+#
+# Fält per produkt
+#   niva            hal | verksamhet | huvud          (partnernivån produkten hör till)
+#   status          aktiv | tillagg | vilande | framtid
+#                   aktiv = i första erbjudandet. tillagg = finns på frågan. vilande = kräver något klubben
+#                   inte har bekräftat än (t.ex. en skärm). framtid = får inte säljas förrän det finns.
+#   namn, rubrik, ingress, passar, ingar   -> externt material (säljande, saljande-texter)
+#   varfor, leverans, tacada, kostnad, tid_h, kombineras, exklusivt, uppfoljning, forutsattning -> internt
+#   pris            kr per prisenhet (klubbens fil sätter det slutliga förslaget)
+#   startkostnad    kr första året vid ettårsavtal (0 = ingen)
+#   kostnad_kr      klubbens egen utgift per år och köpare (uppskattning, för den ekonomiska granskningen)
+#   tid_h           klubbens arbetstimmar per år och köpare (uppskattning)
+#   partnervecka    true = köparen får en egen partnervecka
+#   max             hur många som kan köpa produkten samtidigt (exklusiv yta = 1)
+
+produkter:
+
+  halsponsor:
+    niva: hal
+    status: aktiv
+    namn: Hålsponsor
+    rubrik: "[Ert företag]-hålet"
+    ingress: >-
+      Ett hål på {bana} som bär ert namn hela säsongen. Vid tee, i mobilen, i klubbens flöde och i en
+      egen vecka då hela klubben ser er.
+    passar: [Lokala företag som vill synas där kunderna spelar, Företag som bjuder kunder och kollegor på golf,
+             Företag med ett namn som tål att sägas högt]
+    varfor: >-
+      Ett eget hål är den enda sponsorytan på en golfklubb som folk pratar om. ”Vi spelade bort oss på
+      Nordvik-hålet” sägs i klubbhuset efter rundan. Varje runda passerar skylten, varje golfare som
+      planerar rundan i mobilen ser namnet, och företaget får en egen vecka i klubbens kanaler. Allt
+      dokumenteras i en årsrapport som går att visa för den egna styrelsen.
+    ingar:
+      - {rubrik: "Hålet bär ert namn", text: "”[Ert företag]-hålet” bredvid hålets nummer, i hålguiden, på hemsidan och i klubbens inlägg."}
+      - {rubrik: "Skylten vid tee", text: "Ny hålskylt i klubbens profil med er logotyp på en egen platta. Varje utslag slås framför den."}
+      - {rubrik: "QR-koden på skylten", text: "Golfaren skannar och landar på hålets sida, där ni står som hålets sponsor."}
+      - {rubrik: "Hålets sida på webben", text: "Er logotyp och länk på hålets egen sida, med hålets nya bild och spelråd."}
+      - {rubrik: "Presentationsinlägget", text: "Klubben presenterar er som ny partner i Instagram och Facebook när avtalet är klart."}
+      - {rubrik: "Ett färdigt inlägg till er", text: "Bild och text klara att publicera i era egna kanaler, i samma profil som klubbens."}
+      - {rubrik: "Er partnervecka", text: "En vecka då klubben lyfter fram er: hålets inlägg och er logotyp på hemsidans startsida."}
+      - {rubrik: "Årsrapporten", text: "Vad som visades, vad som mättes och vad som genomfördes. Svart på vitt efter säsongen."}
+      - {rubrik: "Partnertävlingen", text: "Inbjudan till klubbens partnertävling, enligt klubbens villkor."}
+      - {rubrik: "Flygfilmen över hålet", text: "Er logotyp när kameran landar över green.", senare: true}
+    ytor:
+      fysiska: [Hålskylten vid tee (sponsorplatta med logotyp i en färg), Partnerveckans skylt vid entrén (en vecka)]
+      digitala: [Hålets sida på klubbens hemsida, Klubbens Instagram och Facebook, Hemsidans startsida under partnerveckan,
+                 Klubbens skärm under partnerveckan (om skärm finns)]
+    leverans:
+      - "Avtal: klubbchefen fyller i avtalsmallen och för in företaget i partneröversikten."
+      - "Logotyp: företaget skickar logotypen i vektorformat (SVG, PDF eller EPS) till kansliet."
+      - "TACADA tar fram sponsorplatta, hålsida, presentationsinlägg och företagets eget inlägg. Företaget godkänner."
+      - "Plattan monteras på skylten när den levereras (ca 10 minuter för banpersonalen)."
+      - "Partnerveckan sköts enligt årskalendern: inlägget och startsidan byts automatiskt."
+    tacada: [Sponsorplatta (tryckoriginal), Hålsidan med logotyp och länk, Presentationsinlägg 4:5, Företagets eget inlägg 4:5 och 9:16,
+             Partnerveckans inlägg och startsida, Årsrapport (PDF)]
+    pris: 20000
+    prisenhet: per år
+    startkostnad: 2500
+    kostnad_kr: 900
+    kostnad_text: "Sponsorplatta ca 600 kr, partnerveckans platta ca 300 kr (tryck). Skylten vid tee ingår i klubbens hålskyltar."
+    tid_h: 3
+    partnervecka: true
+    max: 1
+    exklusivt: "Ett företag per hål. Branschskydd ingår inte (bara för huvudpartnern)."
+    kombineras: "Med alla verksamhetsprodukter. Ett företag kan ha flera hål."
+    uppfoljning: [Sidvisningar av hålets sida (uppmätt), QR-skanningar från skylten (uppmätt),
+                  Visningar av inläggen enligt Meta (uppmätt), Passager vid tee = ronder × andel som spelar hålet (uppskattning),
+                  Partnerveckans genomförande med foto (levererat)]
+
+  premiumhal:
+    niva: hal
+    status: aktiv
+    namn: Premiumhål
+    rubrik: "Hålen som alla minns"
+    ingress: >-
+      Några hål på {bana} har något de andra saknar. Där står ert namn ännu närmare golfarna.
+    passar: [Företag som vill ha banans mest omtalade plats, Företag som redan vet vilket hål de vill ha]
+    varfor: >-
+      Premiumhålen har en verklig extra exponering, inte bara ett högre pris. Varje premiumhål har en egen
+      tilläggsyta som beskrivs i klubbens fil. Utan en sådan yta säljs hålet till ordinarie pris.
+    ingar:
+      - {rubrik: "Allt i hålsponsorskapet", text: "Skylt, hålsida, inlägg, partnervecka och årsrapport."}
+      - {rubrik: "Hålets extra yta", text: "Den yta som bara det här hålet har. Se respektive hål."}
+    ytor:
+      fysiska: [Som hålsponsor + hålets extra yta]
+      digitala: [Som hålsponsor]
+    leverans: ["Som hålsponsor. Den extra ytan tas fram och sätts upp samtidigt som hålskylten."]
+    tacada: [Som hålsponsor + original till den extra ytan]
+    pris: 25000
+    prisenhet: per år
+    startkostnad: 2500
+    kostnad_kr: 1600
+    kostnad_text: "Som hålsponsor + den extra ytan (ca 700 kr per år avskrivet på tre år)."
+    tid_h: 4
+    partnervecka: true
+    max: 1
+    exklusivt: "Ett företag per hål."
+    kombineras: "Som hålsponsor."
+    uppfoljning: [Som hålsponsor]
+
+  range:
+    niva: verksamhet
+    status: aktiv
+    namn: Rangepartner
+    rubrik: "Där varje runda börjar"
+    ingress: >-
+      Rangen är klubbens mest besökta plats. Före rundan, efter jobbet, med juniorerna på tisdagar. Ge den
+      ert namn.
+    passar: [Företag som vill nå klubbens medlemmar varje vecka, "Bilhandlare, bank och fastighetsmäklare",
+             Företag som vill förknippas med träning och utveckling]
+    varfor: >-
+      Medlemmarna tränar på rangen hela säsongen och de flesta passerar den på väg in. Namnet på
+      övningsområdet hamnar i klubbens dagliga språk (”vi ses på Nordvik-rangen”).
+    ingar:
+      - {rubrik: "Rangen bär ert namn", text: "”[Ert företag]-rangen” på hemsidan, banöversikten och i klubbens inlägg."}
+      - {rubrik: "Två banderoller vid utslagsplatserna", text: "Er logotyp där alla står och slår."}
+      - {rubrik: "Bollautomaten", text: "Er logotyp på automaten där varje hink fylls."}
+      - {rubrik: "Presentationsinlägget och ett eget inlägg", text: "Samma som hålsponsorn."}
+      - {rubrik: "Er partnervecka", text: "En vecka i fokus i klubbens inlägg och på hemsidans startsida."}
+      - {rubrik: "Årsrapporten", text: "Vad som visades och genomfördes."}
+    ytor:
+      fysiska: [Två banderoller vid utslagsplatserna, Dekal på bollautomaten, Partnerveckans skylt (en vecka)]
+      digitala: [Rangesidan på hemsidan, Klubbens inlägg, Startsidan under partnerveckan]
+    leverans: ["Banderollerna sätts upp i april och tas ner i oktober (banpersonal, 30 minuter).",
+               "Dekalen sätts på bollautomaten en gång."]
+    tacada: [Tryckoriginal banderoller och dekal, Rangesidan, Inlägg, Årsrapport]
+    pris: 25000
+    prisenhet: per år
+    startkostnad: 4000
+    kostnad_kr: 1500
+    kostnad_text: "Två banderoller ca 3 000 kr + dekal ca 500 kr, avskrivet på tre år."
+    tid_h: 3
+    partnervecka: true
+    max: 1
+    exklusivt: "En rangepartner. Inga andra företagsloggor på rangen."
+    kombineras: "Med hål och övriga verksamhetsprodukter."
+    uppfoljning: [Sidvisningar av rangesidan (uppmätt), Visningar av inläggen (uppmätt), Uppsatta banderoller med foto (levererat)]
+
+  puttinggreen:
+    niva: verksamhet
+    status: aktiv
+    namn: Puttinggreenpartner
+    rubrik: "Sista minuterna före start"
+    ingress: >-
+      Varje runda börjar med några puttar och ett öga på starttiden. Där står ert namn, på flaggorna och
+      vid greenen.
+    passar: [Företag som vill synas för alla som spelar, Mindre lokala företag som vill börja smått]
+    varfor: >-
+      Nästan alla som spelar en runda värmer upp på puttinggreenen. Ytan är liten men passeras av alla.
+    ingar:
+      - {rubrik: "Flaggorna på puttinggreenen", text: "Er logotyp på greenens små flaggor hela säsongen."}
+      - {rubrik: "Skylten vid greenen", text: "En skylt med ”[Ert företag]-greenen” och er logotyp."}
+      - {rubrik: "Presentationsinlägget", text: "Klubben presenterar er som partner."}
+      - {rubrik: "Årsrapporten", text: "Vad som visades och genomfördes."}
+    ytor:
+      fysiska: [Puttinggreenens flaggor, En skylt vid greenen]
+      digitala: [Klubbens inlägg, Partnersidan på hemsidan]
+    leverans: ["Flaggor och skylt sätts ut i april och tas in i oktober."]
+    tacada: [Tryckoriginal flaggor och skylt, Inlägg, Årsrapport]
+    pris: 12500
+    prisenhet: per år
+    startkostnad: 2500
+    kostnad_kr: 900
+    kostnad_text: "Flaggor ca 1 500 kr + skylt ca 1 200 kr, avskrivet på tre år."
+    tid_h: 2
+    partnervecka: false
+    max: 1
+    exklusivt: "Puttinggreenens flaggor och skylt tillhör bara den här partnern."
+    kombineras: "Med hål och övriga verksamhetsprodukter."
+    uppfoljning: [Visningar av inlägget (uppmätt), Uppsatta flaggor och skylt med foto (levererat)]
+
+  korthal:
+    niva: verksamhet
+    status: aktiv
+    namn: Korthålsbanepartner
+    rubrik: "Där nya golfare slår sitt första slag"
+    ingress: >-
+      Korthålsbanan är dörren in till golfen. Familjer, nybörjare och kollegor som provar för första gången.
+      Ge banan ert namn.
+    passar: [Bank och försäkring, Företag som vill nå familjer och nya kunder, Arbetsgivare som vill förknippas med hälsa]
+    varfor: >-
+      Banan når andra än de vana golfarna: nybörjare, familjer och företagsgrupper. Namnet följer med i
+      allt klubben gör för nya spelare. Färre ronder än på stora banan, därför ett lägre pris.
+    ingar:
+      - {rubrik: "Banan bär ert namn", text: "”[Ert företag]-banan” på skylten vid första tee, hemsidan och i klubbens inlägg."}
+      - {rubrik: "Skylten vid banans start", text: "En skylt med banans namn och er logotyp."}
+      - {rubrik: "Nybörjarkurserna", text: "Ert namn i klubbens inbjudan till nybörjarkurser och prova på-dagar."}
+      - {rubrik: "Presentationsinlägget och ett eget inlägg", text: "Samma som hålsponsorn."}
+      - {rubrik: "Er partnervecka", text: "En vecka i fokus i klubbens inlägg och på hemsidans startsida."}
+      - {rubrik: "Årsrapporten", text: "Vad som visades och genomfördes."}
+    ytor:
+      fysiska: [Skylt vid korthålsbanans första tee, Partnerveckans skylt (en vecka)]
+      digitala: [Korthålsbanans sida, Inbjudningar till nybörjarkurser, Klubbens inlägg]
+    leverans: ["Skylten sätts upp en gång. Banans namn läggs in i hemsidan och i kursinbjudningarna."]
+    tacada: [Tryckoriginal skylt, Sidan för korthålsbanan, Inlägg, Årsrapport]
+    pris: 12500
+    prisenhet: per år
+    startkostnad: 2500
+    kostnad_kr: 700
+    kostnad_text: "Skylt ca 1 500 kr avskriven på tre år + partnerveckans platta."
+    tid_h: 3
+    partnervecka: true
+    max: 1
+    exklusivt: "En partner för korthålsbanan."
+    kombineras: "Med hål och övriga verksamhetsprodukter."
+    uppfoljning: [Sidvisningar av banans sida (uppmätt), Antal ronder på korthålsbanan enligt klubbens system (uppmätt),
+                  Visningar av inläggen (uppmätt)]
+
+  junior:
+    niva: verksamhet
+    status: aktiv
+    namn: Juniorpartner
+    rubrik: "Klubbens framtid, med ert namn på bröstet"
+    ingress: >-
+      Varje vecka tränar klubbens juniorer. Er logotyp följer dem på träningen, på tävlingarna och på
+      bilderna föräldrarna delar.
+    passar: [Företag med rötter i bygden, Arbetsgivare som vill visa att de bryr sig, Företag vars kunder är föräldrar]
+    varfor: >-
+      Juniorstöd är den sponsring som är lättast att förklara för de egna anställda och kunderna. Värdet
+      är tillhörighet mer än exponering, och det ska säljas så.
+    ingar:
+      - {rubrik: "Logotypen på träningströjorna", text: "På juniorernas tröjor, hela säsongen."}
+      - {rubrik: "Juniorernas sida", text: "”Juniorverksamheten stöds av [Ert företag]” med logotyp."}
+      - {rubrik: "Två inlägg per säsong", text: "Från juniorernas säsongsstart och avslutning."}
+      - {rubrik: "Juniorernas tack", text: "Ett lagfoto med tröjorna till er, att använda i era kanaler."}
+      - {rubrik: "Årsrapporten", text: "Vad som genomfördes."}
+    ytor:
+      fysiska: [Juniorernas träningströjor]
+      digitala: [Juniorsidan på hemsidan, Två inlägg per säsong]
+    leverans: ["Tröjorna beställs med logotyp i samband med klubbens ordinarie beställning.",
+               "Ledaren tar lagfotot vid säsongsstart. Bara med föräldrarnas samtycke."]
+    tacada: [Tryckoriginal för tröjan, Juniorsidan, Två inlägg, Årsrapport]
+    pris: 10000
+    prisenhet: per år
+    startkostnad: 0
+    kostnad_kr: 1500
+    kostnad_text: "Tryck på upp till 40 tröjor ca 1 500 kr. Tröjorna själva köper klubben redan (bekräftas)."
+    tid_h: 3
+    partnervecka: false
+    max: 1
+    exklusivt: "En juniorpartner."
+    kombineras: "Med alla produkter. Passar som andra produkt till en hålsponsor."
+    uppfoljning: [Visningar av inläggen (uppmätt), Antal juniorer som tränat (klubbens siffra), Genomförda inlägg (levererat)]
+    forutsattning: "Klubben bekräftar att juniorerna har träningströjor som kan bära en logotyp, och att bilder på juniorer bara används med föräldrarnas samtycke."
+
+  tavling:
+    niva: verksamhet
+    status: aktiv
+    namn: Tävlingspartner
+    rubrik: "En dag med ert namn på startlistan"
+    ingress: >-
+      Ge en av klubbens tävlingar ert namn, var med vid prisutdelningen och bjud in de kunder ni vill.
+    passar: ["Företag som vill träffa människor, inte bara synas", Företag med något att visa upp eller bjuda på]
+    varfor: >-
+      Tävlingen är den enda produkten där företaget står öga mot öga med deltagarna. Låg tröskel för
+      företag som inte vill binda sig för ett helt år.
+    ingar:
+      - {rubrik: "Tävlingen bär ert namn", text: "”[Ert företag] Open” eller det namn ni väljer, i startlistan och resultatlistan."}
+      - {rubrik: "Prisutdelningen", text: "Ni delar ut priserna själva och får säga några ord."}
+      - {rubrik: "Er plats på tävlingsdagen", text: "Ett bord vid första tee eller klubbhuset för ert företag."}
+      - {rubrik: "Inlägg före och efter", text: "Klubben bjuder in och visar vinnarna, med er logotyp."}
+      - {rubrik: "Platser till era gäster", text: "Klubben håller platser till era kunder om ni vill (de betalar tävlingsavgift)."}
+    ytor:
+      fysiska: [Prisbordet, Ert bord på tävlingsdagen]
+      digitala: [Tävlingens namn i klubbens tävlingssystem, Två inlägg]
+    leverans: ["Tävlingens namn läggs in i tävlingssystemet när tävlingen skapas.",
+               "Partnern står för priserna. Klubben sköter tävlingen som vanligt."]
+    tacada: [Två inlägg, Diplom eller prisskylt med logotyp]
+    pris: 7500
+    prisenhet: per tävling
+    startkostnad: 0
+    kostnad_kr: 0
+    kostnad_text: "Ingen extra kostnad. Priserna står partnern för."
+    tid_h: 2
+    partnervecka: false
+    max: null
+    exklusivt: "En partner per tävling."
+    kombineras: "Med allt."
+    uppfoljning: [Antal deltagare (uppmätt), Visningar av inläggen (uppmätt), Genomförd tävling med foto av prisbordet (levererat)]
+
+  foretagsdag:
+    niva: verksamhet
+    status: aktiv
+    namn: Företagsdag
+    rubrik: "En eftermiddag kunderna pratar om"
+    ingress: >-
+      Ta med kunder eller kollegor till {bana}. Klubbens PRO lär ut grunderna, ni spelar korthålsbanan och
+      dagen slutar vid ett dukat bord.
+    passar: [Företag som vill tacka kunder, Arbetsgivare som söker en annorlunda personaldag]
+    varfor: >-
+      Ingen exponering att mäta, bara en upplevelse som företaget köper. Lönsam för klubben om PRO och mat
+      räknas in rätt. Ger nya kontakter som kan bli partners.
+    ingar:
+      - {rubrik: "Klubbens PRO", text: "Grunderna på rangen och puttinggreenen, anpassat efter gruppen."}
+      - {rubrik: "Korthålsbanan", text: "Gruppen spelar ett par hål tillsammans."}
+      - {rubrik: "Utrustning", text: "Klubbor och bollar till alla som behöver."}
+      - {rubrik: "Mat", text: "Lunch eller middag i klubbhuset."}
+    ytor:
+      fysiska: []
+      digitala: []
+    leverans: ["Kansliet bokar dag, PRO och mat. Räknemallen i manualen ger priset."]
+    tacada: [Offertmall, Inbjudan till deltagarna i företagets namn]
+    pris: null
+    prisenhet: offert
+    startkostnad: 0
+    kostnad_kr: null
+    kostnad_text: "PRO-tid, mat och utrustning. Räknas per offert."
+    tid_h: 4
+    partnervecka: false
+    max: null
+    exklusivt: "Ingen."
+    kombineras: "Med allt. Ingår en gång för huvudpartnern."
+    uppfoljning: [Antal deltagare, Genomförd dag (levererat)]
+
+  huvudpartner:
+    niva: huvud
+    status: aktiv
+    namn: Huvudpartner
+    rubrik: "Det första namnet man ser"
+    ingress: >-
+      En partner står bredvid klubbens eget namn. På hemsidan, i klubbens inlägg och under {golfvecka},
+      klubbens största vecka.
+    passar: [Etablerade företag i regionen som vill förknippas med hela klubben]
+    varfor: >-
+      Ett större samarbete för ett företag som vill äga relationen till klubben. Branschskyddet är den
+      rättighet som skiljer huvudpartnern från alla andra, och den kostar klubben inget att ge.
+    ingar:
+      - {rubrik: "Titeln Huvudpartner", text: "”Huvudpartner till {kortnamn}” att använda i era egna kanaler."}
+      - {rubrik: "Hemsidan", text: "Er logotyp i sidfoten på hela klubbens hemsida, först bland partnerna."}
+      - {rubrik: "{golfvecka}", text: "Veckan presenteras av er, med er partnervecka samma vecka."}
+      - {rubrik: "Branschskydd", text: "Inga konkurrenter i er bransch får partneravtal med klubben under avtalstiden."}
+      - {rubrik: "En företagsdag", text: "För upp till tolv gäster."}
+      - {rubrik: "Fyra inlägg", text: "Presentation, {golfvecka}, säsongsstart och säsongsavslutning."}
+      - {rubrik: "Årsrapporten", text: "Allt som visades, mättes och genomfördes."}
+    ytor:
+      fysiska: ["Partnerveckans skylt under {golfvecka}", "Prisbordet under {golfvecka}"]
+      digitala: [Sidfoten på hela hemsidan, Fyra inlägg, "Startsidan under {golfvecka}"]
+    leverans: ["Logotypen läggs i hemsidans sidfot en gång.",
+               "{golfvecka} planeras med partnern i maj."]
+    tacada: [Logotyp i sidfoten, Fyra inlägg, Partnerveckans material, Årsrapport]
+    pris: 50000
+    prisenhet: per år
+    startkostnad: 0
+    kostnad_kr: 3500
+    kostnad_text: "Företagsdagens självkostnad ca 3 000 kr + partnerveckans platta."
+    tid_h: 8
+    partnervecka: true
+    max: 1
+    exklusivt: "En huvudpartner. Branschskydd mot andra partners under avtalstiden."
+    kombineras: "Med ett hål eller rangen. Då ingår partnerveckan bara en gång."
+    uppfoljning: [Sidvisningar på hemsidan (uppmätt), Visningar av inläggen (uppmätt), Antal deltagare under golfveckan (uppmätt),
+                  Genomförd företagsdag (levererat)]
+
+  # ---------------------------------------------------------------- tillägg och vilande
+  fotbollsgolf:
+    niva: verksamhet
+    plats: fotbollsgolfen
+    status: tillagg
+    namn: Fotbollsgolfpartner
+    rubrik: "Arton hål för hela familjen"
+    ingress: "En skylt mitt i leken, där barnfamiljer och kollegor spelar hela sommaren."
+    passar: [Företag som vill nå barnfamiljer]
+    varfor: "Når andra än golfare. Låg kostnad, låg exponering."
+    ingar:
+      - {rubrik: "Skylten vid starten", text: "Fotbollsgolfens namn och er logotyp."}
+      - {rubrik: "Ett inlägg", text: "När säsongen startar."}
+    ytor: {fysiska: [Skylt vid fotbollsgolfens start], digitala: [Ett inlägg]}
+    leverans: ["Skylten sätts upp en gång."]
+    tacada: [Tryckoriginal skylt, Ett inlägg]
+    pris: 6000
+    prisenhet: per år
+    startkostnad: 1500
+    kostnad_kr: 500
+    kostnad_text: "Skylt ca 1 500 kr avskriven på tre år."
+    tid_h: 1
+    partnervecka: false
+    max: 1
+    exklusivt: "En partner."
+    kombineras: "Med allt."
+    uppfoljning: [Genomfört inlägg (levererat)]
+
+  halvvagen:
+    niva: verksamhet
+    plats: halvvägsstoppet
+    status: tillagg
+    namn: Halvvägspartner
+    rubrik: "Där rundan tar paus"
+    ingress: "Vid nian stannar alla. Er logotyp där rundan andas ut."
+    passar: ["Livsmedel, café och dryck"]
+    varfor: "Bra yta om kiosken är öppen. Värdet faller om den är stängd."
+    ingar:
+      - {rubrik: "Skylten vid halvvägsstoppet", text: "Er logotyp vid kiosken."}
+    ytor: {fysiska: [Skylt vid halvvägsstoppet], digitala: []}
+    leverans: ["Skylten sätts upp en gång."]
+    tacada: [Tryckoriginal skylt]
+    pris: 6000
+    prisenhet: per år
+    startkostnad: 1500
+    kostnad_kr: 500
+    kostnad_text: "Skylt ca 1 500 kr avskriven på tre år."
+    tid_h: 1
+    partnervecka: false
+    max: 1
+    exklusivt: "En partner."
+    kombineras: "Med allt."
+    uppfoljning: [Uppsatt skylt med foto (levererat)]
+    forutsattning: "Kiosken eller halvvägsstoppet är öppet under säsongen."
+
+  hjartstartare:
+    niva: verksamhet
+    plats: hjärtstartaren
+    status: tillagg
+    namn: Trygghetspartner
+    rubrik: "Tryggheten på banan, med ert namn"
+    ingress: "Ni står bakom hjärtstartaren vid klubbhuset. En sponsring alla förstår värdet av."
+    passar: [Försäkringsbolag och vårdföretag, Företag med ett tydligt samhällsansvar]
+    varfor: "Lätt att säga ja till. Partnern bekostar hjärtstartaren och dess service."
+    ingar:
+      - {rubrik: "Hjärtstartaren", text: "Med en skylt: ”Hjärtstartaren skänkt av [Ert företag]”."}
+      - {rubrik: "Ett inlägg", text: "När hjärtstartaren kommer på plats."}
+    ytor: {fysiska: [Skylt vid hjärtstartaren], digitala: [Ett inlägg]}
+    leverans: ["Klubben köper och registrerar hjärtstartaren i Hjärtstartarregistret."]
+    tacada: [Skylt, Ett inlägg]
+    pris: 15000
+    prisenhet: första året, sedan 3 000 kr per år
+    startkostnad: 0
+    kostnad_kr: 12000
+    kostnad_text: "Hjärtstartare ca 12 000 kr första året. Batteri och elektroder senare."
+    tid_h: 2
+    partnervecka: false
+    max: 1
+    exklusivt: "En partner."
+    kombineras: "Med allt."
+    uppfoljning: [Uppsatt hjärtstartare med foto (levererat)]
+    forutsattning: "Klubben har ingen hjärtstartare i dag, eller vill ha en till."
+
+  klubbhusskarm:
+    niva: verksamhet
+    plats: skärmen i klubbhuset
+    status: vilande
+    namn: Skärmpartner
+    rubrik: "Där alla samlas efter rundan"
+    ingress: "Klubbhusets skärm visar dagens resultat, banan och er logotyp."
+    passar: [Företag som vill synas för alla som kommer in]
+    varfor: "Kräver en skärm i klubbhuset. Utan skärm finns ingen produkt."
+    ingar:
+      - {rubrik: "Skärmen presenteras av er", text: "Er logotyp i skärmens ram hela säsongen."}
+    ytor: {fysiska: [Skärmen i klubbhuset], digitala: []}
+    leverans: ["Skärmen visar ett bildspel som TACADA uppdaterar."]
+    tacada: [Bildspel för skärmen]
+    pris: 12500
+    prisenhet: per år
+    startkostnad: 0
+    kostnad_kr: 0
+    kostnad_text: "Skärm och mediaspelare ca 6 000–9 000 kr (engångskostnad för klubben)."
+    tid_h: 1
+    partnervecka: false
+    max: 1
+    exklusivt: "En partner."
+    kombineras: "Med allt."
+    uppfoljning: [Visningstid på skärmen (levererat)]
+    forutsattning: "Klubben har eller köper en skärm i klubbhuset där gäster samlas."
+
+  digital_kanal:
+    niva: hal
+    status: framtid
+    namn: Hålet i golfappen
+    rubrik: "Nästa kanal"
+    ingress: "Fler digitala kanaler för hålet är under utveckling. När de finns kan de läggas till hålsponsorskapet."
+    passar: [Alla hålsponsorer]
+    varfor: "Säljs inte och ingår inte i något paket förrän avtal finns."
+    ingar: []
+    ytor: {fysiska: [], digitala: []}
+    leverans: []
+    tacada: []
+    pris: null
+    prisenhet: aktiveras när avtal finns
+    startkostnad: 0
+    kostnad_kr: 0
+    kostnad_text: ""
+    tid_h: 0
+    partnervecka: false
+    max: null
+    exklusivt: ""
+    kombineras: "Bara som tillägg till ett hålsponsorskap."
+    uppfoljning: []
+
+# Partnernivåerna. Ett företag kan köpa en enskild produkt utan att köpa en nivå.
+nivaer:
+  hal:
+    namn: Hålpartner
+    text: Företaget är förknippat med ett eget hål.
+  verksamhet:
+    namn: Verksamhetspartner
+    text: Företaget är förknippat med en del av anläggningen eller en verksamhet.
+  huvud:
+    namn: Huvudpartner
+    text: Ett större samarbete med flera ytor och klubbens största vecka.
+
+# Avtalsvillkor som gäller alla produkter (klubbens fil kan skriva över).
+villkor:
+  avtalslangd: [1, 3]                 # år
+  treaarsfordel: "Priset är låst i tre år och ingen startkostnad."
+  startkostnad_text: "Startkostnaden gäller ettårsavtal och täcker skylt och tryck."
+  forsaljningsstart: "1 november"
+  betalning: "Faktureras i mars. Treårsavtal faktureras ett år i taget."
+  forstahandsratt: "Befintlig partner har förstahandsrätt till sin yta fram till 30 november inför nästa säsong."
+  logotyp: "Logotypen visas i en färg, så att den håller ihop med klubbens skyltar och inlägg."
+  godkannande: "Partnern godkänner allt material med logotypen innan det visas."
+  flygfilm: "Flygfilmen ingår när den är färdig och godkänd av klubben. Den säljs inte som levererad dessförinnan."
+
+# Partnerveckan: bara ytor som finns. Klubbens fil sätter veckorna och platserna.
+partnervecka:
+  ytor:
+    - {namn: "Inlägget på måndagen", text: "Hålets inlägg i Instagram och Facebook lyfter fram er som veckans partner, schemalagt i förväg.", tid_min: 0}
+    - {namn: "Hemsidans startsida", text: "”Veckans partner” med logotyp och länk, byts automatiskt enligt kalendern.", tid_min: 0}
+    - {namn: "Erbjudande till medlemmarna", text: "Om partnern vill: ett erbjudande till klubbens medlemmar under veckan, i inlägget.", tid_min: 0}
+  villkor:
+    - {namn: "Klubbens skärm", text: "Partnerveckans bild i skärmens bildspel.", kraver: skarm}
+    - {namn: "Skylten vid entrén", text: "Partnerveckans skylt med företagets logotyp, där alla går in. Plattan byts måndag morgon. Fysiskt tillval med tilläggskostnad.", tid_min: 5, kraver: entreskylt}
+    - {namn: "Foto till rapporten", text: "Receptionen fotograferar skylten med mobilen och mejlar bilden till kansliet.", tid_min: 2, kraver: entreskylt}
+
+# Klubbens arbetstid per år för hela programmet utöver produkterna (timmar).
+administration:
+  - {vad: "Säljmöten och avtal", tid_h_per_avtal: 2}
+  - {vad: "Föra partneröversikten", tid_h: 4}
+  - {vad: "Lämna ronder per månad till TACADA", tid_h: 1}
+  - {vad: "Förnyelsesamtal", tid_h_per_avtal: 1}
