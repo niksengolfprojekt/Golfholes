@@ -15,7 +15,7 @@ index: 17
 orto: data/glasriket/orto/o63050_4900_25_mr25.tif
 tees:
 - {name: '60', point: [492176.0, 6306149.0], length_m: 359}  # beräknad, syns inte på fotot
-- {name: 56/52, point: [492176.0, 6306115.0], length_m: 320}
+- {name: 56/52, point: [492176.0, 6306115.0], length_m: 320}  # osäker, teeboxen syns inte under träden i ortofotot
 - {name: 49/44, point: [492192.0, 6306063.0], length_m: 270}
 centerline:
 - [492176.0, 6306149.0]

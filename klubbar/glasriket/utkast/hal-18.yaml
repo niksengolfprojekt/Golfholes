@@ -8,10 +8,10 @@ par: 4
 index: 9
 orto: data/glasriket/orto/o63050_4900_25_mr25.tif
 tees:
-- {name: '60', point: [491718.0, 6306060.0], length_m: 423}
-- {name: '56', point: [491733.0, 6306090.0], length_m: 383}
+- {name: '60', point: [491718.0, 6306060.0], length_m: 423}  # osäker, teeboxen syns inte under träden i ortofotot
+- {name: '56', point: [491728.0, 6306097.0], length_m: 383}
 - {name: 52/49, point: [491733.0, 6306155.0], length_m: 325}
-- {name: '44', point: [491740.0, 6306213.0], length_m: 270}
+- {name: '44', point: [491745.0, 6306211.0], length_m: 270}
 centerline:
 - [491718.0, 6306060.0]
 - [491727.0, 6306100.0]
