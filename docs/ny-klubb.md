@@ -12,8 +12,9 @@ Skillen `ny-golfklubb` pekar hit. Detaljer per hål: [halproduktion.md](halprodu
 - Nätverket måste släppa igenom `api.lantmateriet.se` och `dl1.lantmateriet.se` (Geotorget-inloggningen är
   nätverkshemlighet). Nekas de: läs miljödokumentationen och be Eric öppna dem.
 - Kolla OpenArt-saldot (`openart_account_get`) innan något planeras.
-- **Omfattning** (fråga om det inte är sagt): *referensklubb* = 3 hål + kort presentation, bara när ett möte är
-  bokat; *hela paketet* = allt nedan.
+- **Beställningen styr allt.** Skriv vad klubben köpt i `klubb.yaml` → `paket:` (`produkter:` och vid behov `hal:`)
+  och kör `python -m golfholes paket klubbar/<slug>`. Bara de steg den listar görs. Saknas paketet eller en
+  produkt bygger på något som inte är köpt: stopp, fråga Eric. Referensklubb = `produkter: [halguide]` och 3 hål.
 
 ## 1. Underlag (0 krediter)
 
@@ -102,7 +103,13 @@ inga människor, soligt. Bildtexter i `texter.md`.
 - Eric läser på mobilen: bilder på en Artifact-sida, inte filvägar. All klubbens material som egen sida i Claude
   Design-canvasen "Tacada" (en sida per klubb).
 - Presentationer: PDF + Google Slides, aldrig PowerPoint. Ersatta filer i Drive får "ERSATT" i namnet.
-- Varje hål godkänns av klubben skriftligt innan tryck. Tryckprov hos Ecosign innan skyltar beställs.
+- **Klubbchefens kontroll:** `python -m golfholes granskning klubbar/<slug>` bygger en sida på TACADA:s sajt
+  (`/granskning/<slug>-<nyckel>/`) där varje fråga per hål ställs: varje tee (osäkra märkta), out, texterna,
+  egna frågor ur `klubbar/<slug>/granskning.yaml`, ronder förra säsongen, och till sist godkänt / godkänt med
+  ändringar / inte godkänt per hål med klubbchefens namn. Svaren kommer till Netlify Forms (`granskning-<slug>`).
+  Eric skickar länken först när han själv har godkänt. Rätta det klubben svarat, bygg sidan igen och skicka
+  den igen tills alla hål är godkända. Inget trycks eller publiceras före det.
+- Tryckprov hos Ecosign innan skyltar beställs.
 - Uppdatera `docs/flode.md` och en projektminnesfil per klubb.
 
 ## Krediter (OpenArt, oktober 2026)

@@ -24,6 +24,9 @@ Layout väljs i klubb.yaml med `layout: 1` (eller en lista, t.ex. [1, 4]):
   python -m golfholes utsnitt  klubbar/<klubb> data/<klubb>/orto/*.tif  → data/<klubb>/utsnitt/orto.jpg + .jgw
   python -m golfholes sponsorrapport klubbar/<klubb> --sasong 2027 [--kalla mapp] → output/<klubb>/sponsorrapport/2027/
   python -m golfholes partnerexport  klubbar/<klubb>                  → output/<klubb>/partner/ (JSON per hål + zip)
+  python -m golfholes paket klubbar/<klubb>                         → vad klubben köpt: vad som görs och inte görs
+  python -m golfholes granskning klubbar/<klubb> [--hal 3,14]       → hemsida/public/granskning/<klubb>-<nyckel>/
+                                                                    (klubbchefens granskningssida, svar via Netlify Forms)
   python -m golfholes flygfilm klubbar/<klubb>/hal-14.yaml [--data data/<klubb>] [--sek 12] [--forlopp oversikt]
                                                                     → output/<klubb>/flygfilm/ (rå MP4 + nyckelbilder)
 """
@@ -360,6 +363,33 @@ def sponsorrapport(club_dir: str, sasong: int, kalla: str | None, pdf: bool) -> 
     return 0 if r.hal else 1
 
 
+def paket(club_dir: str) -> int:
+    from .paket import sammanfattning
+
+    gor, gor_inte, fel = sammanfattning(Path(club_dir))
+    print("Beställt – detta levereras:")
+    for r in gor:
+        print(f"  ✓ {r}")
+    print("Inte beställt – görs inte:")
+    for r in gor_inte:
+        print(f"  – {r}")
+    for f in fel:
+        print(f"STOPP: {f}")
+    return 1 if fel else 0
+
+
+def granskning(club_dir: str, hal: str | None) -> int:
+    from .granskning import bygg
+
+    nummer = [int(x) for x in hal.split(",")] if hal else None
+    mal, varningar = bygg(Path(club_dir), nummer)
+    for v in varningar:
+        print(f"OBS: {v}")
+    print(f"Granskningssidan: {mal}/index.html")
+    print(f"Adress när sajten är publicerad: /{mal.relative_to(mal.parents[1]).as_posix()}/")
+    return 0
+
+
 def partnerexport(club_dir: str) -> int:
     from .partnerexport import exportera
 
@@ -457,7 +487,15 @@ def main(argv: list[str] | None = None) -> int:
     sr.add_argument("--utan-pdf", action="store_true", help="bara PNG")
     sub.add_parser("partnerexport", help="Sponsorer per hål som JSON + zip till digitala partnerkanaler"
                    ).add_argument("klubbmapp")
+    sub.add_parser("paket", help="Vad klubben har köpt: vad som ska levereras och inte").add_argument("klubbmapp")
+    gr = sub.add_parser("granskning", help="Granskningssida för klubbchefen: frågor per hål, svar direkt i länken")
+    gr.add_argument("klubbmapp")
+    gr.add_argument("--hal", default=None, help="bara dessa hål, t.ex. 3,14 (standard: alla med hålfil)")
     a = p.parse_args(argv)
+    if a.cmd == "paket":
+        return paket(a.klubbmapp)
+    if a.cmd == "granskning":
+        return granskning(a.klubbmapp, a.hal)
     if a.cmd == "sponsorrapport":
         return sponsorrapport(a.klubbmapp, a.sasong, a.kalla, not a.utan_pdf)
     if a.cmd == "partnerexport":

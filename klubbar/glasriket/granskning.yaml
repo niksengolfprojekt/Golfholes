@@ -1,0 +1,16 @@
+# Granskningssidan för klubbchefen (python -m golfholes granskning klubbar/<klubb>).
+# nyckel: slumpad del av adressen – byt den om länken hamnat fel, så slutar den gamla fungera.
+# fragor: egna frågor per hål (nummer) och för hela klubben (klubb). En rad per fråga.
+nyckel: 5a7389f0
+fragor:
+  9:
+    - "Banguiden anger index 10, scorekortet index 9. Är index 9 rätt?"
+  11:
+    - "Banguiden nämner en tee 45 på hålet. Finns den kvar?"
+  4:
+    - "Bunkrarna byggdes om 2025. Stämmer bunkrarna på bilden med hur de ser ut i dag?"
+  7:
+    - "Bunkrarna byggdes om 2025. Stämmer bunkrarna på bilden med hur de ser ut i dag?"
+  13:
+    - "Bunkrarna byggdes om 2025. Stämmer bunkrarna på bilden med hur de ser ut i dag?"
+  klubb: []

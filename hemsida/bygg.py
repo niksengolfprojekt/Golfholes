@@ -178,12 +178,13 @@ def kontrollera(lansering=False):
         for bild in re.findall(r"url\((/img/[^)]+)\)", text):
             if not (UT / bild.lstrip("/")).exists():
                 fel.append(f"{namn}: bild saknas {bild}")
-        if "Glasriket" in text and not REFERENS_GLASRIKET:
+        privat = namn.parts[0] == "granskning"   # klubbchefens granskningssida: hemlig länk, aldrig indexerad
+        if "Glasriket" in text and not REFERENS_GLASRIKET and not privat:
             fel.append(f"{namn}: nämner Glasriket före styrelsens beslut")
         if lansering:
             if "[FYLL I" in text:
                 fel.append(f"{namn}: luckor kvar: " + ", ".join(sorted(set(re.findall(r"\[FYLL I: ([^\]]+)\]", text)))))
-            if "noindex" in text:
+            if "noindex" in text and not privat:
                 fel.append(f"{namn}: noindex kvar (sätt LANSERAD = True)")
     return fel
 
