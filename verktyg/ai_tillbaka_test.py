@@ -9,7 +9,19 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import verktyg.orto_utsnitt  # noqa: E402,F401
 from golfholes.hole import Hole  # noqa: E402
+from golfholes.render import foto as _foto  # noqa: E402
 from golfholes.render.foto import ai_tillbaka, flaggstil, orto_for  # noqa: E402
+from verktyg.skuggskydd import skuggskydd  # noqa: E402
+
+_prickar = _foto.rita_prickar
+
+
+def _prickar_med_skuggskydd(rot, hole, px):  # skuggorna får aldrig dölja green/bunker (Eric 2026-10-26)
+    print("  skuggskydd:", skuggskydd(rot, hole, px))
+    _prickar(rot, hole, px)
+
+
+_foto.rita_prickar = _prickar_med_skuggskydd
 
 hf, namn, *malningar = sys.argv[1:]
 hf = Path(hf)
