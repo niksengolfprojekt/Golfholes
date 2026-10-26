@@ -769,14 +769,52 @@ def _rita_tees(d: ImageDraw.ImageDraw, hole: Hole, px, s: float) -> None:
         d.text((x + 13 * s, y), namn, font=f, fill=(22, 30, 25, 255), anchor="lm")
 
 
-def markera_halbild(hole: Hole, orto: Path, bild: Path, ut: Path, bagar: bool = False) -> tuple[Path, str]:
+def ram_ur_historik(halfil: Path, orto: Path, storlek: tuple[int, int]):
+    """Bilden målades på en äldre version av hålfilen (t.ex. innan en tee flyttades några meter).
+    Leta i git efter den version vars fotounderlag har bildens storlek och ge dess px, så att
+    dagens tees ritas på rätt ställe i den gamla bilden. None om ingen version passar."""
+    import subprocess
+    import tempfile
+
+    halfil = Path(halfil).resolve()
+    try:
+        rot_dir = subprocess.run(["git", "-C", str(halfil.parent), "rev-parse", "--show-toplevel"],
+                                 capture_output=True, text=True, check=True).stdout.strip()
+        rel = halfil.relative_to(rot_dir).as_posix()
+        versioner = subprocess.run(["git", "-C", rot_dir, "log", "--format=%H", "--", rel],
+                                   capture_output=True, text=True, check=True).stdout.split()
+    except (OSError, ValueError, subprocess.CalledProcessError):
+        return None
+    for sha in versioner:
+        text = subprocess.run(["git", "-C", rot_dir, "show", f"{sha}:{rel}"], capture_output=True, text=True).stdout
+        if not text:
+            continue
+        with tempfile.NamedTemporaryFile("w", suffix=".yaml", encoding="utf-8", delete=False) as f:
+            f.write(text)
+        try:
+            rot, px = fotounderlag(Hole.from_yaml(f.name), orto, storlek[1])
+        except Exception:  # noqa: BLE001 – en trasig gammal version hoppas över
+            continue
+        finally:
+            Path(f.name).unlink()
+        if rot.size == tuple(storlek):
+            return px
+    return None
+
+
+def markera_halbild(hole: Hole, orto: Path, bild: Path, ut: Path, bagar: bool = False,
+                    halfil: Path | None = None) -> tuple[Path, str]:
     """Färdig hålbild (målad eller foto) + tees och hinderavstånd, för hålkortet.
-    Placeringen räknas om ur fotounderlaget i bildens höjd, samma som när bilden gjordes."""
+    Placeringen räknas om ur fotounderlaget i bildens höjd, samma som när bilden gjordes.
+    Med halfil letas bildens ram i git om hålfilen ändrats sedan bilden gjordes."""
     im = Image.open(bild).convert("RGBA")
     rot, px = fotounderlag(hole, orto, im.height)
-    if rot.size != im.size:  # bilden gjord på en äldre hålfil: rita inget hellre än fel
-        print(f"VARNING: {bild.name} passar inte hålfilen ({im.size} mot {rot.size}) – inga tees/hinder ritade")
-        return bild, ""
+    if rot.size != im.size:
+        gammal = ram_ur_historik(halfil, orto, im.size) if halfil else None
+        if gammal is None:  # bilden gjord på en äldre hålfil: rita inget hellre än fel
+            print(f"VARNING: {bild.name} passar inte hålfilen ({im.size} mot {rot.size}) – inga tees/hinder ritade")
+            return bild, ""
+        px = gammal
     marg = round(im.height * 0.16) if bagar and (hinderlinjer(hole) or greenbagar(hole)) else 0  # plats för tabellerna, beskärs sedan
     if marg:
         stor = Image.new("RGBA", (im.width + 2 * marg, im.height), (0, 0, 0, 0))

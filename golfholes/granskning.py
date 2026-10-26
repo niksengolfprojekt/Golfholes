@@ -18,9 +18,12 @@ Sist: godkänt / godkänt med ändringar / inte godkänt per hål, och klubbchef
 from __future__ import annotations
 
 import html
+import json
+import os
 import re
 import secrets
 import shutil
+import sys
 from datetime import date
 from pathlib import Path
 
@@ -31,7 +34,7 @@ from .hole import Hole
 
 REPO = Path(__file__).resolve().parent.parent
 SAJT = REPO / "hemsida" / "public"
-BILDHOJD = 1400
+BILDHOJD = 2800  # klubbchefen ska se hålen i den kvalitet de levereras
 OSAKER_ORD = re.compile(r"beräkn|uppskatt|syns inte|osäker|bekräft", re.I)
 SIDA = {"hoger": "högersidan", "vanster": "vänstersidan", "höger": "högersidan", "vänster": "vänstersidan"}
 
@@ -75,16 +78,49 @@ def _osakra_tees(klubbmapp: Path, n: int) -> set[str]:
     return ut
 
 
+def _orto(klubbmapp: Path) -> Path | None:
+    """Klubbens ortofoto: Lantmäteriets ruta i data/<klubb>/, annars det sparade utsnittet
+    (verktyg/orto_utsnitt, GOLF_LM pekar på mappen). None om inget finns här."""
+    slug = klubbmapp.name
+    logg = REPO / "data" / slug / "lantmateriet.json"
+    if not list((REPO / "data" / slug / "orto").glob("*.tif")):
+        os.environ.setdefault("GOLF_KLUBB", slug)
+        try:
+            sys.path.insert(0, str(REPO))
+            import verktyg.orto_utsnitt  # noqa: F401 – läser utsnittet i stället för rutan
+        except Exception:  # noqa: BLE001 – utan utsnitt används hemsidans bild
+            return None
+    if not logg.exists():
+        return None
+    fil = Path(next(f["fil"] for f in json.loads(logg.read_text(encoding="utf-8"))["filer"] if f["katalog"] == "orto"))
+    fil = fil if fil.is_absolute() else REPO / fil
+    return fil if fil.exists() else None
+
+
 def _bild(klubbmapp: Path, n: int, mal: Path, botten: str) -> tuple[str | None, str | None]:
-    """Hålbilden med tees inritade: hemsidans cache om den finns, annars den målade bilden (varning)."""
-    cache = sorted((REPO / "hemsidor" / klubbmapp.name / "cache").glob(f"hal-{n:02d}-*.webp"))
-    kalla, varning = (cache[-1], None) if cache else (None, None)
+    """Hålbilden i den kvalitet klubben ska få, med dagens tees inritade. Ritas ur den målade
+    bilden och hålfilen; finns inte ortofotot här tas hemsidans (mindre) bild, med varning."""
+    malad = next((klubbmapp / "halbilder" / namn for namn in (f"hal-{n:02d}-malad.webp", f"hal-{n:02d}-foto.webp")
+                  if (klubbmapp / "halbilder" / namn).exists()), None)
+    halfil = klubbmapp / f"hal-{n:02d}.yaml"
+    kalla, varning = None, None
+    orto = _orto(klubbmapp) if malad and halfil.exists() else None
+    if orto:
+        from .render.foto import markera_halbild
+
+        tmp = mal / f"hal-{n:02d}-tmp.png"
+        mal.mkdir(parents=True, exist_ok=True)
+        bild, _ = markera_halbild(Hole.from_yaml(halfil), orto, malad, tmp, halfil=halfil)
+        if bild == tmp:
+            kalla = tmp
+        else:
+            varning = f"Hål {n}: bilden passar inte hålfilen – tees ej inritade"
     if not kalla:
-        for namn in (f"hal-{n:02d}-malad.webp", f"hal-{n:02d}-foto.webp"):
-            if (klubbmapp / "halbilder" / namn).exists():
-                kalla = klubbmapp / "halbilder" / namn
-                varning = f"Hål {n}: bilden saknar inritade tees (bygg klubbens hemsida eller hämta Lantmäteriets data först)"
-                break
+        cache = sorted((REPO / "hemsidor" / klubbmapp.name / "cache").glob(f"hal-{n:02d}-*.webp"))
+        if cache:
+            kalla, varning = cache[-1], varning or f"Hål {n}: ortofotot saknas här – hemsidans mindre bild används"
+        elif malad:
+            kalla, varning = malad, f"Hål {n}: bilden saknar inritade tees (hämta Lantmäteriets data först)"
     if not kalla:
         return None, f"Hål {n}: ingen hålbild – frågorna ställs utan bild"
     rgba = Image.open(kalla).convert("RGBA")
@@ -94,7 +130,9 @@ def _bild(klubbmapp: Path, n: int, mal: Path, botten: str) -> tuple[str | None, 
         im = im.resize((round(im.width * BILDHOJD / im.height), BILDHOJD), Image.LANCZOS)
     mal.mkdir(parents=True, exist_ok=True)
     fil = mal / f"hal-{n:02d}.webp"
-    im.save(fil, quality=82, method=6)
+    im.save(fil, quality=88, method=6)
+    if kalla.name.endswith("-tmp.png"):
+        kalla.unlink()
     return fil.name, varning
 
 
@@ -159,7 +197,9 @@ def _hal_sektion(klubbmapp: Path, n: int, extra: list[str], bildmapp: Path, varn
     status = ('<fieldset class="fraga status"><legend>Ert besked för hål ' f"{n}</legend>"
               + _val(f"{p}_besked", ["Godkänt", "Godkänt med ändringarna ovan", "Inte godkänt"], kravs=True)
               + "</fieldset>")
-    bildhtml = (f'<figure><img src="{e(bild)}" alt="Hål {n} ovanifrån med tees utmärkta" loading="lazy"></figure>'
+    bildhtml = ((f'<figure><a href="{e(bild)}" target="_blank" rel="noopener"><img src="{e(bild)}" '
+                 f'alt="Hål {n} ovanifrån med tees utmärkta" loading="lazy"></a>'
+                 '<figcaption>Tryck på bilden för att se den i full storlek.</figcaption></figure>')
                 if bild else "")
     tees = " · ".join(f"{t.name}: {t.length_m} m" for t in hole.tees if t.length_m)
     return (f'<section class="hal" id="hal-{n}"><div class="halhuvud"><h3>Hål {n}</h3>'
@@ -240,6 +280,7 @@ main{{padding:8px 16px 64px}}
 .halkropp{{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:32px;align-items:start}}
 figure{{margin:0;position:sticky;top:76px}}
 figure img{{width:100%;height:auto;display:block;border-radius:6px;background:var(--natt)}}
+figcaption{{font-size:.8rem;opacity:.7;margin-top:6px}}
 @media (max-width:760px){{.halkropp{{grid-template-columns:1fr}} figure{{position:static;max-width:340px}}}}
 fieldset{{border:0;margin:0 0 22px;padding:0}}
 legend{{font-weight:600;font-size:18px;padding:0;margin-bottom:6px}}
