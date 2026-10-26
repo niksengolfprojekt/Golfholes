@@ -6,7 +6,13 @@ stil: foto           # hålbildens stil. Nya klubbar: Akvarell, Sommarakvarell, 
                      # eller Papperssnitt. Glasriket har sin egen fotostil (standardprompten i docs/halproduktion.md).
 layout: 3            # Eric 2026-10-24: mörk botten på alla. Hålkortets layout: 1 Hålkort (spikad), 2 Poster, 3 Mörk, 4 Skärm, 5 Banguide, 6 Sponsorhål
 typsnitt: {siffror: Spectral, text: Hanken Grotesk}   # Glasrikets profil "Glas och skog" (förslag v0)
-caddee: false   # finns inte på caddee.se/anslutna-klubbar (2026-10-11)
+caddee: false
+# Vad klubben har köpt (python -m golfholes paket klubbar/glasriket). Vi levererar detta och inget mer.
+# Avtalet 99 990 kr: hålguider, ny hemsida, grafisk profil + manual, SoMe-kit (+ hålsponsorprogrammet).
+# Skyltar, SoMe-förvaltning och flygfilm är tillval som inte är beställda.
+paket:
+  avtal: "TACADA Direkt 99 990 kr, klubben sa ja 2026-10-22 (styrelsen beslutar 2026-12-08)"
+  produkter: [halguide, grafisk_profil, hemsida, some_kit, halsponsring]   # finns inte på caddee.se/anslutna-klubbar (2026-10-11)
 
 # Klubbens grafiska profil "Glas och skog" (förslag v0, 2026-10-18). Används av prospekt och inlägg.
 kortnamn: Glasrikets GK

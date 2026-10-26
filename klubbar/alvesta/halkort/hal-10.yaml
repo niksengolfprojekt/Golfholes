@@ -1,0 +1,22 @@
+# Hålkort för Alvesta GK hål 10 (test 2026-10-25, går inte till klubben utan Eric). Hålbilden är AI-målad i
+# stil A på hålets exakta form ur Lantmäteriets ortofoto. Klubben har inga PRO-råd: raderna nedan är våra
+# egna och är UTKAST tills klubben godkänt dem. Index: PDF-scorekortet säger 7, webbtabellen 9.
+club: Alvesta Golfklubb
+bana: Kronobergshed
+hole: 10
+par: 4
+index: 7
+tees: [["63", 385], ["59", 350], ["54", 315], ["49", 295], ["40", 235]]
+bild: ../halbilder/hal-10-malad.webp
+typbild: false
+rubrik: "Rakt söderut mot sjön"
+beskrivning: "Index 7. Andra nian börjar vid klubbhuset med ett rakt par 4 söderut, med sjön blänkande bakom greenen. Tre fairwaybunkrar ligger där drivern landar, och greenen vaktas av bunkrar på båda sidor."
+rad_rubrik: Så spelas hålet
+rad:
+  - "Fairwaybunkrarna ligger 235–280 m från bakre tee. Välj klubba efter dem."
+  - "Inspelet går mot en rund green med bunkrar till vänster och höger."
+slutrad: "Ett rakt hål – men bara för den som håller sig rak."
+kortrad: "Lägg utslaget före fairwaybunkrarna och spela mitt på greenen."
+strategi:
+  sakert: Utslag kort om fairwaybunkrarna, sedan ett längre inspel mitt på greenen.
+  chansa: Driver över bunkrarna ger en wedge in – men en miss hamnar i sanden.

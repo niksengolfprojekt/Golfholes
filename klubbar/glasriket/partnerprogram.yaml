@@ -1,0 +1,131 @@
+# Glasrikets GK – partnerprogram 2027 (förslag från TACADA, klubben beslutar).
+#
+#   python -m golfholes partnerprogram klubbar/glasriket --ut <mapp>
+#
+# Bygger på standardbiblioteket golfholes/partnerprogram/standard.yaml. Här står bara det som är
+# Glasrikets: vilka produkter som är aktiva, priser, premiumhål, partnerveckor och läget i dag.
+# Klubbfakta (namn, färger, loggor, hål, kontakt) läses ur klubb.yaml. Status per hål: klubb.yaml →
+# sponsring.status (ledig, reserverad, såld).
+
+sasong: 2027
+kontakt:
+  namn: Kansliet                       # byts mot klubbchefens namn när klubben godkänt materialet
+  epost: info@glasriketsgk.se
+  telefon: 0470-653 20
+
+# Läget före programmet (Eric 2026-10-25, från klubbchefen).
+idag:
+  salda_hal: 7
+  pris: 10000
+  innehall: En skylt med logotyp vid hålet och en inbjudan till partnertävlingen.
+
+# Ronder per år för uppskattningarna. Klubbens senast publicerade siffra är från 2020
+# (15 500 medlemsronder + 3 400 greenfeeronder). Byts mot 2025 när klubben lämnar den.
+ronder: {antal: 18900, ar: 2020, kalla: "klubbens senast publicerade siffra"}
+
+# Prismodell i materialet: differentierad (20 000 / 25 000 för premiumhål) eller enhetlig.
+prismodell: differentierad
+prismodeller:
+  differentierad: {namn: "Två priser", halpris: 20000, premiumpris: 25000}
+  enhetlig: {namn: "Ett pris", halpris: 20000, premiumpris: 20000}
+  enhetlig_25: {namn: "Ett högre pris (Erics beslut 2026-10-24)", halpris: 25000, premiumpris: 25000}
+
+# Premiumhål: bara hål med en verklig extra yta.
+premiumhal:
+  1:
+    namn: Första tee
+    extra: >-
+      En andra skylt vid bollrännan på första tee, där alla väntar på sin starttid. Hål 1 spelas
+      dessutom av alla niohålsronder.
+    yta: Skylt vid bollrännan på hål 1
+  17:
+    namn: Signaturhålet
+    extra: >-
+      Hole-in-one-tavlan. Varje hole-in-one på banans signaturhål skrivs upp på tavlan, under ert namn.
+    yta: Hole-in-one-tavlan vid tee 17
+# Hål 18 kan bli premiumhål om greenen syns från klubbhuset. Klubben bekräftar (se besluten).
+
+# Produkterna i Glasrikets erbjudande. Pris och text ur standardbiblioteket om inget annat står.
+produkter:
+  aktiva: [halsponsor, premiumhal, range, puttinggreen, korthal, junior, tavling, foretagsdag, huvudpartner]
+  tillagg: [fotbollsgolf, halvvagen, hjartstartare]
+  vilande: [klubbhusskarm]
+  framtid: [digital_kanal]
+  andringar:
+    korthal:
+      namn: Pay & Play-partner
+      rubrik: "Tolv hål där golfen börjar"
+      ingress: >-
+        Pay & Play-banan på Fylleryd är dörren in till golfen. Sex greener och tolv tees där familjer,
+        nybörjare och kollegor slår sina första slag. Ge banan ert namn.
+    halvvagen:
+      ingress: "Vid nian stannar alla. Er logotyp där rundan andas ut."
+      forutsattning: "Klubben bekräftar att kiosken vid nian är öppen 2027 (restaurangen öppnar 1 maj 2027)."
+    foretagsdag:
+      ingress: >-
+        Ta med kunder eller kollegor till Fylleryd. Klubbens PRO lär ut grunderna, ni spelar Pay & Play-banan
+        och dagen slutar vid ett dukat bord.
+
+# Befintliga hålsponsorer (7 hål). Förslag: trappa med treårsavtal, så att dagens partners inte möts
+# av en dubblering över en natt. Klubben beslutar.
+befintliga:
+  trappa: [15000, 17500, 20000]
+  sista_dag: 30 november 2026
+  text: >-
+    Ni som redan har ett hål får förstahandsrätt till det, och ett treårsavtal där priset trappas upp:
+    15 000 kr 2027, 17 500 kr 2028 och 20 000 kr 2029.
+
+# Partnerveckorna. Säsongen 24 april–31 oktober. Vecka 30 är golfveckan och går till huvudpartnern.
+partnerveckor:
+  forsta: 18
+  sista: 41
+  reserverade: {30: huvudpartner}
+  skarm: false                          # klubben har ingen bekräftad skärm i klubbhuset
+  entreskylt: false                     # förslag 2026-10-26: partnerveckan digital (hålets inlägg + startsidan)
+  plats_entre: "Entrén vid gaveln mot drivingrangen"   # används bara om entreskylt: true
+golfvecka: Golfveckan (vecka 30)
+
+# Tävlingar som kan få en partner 2027. Klubben fyller i sitt tävlingsprogram.
+tavlingar:
+  - {namn: Säsongsöppningen, nar: april}
+  - {namn: Golfveckan, nar: vecka 30, pris: 15000, text: "Klubbens största vecka. Ingår för huvudpartnern."}
+  - {namn: Klubbmästerskapen, nar: augusti}
+  - {namn: Partnertävlingen, nar: september, text: "Klubbens tack till alla partners. Ingen egen partner."}
+  - {namn: Säsongsavslutningen, nar: oktober}
+
+# Företagsdagen: räknemall (klubben justerar).
+foretagsdag:
+  minsta_antal: 8
+  per_deltagare: {pro: 150, greenfee: 250, utrustning: 50, mat: 250}
+  paslag: 0.35                         # klubbens påslag på självkostnaden
+  pro_fast: 1500                       # PRO:ns fasta tid för en grupp (2 timmar)
+
+# Exempelföretagen i materialet. Nordvik är påhittat. Emtec får bara användas med Emtecs tillstånd.
+exempel:
+  namn: Nordvik
+  logga: loggor/nordvik.svg
+  hal: 14
+
+# Klubbens egna bilder i presentationerna (relativt klubbmappen). Ögonhöjdsbilderna är målade på
+# Lantmäteriets laserdata och godkända mot riktiga banan (v2, 2026-10-22). Hålsidan är en skärmbild av
+# klubbens hemsida med exempelföretaget inlagt.
+bilder:
+  omslag: bilder/h14-tee.jpg
+  motesplats: bilder/allm-park.jpg
+  miljo: bilder/allm-lang.jpg
+  aktiviteter: bilder/h05-inspel.jpg
+  avslutning: bilder/h14-inspel.jpg
+  halsida: bilder/halsida-hal-14-mobil.jpg
+  inlagg: bilder/inlagg-hal-14.jpg
+
+# Status för de produkter som bara kan säljas en gång (ledig, reserverad, såld). Hålen: klubb.yaml.
+status:
+  range: ledig
+  puttinggreen: ledig
+  korthal: ledig
+  junior: ledig
+  huvudpartner: ledig
+
+# Framtida kanal (separat presentation). Namnet står bara i den interna versionen.
+framtida_kanal:
+  intern_namn: Golf GameBook

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 80"><!-- Påhittad demo-logga i en färg. Nordvik finns inte. -->
+<path d="M6 64 L34 14 L48 39 L58 23 L84 64 Z" fill="currentColor"/>
+<path d="M6 72 Q45 61 84 72" stroke="currentColor" stroke-width="5" fill="none" stroke-linecap="round"/>
+<text x="100" y="55" font-family="Hanken Grotesk, Arial, sans-serif" font-size="40" font-weight="600" letter-spacing="4" fill="currentColor">NORDVIK</text>
+</svg>

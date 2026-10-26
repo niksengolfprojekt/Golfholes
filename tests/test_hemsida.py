@@ -19,6 +19,8 @@ def test_glasriket_doljs_tills_styrelsen_sagt_ja():
     bygg.bygg()
     assert not (bygg.UT / "referenser" / "glasriket" / "index.html").exists()
     for html in bygg.UT.rglob("*.html"):
+        if html.relative_to(bygg.UT).parts[0] == "granskning":  # klubbens egen hemliga granskningslänk
+            continue
         assert "Glasriket" not in html.read_text(encoding="utf-8"), html
 
 

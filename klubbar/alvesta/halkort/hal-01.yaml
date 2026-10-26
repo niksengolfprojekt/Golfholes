@@ -1,0 +1,22 @@
+# Hålkort för Alvesta GK hål 1 (test 2026-10-25, går inte till klubben utan Eric). Hålbilden är AI-målad i
+# stil A på hålets exakta form ur Lantmäteriets ortofoto. Klubben har inga PRO-råd: raderna nedan är våra
+# egna och är UTKAST tills klubben godkänt dem.
+club: Alvesta Golfklubb
+bana: Kronobergshed
+hole: 1
+par: 4
+index: 4
+tees: [["63", 380], ["59", 360], ["54", 315], ["49", 285], ["40", 245]]
+bild: ../halbilder/hal-01-malad.webp
+typbild: false
+rubrik: "Första slaget längs skogen"
+beskrivning: "Index 4. Fairway följer granskogen åt nordväst och svänger sedan in mot en klöverformad green. Bunkrar väntar på båda sidor av greenen. Ett lugnt första slag sätter tonen för hela rundan."
+rad_rubrik: Så spelas hålet
+rad:
+  - "Sikta på fairways högra halva. Skogen till vänster följer med hela vägen."
+  - "Inspelet går rakt norrut mot greenen, mellan bunkrarna."
+slutrad: "Hitta fairway – resten kommer."
+kortrad: "Sikta till höger från tee och spela mellan greenbunkrarna."
+strategi:
+  sakert: Järn eller hybrid ut på fairways högra halva, sedan ett inspel mitt på greenen mellan bunkrarna.
+  chansa: Driver tätt längs skogskanten till vänster ger ett kort inspel – men skogen förlåter ingenting.

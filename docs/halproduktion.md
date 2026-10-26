@@ -70,3 +70,52 @@ with gentle shadows (keep the golden autumn birches golden), clean up the sand i
 paths. Remove the hazy yellow cast so colours are clear and sunny. Do not straighten, smooth, enlarge or reshape
 any fairway, green, bunker, shoreline, path or tree group. Do not add or remove anything. No text, no flags, no
 markers. Keep the cream background and its soft edge exactly as they are.
+
+## STIL A (kvällsljus)
+Realistisk målning i kvällsljus, vald av Eric 2026-10-25 (Glasriket hål 14 och 17 som prov). Mörk duk, aldrig krämvit.
+
+1. Underlag (0 krediter): `python verktyg/underlag_lyft.py klubbar/<klubb>/hal-NN.yaml` →
+   `typbilder/ai-underlag/hal-NN-underlag-lyft-mork.jpg`. Indata är `halbilder/hal-NN-malad-utan-flagga.webp`;
+   finns den inte (ny klubb) lyfts ortofotot direkt. Lyftet lägger laserträdens skuggor (sol 235°, 30°),
+   relief ur höjdmodellen och mörkblå kant (`verktyg/lyft.py`).
+2. Pusha underlaget och ge det som enda referens via raw.githubusercontent-URL på en commit-SHA.
+3. OpenArt `nano-banana-2-1`, image2image, 4K, 9:16, 3 varianter (240 krediter per hål).
+   Aldrig ett annat hål som referens.
+4. Passa in: `python verktyg/ai_tillbaka_test.py klubbar/<klubb>/hal-NN.yaml a <png...>` (formpoäng ≥ 0,7,
+   titta på kontrollbilden efter påhittade tees, klippta ytor eller borttagen vass/vegetation).
+
+Prompt, hål utan vatten (ordagrant, gav Glasriket hål 14 = 0,87):
+
+Edit this image. It is an exact map: keep every shape, outline and position pixel-for-pixel as it is (fairway
+edges, green, bunker, tee boxes, tree lines, every tree crown, every shadow, the red and yellow dots). Do not add,
+remove, widen or move anything. Upgrade only the surface rendering into a photorealistic, premium golf course image
+seen straight from above, like a high-end drone photograph at golden hour: warm low late-afternoon sun from the
+upper right, crisp long cool-blue shadows exactly where the existing shadows are, fresh vivid green fairway with
+lime-yellow sunlit highlights and sharp alternating light and dark mowing stripes, a brighter finely mown green with
+a crisp darker collar ring, slightly darker textured rough, bright white sand with a crisp lip shadow. Trees are
+Swedish Norway spruce and Scots pine seen from directly above: dense dark-green conical crowns with soft round tops
+and layered needle texture, NEVER star-shaped, NEVER palm-like, plus a few birches with small rounded warm golden
+crowns. High contrast, sharp micro-detail, rich natural colour, not washed out. The surroundings fall off into the
+dark navy background exactly as now. No text, no people, no flags, no paths, no buildings.
+
+Prompt, hål med vatten (ordagrant, gav Glasriket hål 17 = 0,78; första meningarna beskriver hålets egna former
+och skrivs om per hål):
+
+Edit this image. It is an exact map: keep every shape, outline and position pixel-for-pixel as it is. The two
+ponds keep exactly their shorelines, the round tree island stays exactly where and as big as it is, the green stays
+exactly round and in place, the fairway and both tee areas keep their exact outline, the path, the buildings and
+the gravel yard stay. The narrow strip of land between the two ponds is unmown rough grass with a gravel path: no
+stripes, no mown patch, no tee there. Do not add any tee box, mown area, path, jetty or anything that is not
+already there; do not remove anything. Only change the surface into a photorealistic, premium golf course image
+seen straight from above, like a high-end drone photograph at golden hour: warm low late-afternoon sun from the
+upper right, crisp cool-blue shadows exactly where the existing shadows are, fresh green fairway grass with
+lime-yellow sunlit highlights and soft mowing stripes only on the fairway, a bright finely mown green with a darker
+collar ring, deep clear blue-green water with a soft warm golden sky reflection near the upper right and reed
+edges, broadleaf crowns with real 3D volume, birches with small rounded warm golden crowns (not neon), roofs and
+gravel in quiet muted grey. High contrast, sharp micro-detail, rich natural colour. The surroundings fall off into
+the dark navy background exactly as now. No text, no people, no flags, no cars.
+
+Under prov 2026-10-25 (Eric vill ha "mer renderat och krispigt"): ett andra AI-pass med den valda målningen som
+referens ("premium high-end 3D render, ultra crisp…") och/eller en skärpning i kod (klarhet + mikrokontrast)
+innan inpassningen. Det andra AI-passet tog bort vassen i dammen på hål 17, så kontrollera vegetation i vatten.
+Uppdateras när Eric valt.
