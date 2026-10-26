@@ -26,6 +26,9 @@ Layout väljs i klubb.yaml med `layout: 1` (eller en lista, t.ex. [1, 4]):
   python -m golfholes partnerexport  klubbar/<klubb>                  → output/<klubb>/partner/ (JSON per hål + zip)
   python -m golfholes flygfilm klubbar/<klubb>/hal-14.yaml [--data data/<klubb>] [--sek 12] [--forlopp oversikt]
                                                                     → output/<klubb>/flygfilm/ (rå MP4 + nyckelbilder)
+  python -m golfholes partnerprogram klubbar/<klubb> [--ut mapp] [--bara deck,manual,...]
+                                     → hela partnerprogrammet: presentation, prospekt, manual, rapporter,
+                                       kalender, prislista, översikt, beslutsunderlag (se docs/partnerprogram.md)
 """
 from __future__ import annotations
 
@@ -392,6 +395,21 @@ def flygfilm(path: str, data: str | None, ut: str | None, sek: float, slut: floa
     return 0
 
 
+def partnerprogram(klubbmapp: str, ut: str | None, logg: str | None, bara: str | None, bilder: bool) -> int:
+    from .partnerprogram.bygg import DELAR, bygg
+
+    urval = {x.strip() for x in bara.split(",")} if bara else None
+    if urval and urval - set(DELAR):
+        raise SystemExit(f"--bara: okänt {', '.join(sorted(urval - set(DELAR)))} (finns: {', '.join(DELAR)})")
+    r = bygg(klubbmapp, ut, logg, urval, bilder)
+    pdf = [f for f in r["filer"] if f.suffix == ".pdf"]
+    print(f"{len(pdf)} PDF:er i {r['ut']}")
+    print(f"Partneröversikten (status, kontakter, leveranser, mätvärden): {r['logg']}")
+    for v in r["varningar"]:
+        print(f"Klubben bekräftar: {v}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="golfholes")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -457,7 +475,17 @@ def main(argv: list[str] | None = None) -> int:
     sr.add_argument("--utan-pdf", action="store_true", help="bara PNG")
     sub.add_parser("partnerexport", help="Sponsorer per hål som JSON + zip till digitala partnerkanaler"
                    ).add_argument("klubbmapp")
+    pp = sub.add_parser("partnerprogram", help="Klubbens partnerprogram: presentation, prospekt, manual, rapporter m.m.")
+    pp.add_argument("klubbmapp")
+    pp.add_argument("--ut", default=None, help="utmapp (standard: output/<klubb>/partnerprogram)")
+    pp.add_argument("--logg", default=None,
+                    help="partneröversikten (xlsx; standard: data/<klubb>/partnerprogram/partneroversikt-<säsong>.xlsx)")
+    pp.add_argument("--bara", default=None, help="kommaseparerat urval: deck, prospekt, manual, rapport, kalender, "
+                    "prislista, oversikt, beslut, framtid")
+    pp.add_argument("--utan-bilder", action="store_true", help="hoppa över PNG av presentationens sidor")
     a = p.parse_args(argv)
+    if a.cmd == "partnerprogram":
+        return partnerprogram(a.klubbmapp, a.ut, a.logg, a.bara, not a.utan_bilder)
     if a.cmd == "sponsorrapport":
         return sponsorrapport(a.klubbmapp, a.sasong, a.kalla, not a.utan_pdf)
     if a.cmd == "partnerexport":

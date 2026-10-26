@@ -92,11 +92,11 @@ class Klubb:
         v = str(st.get(hal, st.get(str(hal), "ledig")) or "ledig").strip().lower()
         if v in ("ledig", "ledigt", "fri"):
             return "ledig"
-        if v in ("bokad", "bokat"):
+        if v in ("bokad", "bokat", "reserverad", "reserverat"):
             return "bokad"
         if v in ("såld", "sålt", "sald", "salt"):
             return "såld"
-        raise ValueError(f"sponsring.status för hål {hal}: {v!r} (skriv ledig, bokad eller såld)")
+        raise ValueError(f"sponsring.status för hål {hal}: {v!r} (skriv ledig, reserverad eller såld)")
 
     def logga(self, bakgrund: str = "ljus") -> str:
         p = self.loggor.get(bakgrund)
@@ -199,6 +199,9 @@ def qr(url: str, farg: str) -> tuple[str, bool]:
     return svg.replace("<svg ", "<svg style='width:100%;height:100%;display:block' ", 1), akta
 
 
+CHROMIUM = "/opt/pw-browsers/chromium"
+
+
 class Webblasare:
     """En Chromium-session för många sidor (Playwright). PNG per sida och PDF av flera."""
 
@@ -208,7 +211,12 @@ class Webblasare:
         except ImportError as err:  # pragma: no cover
             raise SystemExit("Playwright saknas: pip install playwright && playwright install chromium") from err
         self._pw = sync_playwright().start()
-        self._b = self._pw.chromium.launch()
+        try:
+            self._b = self._pw.chromium.launch()
+        except Exception:  # molnmiljön: förinstallerad Chromium när Playwright-versionen inte hittar sin egen
+            if not Path(CHROMIUM).exists():
+                raise
+            self._b = self._pw.chromium.launch(executable_path=CHROMIUM)
         return self
 
     def __exit__(self, *exc):
