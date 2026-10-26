@@ -644,6 +644,67 @@ def tvatta_film(film: Path, ut: Path, rutor: tuple[int, int], ruta: tuple[int, i
     return antal
 
 
+def ljusa_ytor_karta(orto: Path, bbox, res: float = 0.5, marginal_m: float = 3.0):
+    """Var det finns ljus, grå mark i verkligheten (grusvägar, stigar, sand, tak) enligt ortofotot.
+    Returnerar (mask, e0, n1, res); masken är vidgad marginal_m åt alla håll."""
+    from . import flygfilm as ff
+    from PIL import ImageFilter
+    a, e0, n0, r0 = ff.read_window(orto, bbox)
+    rgb = a[..., :3].astype(np.uint8) if a.dtype == np.uint8 else np.clip(a[..., :3], 0, 255).astype(np.uint8)
+    im = Image.fromarray(rgb)
+    im = im.resize((max(1, round(im.width * r0 / res)), max(1, round(im.height * r0 / res))), Image.BILINEAR)
+    r = np.asarray(im, np.float32)
+    gront = 2 * r[..., 1] - r[..., 0] - r[..., 2]                # gräs och träd är tydligt gröna, grus och sand inte
+    V = r.max(-1)
+    lok = np.asarray(Image.fromarray(V.astype(np.uint8)).filter(ImageFilter.GaussianBlur(12)), np.float32)
+    m = (gront < 6) & (V > lok + 4)
+    m = np.asarray(Image.fromarray((m * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(3))
+                   .filter(ImageFilter.MaxFilter(3))) > 0       # bort med enstaka prickar i gräset
+    k = 2 * round(marginal_m / res) + 1
+    m = np.asarray(Image.fromarray((m * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(k))) > 0
+    return m, e0, n0, res
+
+
+def stigtvatt_bild(bild: np.ndarray, proj: Projektion, i: int, karta, min_px: int = 80) -> tuple[np.ndarray, int]:
+    """Tar bort ljusa grå stråk (stigar, vägar, sand) som AI:n har hittat på: där strålen genom
+    bildpunkten träffar mark som är grön i ortofotot. Riktiga vägar och bunkrar rörs inte.
+    Bara borttagning; hålet fylls med gräset runt omkring (cv2.inpaint)."""
+    import cv2
+    m, e0, n1, res = karta
+    f = bild.astype(np.float32)
+    V = f.max(-1)
+    lok = cv2.GaussianBlur(V, (0, 0), 15)
+    gra = (2 * f[..., 1] - f[..., 0] - f[..., 2] < 14) & (f[..., 0] - f[..., 2] < 28)   # neutralt grå, inte gult gräs
+    kand = gra & (V > lok + 2) & (V > 60)                         # ljusare än gräset runt omkring
+    k = proj.kams[i]
+    ys, xs = np.nonzero(kand)
+    if not len(xs):
+        return bild, 0
+    F, R, U = proj.axlar(k)
+    xsn = (xs - proj.bredd / 2 + 0.5) / proj.f
+    ysn = (ys - proj.hojd_px / 2 + 0.5) / proj.f
+    dz = F[2] + xsn * R[2] - ysn * U[2]
+    mark = dz < -0.02                                            # strålen går ned mot marken (inte himmel)
+    e, n = proj.mark_under(i, xs.astype(np.float64), ys.astype(np.float64))
+    cx = ((e - e0) / res).astype(int)
+    cy = ((n1 - n) / res).astype(int)
+    inne = (cx >= 0) & (cy >= 0) & (cx < m.shape[1]) & (cy < m.shape[0])
+    verklig = np.zeros(len(xs), bool)
+    verklig[inne] = m[cy[inne], cx[inne]]
+    pahittad = mark & inne & ~verklig
+    mask = np.zeros(bild.shape[:2], np.uint8)
+    mask[ys[pahittad], xs[pahittad]] = 1
+    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
+    nn, lab, st, _ = cv2.connectedComponentsWithStats(mask)
+    behall = np.isin(lab, [j for j in range(1, nn) if st[j, 4] >= min_px])
+    mask = cv2.dilate(behall.astype(np.uint8), np.ones((9, 9), np.uint8))
+    if not mask.any():
+        return bild, 0
+    fyll = cv2.inpaint(np.ascontiguousarray(bild), mask, 9, cv2.INPAINT_TELEA)
+    w = cv2.GaussianBlur(mask.astype(np.float32), (0, 0), 3)[..., None]
+    return np.clip(bild * (1 - w) + fyll * w, 0, 255).astype(np.uint8), int(mask.sum())
+
+
 def nyckelark(film: Path, rutor: list[int], ut: Path, kolumner: int = 4, bredd: int = 480, fps: int = 24) -> Path:
     """Rutor ur en film på ett ark, med tid under varje bild."""
     from PIL import ImageFont
@@ -685,7 +746,8 @@ def _delar(text: str) -> list[tuple[int, int]]:
 
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="flygfilm_kontroll")
-    p.add_argument("steg", choices=["kameror", "slutbild", "konturer", "animatic", "hopklipp", "omproj", "tvatt", "stig", "rarutor"])
+    p.add_argument("steg", choices=["kameror", "slutbild", "konturer", "animatic", "hopklipp", "omproj", "tvatt", "stig", "rarutor",
+                                       "stigtvatt"])
     p.add_argument("hal")
     p.add_argument("--data")
     p.add_argument("--sek", type=float, default=12.0)
@@ -756,6 +818,23 @@ def main(argv=None) -> int:
         if len(klipp) != len(delar):
             raise SystemExit(f"{len(delar)} AI-delar men {len(klipp)} klipp")
         print(hopklipp(Path(a.film), klipp, delar, Path(a.ut), tona=a.tona))
+        return 0
+    if a.steg == "stigtvatt":
+        (r0, r1), = _delar(a.delar)
+        orto = sorted((data_dir / "orto").glob("*.tif"))[0]
+        karta = ljusa_ytor_karta(orto, hal_bbox(hole, 600.0))
+        bilder = _las_film(Path(a.film), proj.bredd, proj.hojd_px, 24).copy()
+        antal = 0
+        for i in range(r0, min(r1, len(bilder))):
+            bilder[i], k = stigtvatt_bild(bilder[i], proj, i, karta)
+            antal += k
+        skriv = subprocess.Popen([ffmpeg_bin(), "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24",
+                                  "-s", f"{proj.bredd}x{proj.hojd_px}", "-r", "24", "-i", "-", "-c:v", "libx264",
+                                  "-pix_fmt", "yuv420p", "-crf", "14", a.ut], stdin=subprocess.PIPE)
+        skriv.stdin.write(bilder.tobytes())
+        skriv.stdin.close()
+        skriv.wait()
+        print("påhittade stigar, borttagna pixlar:", antal)
         return 0
     if a.steg == "rarutor":
         from .flygfilm import rendera_rutor, sudda_linjer

@@ -116,6 +116,25 @@ def test_synk_bas_hittar_forskjuten_takt():
     assert abs(v[25] - 37.5) < 3 and abs(v[-1] - 73.5) < 4
 
 
+def test_stigtvatt_tar_bara_bort_stig_som_inte_finns():
+    pytest.importorskip("cv2")
+    from golfholes.render.flygfilm_kontroll import stigtvatt_bild
+    # kamera rakt ned över plan mark, norr uppåt: bilden täcker e 10–110 m
+    data = _data(-math.pi / 2 + 1e-3)
+    data["kameror"][0].update(e=60.0, n=60.0, z=186.6)
+    proj = Projektion(data)
+    bild = np.zeros((720, 1280, 3), np.uint8)
+    bild[...] = (70, 120, 50)                                   # grönt gräs
+    bild[350:370, 100:1180] = (175, 172, 168)                   # grå stig tvärs över
+    karta_m = np.zeros((240, 240), bool)
+    karta_m[:, :120] = True                                      # i verkligheten finns stigen bara väster om e = 60 m
+    ut, n = stigtvatt_bild(bild, proj, 0, (karta_m, 0.0, 120.0, 0.5))
+    vast, ost = ut[360, 200:500].astype(int), ut[360, 800:1100].astype(int)
+    assert n > 0
+    assert vast.mean() > 150                                     # riktig stig kvar
+    assert (2 * ost[:, 1] - ost[:, 0] - ost[:, 2]).mean() > 40   # påhittad stig blev gräs
+
+
 def test_avstand_star_pa_tee_och_gar_bara_ned():
     from golfholes.render.flygfilm_avstand import avstand_per_ruta, synlighet
     hal = {"centerline": [[0.0, 0.0], [0.0, 300.0]], "tees": [{"name": "56", "point": [0.0, 0.0], "length_m": 330}]}
