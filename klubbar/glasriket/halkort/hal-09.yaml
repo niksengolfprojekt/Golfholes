@@ -10,15 +10,14 @@ index: 10
 tees: [["56 · 60", 473], ["52 · 49", 439], ["44", 335]]
 bild: ../halbilder/hal-09-malad.webp
 typbild: false
-rubrik: Gott om plats från tee
-beskrivning: >-
-  En lång par 5 rakt norrut. Två fairwaybunkrar ligger cirka 215–260 m från tee 56/60,
-  sedan smalnar hålet av fram mot greenen, som har en bunker till vänster.
+rubrik: "Bred start, smal final"
+beskrivning: "Ett långt par 5 där utslaget får flyga. Gott om plats från tee, två fairwaybunkrar att hålla koll på, och sedan smalnar hålet av fram mot greenen. Det är transportslaget som avgör."
 rad_rubrik: Råd från pro:n
 rad:
-  - Här finns det gott om plats från tee.
-  - Det är ganska smalt framme vid greenen, så placera ditt transportslag med precision.
-slutrad: Greenen är snäll.
+  - "Här finns gott om plats från tee."
+  - "Framme vid greenen blir det ganska smalt. Placera transportslaget med precision."
+slutrad: "Väl framme väntar en snäll green."
+kortrad: "Gott om plats från tee – men placera transportslaget med precision."   # pro:ns råd i en mening (prospekt och inlägg)
 strategi:
   sakert: Lägg transportslaget kort om det smala partiet och spela in med ett fullt slag.
   chansa: Två långa slag tar dig nära, men framme vid greenen är det smalt och bunker vänster.

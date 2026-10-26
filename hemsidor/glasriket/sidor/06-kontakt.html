@@ -1,0 +1,31 @@
+<!--
+titel: Kontakt och öppettider · Glasrikets GK
+beskrivning: Kontakta Glasrikets Golfklubb i Växjö: e-post, telefon, öppettider för reception, shop och kansli, och vägbeskrivning till Fylleryd.
+sokvag: kontakt/
+-->
+<section class="sek sek-topp">
+  <div class="inne tva">
+    <div class="text">
+      <p class="over">Kontakt</p>
+      <h1>Välkommen till oss</h1>
+      <p class="ingress">Mejla gärna din fråga, så svarar vi så snart vi kan. Under lågsäsong bokar vi gärna en tid för besök på kansliet.</p>
+      <dl class="kontakt-dl kontakt-stor">
+        <div><dt>E-post</dt><dd><a href="mailto:{{epost}}">{{epost}}</a></dd></div>
+        <div><dt>Kansliet</dt><dd><a href="tel:{{telefon_lank}}">{{telefon}}</a></dd></div>
+        <div><dt>Swish</dt><dd>{{swish}}</dd></div>
+      </dl>
+      <address>{{adress_rad1}}<br>{{adress_rad2}}<br>{{adress_rad3}}</address>
+      <p><a class="pil" href="{{karta}}" rel="noopener">Vägbeskrivning</a></p>
+    </div>
+    <div class="text kort-ljus">
+      {{tider_reception}}
+      {{tider_kansli}}
+      <h3>Restaurangen</h3>
+      <p>Telefon {{restaurang_tel}}. {{restaurang_not}}</p>
+      <h3>Pro och shop</h3>
+      <p><a href="{{proshop_url}}" rel="noopener">{{proshop_namn}}</a></p>
+      <h3>Följ oss</h3>
+      <p><a href="{{instagram}}" rel="noopener">Instagram</a> · <a href="{{facebook}}" rel="noopener">Facebook</a></p>
+    </div>
+  </div>
+</section>

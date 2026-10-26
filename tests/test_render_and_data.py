@@ -50,7 +50,7 @@ def test_mosaic_crop_places_tiles_correctly(tmp_path):
     assert float(jgw[4]) == 500050.5 and float(jgw[5]) == 6300079.5
 
 
-def test_four_styles_render_from_same_data():
+def test_four_drawing_engines_render_from_same_data():
     from golfholes.render.styles import STYLE_NAMES, render_green, render_hole
 
     hole = Hole.from_yaml(EXAMPLE)
@@ -60,17 +60,56 @@ def test_four_styles_render_from_same_data():
         assert render_green(hole, st).startswith("<svg")
 
 
-def test_club_picks_style_by_number_or_name():
-    from golfholes.render.styles import parse_style
+def test_club_picks_one_of_six_styles_by_name():
+    from golfholes.stilar import MENY, STILAR, las_stil
 
-    assert parse_style(1) == 1 and parse_style("3") == 3 and parse_style("Klassisk") == 2
-    assert parse_style(None) == 4
-    for bad in (0, 5, "guld"):
+    assert [s.namn for s in MENY] == ["Akvarell", "Sommarakvarell", "Gravyr", "Mjuk 3D", "Arkitektskiss",
+                                      "Papperssnitt"]
+    assert las_stil("Mjuk 3D").nyckel == "mjuk-3d" and las_stil("gravyr").namn == "Gravyr"
+    assert las_stil("PAPPERSSNITT").nyckel == "papperssnitt" and las_stil(None).nyckel == "foto"
+    for s in STILAR.values():
+        assert s.provbild.exists(), s.prov
+        assert "every pixel of every edge must stay where it is" in s.prompt
+        assert "Do not add or remove anything" in s.prompt
+    assert len({s.prompt for s in MENY}) == 6
+    for bad in (0, 5, "guld", "Blå gravyr"):
         try:
-            parse_style(bad)
+            las_stil(bad)
         except ValueError:
             continue
         raise AssertionError(f"{bad!r} borde ge fel")
+
+
+def test_old_style_numbers_still_read_with_warning():
+    import contextlib
+    import io
+
+    from golfholes.stilar import las_stil
+
+    err = io.StringIO()
+    with contextlib.redirect_stderr(err):
+        assert las_stil(3).nyckel == "gravyr" and las_stil("2").nyckel == "akvarell"
+        assert las_stil("Nordisk").nyckel == "mjuk-3d" and las_stil(1).nyckel == "foto"
+    assert err.getvalue().count("VARNING") == 4
+
+
+def test_stilprov_shows_all_six_same_size(tmp_path):
+    from PIL import Image
+
+    from golfholes.stilar import stilprov
+
+    files = stilprov(tmp_path, hojd_px=200)
+    assert len([k for k in files if k not in ("alla", "promptar")]) == 6
+    assert Image.open(files["alla"]).height == 200 + 70 + 80
+    md = files["promptar"].read_text(encoding="utf-8")
+    assert md.count("## ") == 6 and "Arkitektskiss" in md
+
+
+def test_painted_image_path_per_style(tmp_path):
+    from golfholes.stilar import las_stil, malad_bild
+
+    assert malad_bild(tmp_path, 3, las_stil("foto")).name == "hal-03-malad.webp"
+    assert malad_bild(tmp_path, 3, las_stil("Mjuk 3D")).name == "hal-03-malad-mjuk-3d.webp"
 
 
 def test_scope_ids_keeps_svgs_apart():

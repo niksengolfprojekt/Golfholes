@@ -1,0 +1,31 @@
+# Fröpunkter för hål 6 (SWEREF 99 TM, meter). Satta 2026-10-23 mot ortofoto 2025-07-01 (rutnätsutsnitt),
+# klubbens hålkarta H06-1 (banguide 2025) och översiktskartan.
+# Par 4 mot nordväst längs en fairway med träd på högersidan, som sedan svänger höger (norrut)
+# upp mot en stor rund green. Dammen med bäcken ligger till vänster om tee 49/44, som på kartan.
+# Tees:
+#  56/52 = klippta teen vid gångvägens krök (golfare står på den på fotot).
+#  49/44 = klippta ytan sydväst om gångvägen, ca 55 m framför 56/52 (stämmer med scorekortets 56 m).
+#  60    = "+30" bakom 56/52 i kartans riktning: ligger under träden och syns inte på fotot, beräknad.
+club: Glasrikets Golfklubb
+hole: 6
+par: 4
+index: 2
+orto: data/glasriket/orto/o63050_4900_25_mr25.tif
+tees:
+- {name: '60', point: [492014.0, 6305529.0], length_m: 331}  # beräknad, syns inte på fotot
+- {name: 56/52, point: [491985.0, 6305522.0], length_m: 301}
+- {name: 49/44, point: [491932.0, 6305510.0], length_m: 245}
+centerline:
+- [492014.0, 6305529.0]
+- [491985.0, 6305522.0]
+- [491900.0, 6305545.0]
+- [491790.0, 6305583.0]
+- [491785.0, 6305676.0]
+green: [491785.0, 6305676.0]
+fairway:
+- [491880.0, 6305550.0]
+- [491830.0, 6305570.0]
+- [491795.0, 6305590.0]
+- [491790.0, 6305640.0]
+laser: data/glasriket/laser/y26a023-63050_4900_25.copc.laz
+hojd: data/glasriket/hojd/m630_49.tif

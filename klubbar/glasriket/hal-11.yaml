@@ -1,5 +1,6 @@
 # UTKAST – genererat 2026-10-20 av `python -m golfholes utkast klubbar/glasriket/utkast/hal-11.yaml`.
 # Granska mot klubbens hålkarta och kontrollbilden innan det godkänns.
+# Rättat 2026-10-24 med Eric: tee 60 flyttad 33 m bakåt (scorekortet: 48 m bakom tee 56); inget tydligt teeplan på fotot, klubben bekräftar.
 club: Glasrikets Golfklubb
 hole: 11
 par: 5
@@ -7,6 +8,7 @@ index: 13
 source: Ortofoto ©Lantmäteriet (o63050_4900_25_mr25.tif), utkast med trollstav (golfholes/utkast.py) från fröpunkter i klubbar/glasriket/utkast/hal-11.yaml. Granskas mot klubbens hålkarta.
 origin: [0.0, 0.0]
 centerline:
+- [492045.0, 6306093.0]
 - [492047.0, 6306060.0]
 - [492049.0, 6306030.0]
 - [492048.0, 6305900.0]
@@ -15,7 +17,7 @@ centerline:
 - [492079.0, 6305609.0]
 tees:
 - name: '60'
-  point: [492047.0, 6306060.0]
+  point: [492045.0, 6306093.0]
   length_m: 494
 - name: '56'
   point: [492048.0, 6306045.0]

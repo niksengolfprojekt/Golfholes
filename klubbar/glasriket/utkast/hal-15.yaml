@@ -1,0 +1,38 @@
+# Fröpunkter för hål 15 (SWEREF 99 TM, meter). Satta 2026-10-23 mot ortofoto 2025-07-01 (rutnät 10–20 m),
+# Lantmäteriets höjdmodell (skuggning 1 m), klubbens hålkarta H15-1 (banguide 2025) och översiktskartan.
+# Par 4 mot nordväst: tees söder om gångvägen strax öster om hål 11:s green, fairway snett uppåt mot
+# nordväst med gångvägen på vänster sida (som kartan), smalt sista parti genom granarna fram till en
+# liten oval green utan bunkrar (ca 491826–491850, 6305717–6305737). Hål 16:s tee ligger nordväst om
+# greenen, på andra sidan landsvägen – kartans "16"-flagga till höger om greenen.
+# Hål 6 går parallellt söder om hål 15 (green 491785,6305676) och hål 7:s green ligger norr om greenen.
+# Tees: en upphöjd teeplatta i höjdmodellen (ca 492070–492103, 6305556–6305572) med två klippta ytor på fotot:
+#   60    = östra/bakre ytan (ca 492098,6305567), 23 m bakom 56/52 (kartan: +28 m).
+#   56/52 = västra lilla ovala ytan (ca 492075,6305563).
+#   49/44 = syns inte på fotot eller i höjdmodellen – placerad på spellinjen på scorekortets avstånd,
+#           hamnar vid gångvägen (kartan ritar den vid gångvägen, med hjärtstartare/skydd). Klubben bekräftar.
+# Out höger (norr) enligt klubben – finns inte på kartan och ritas inte.
+club: Glasrikets Golfklubb
+hole: 15
+par: 4
+index: 7
+orto: data/glasriket/orto/o63050_4900_25_mr25.tif
+tees:
+- {name: '60', point: [492098.0, 6305567.0], length_m: 324}
+- {name: 56/52, point: [492075.0, 6305563.0], length_m: 296}
+- {name: 49/44, point: [492050.0, 6305576.0], length_m: 265}  # beräknad, syns inte på fotot
+centerline:
+- [492098.0, 6305567.0]
+- [492075.0, 6305563.0]
+- [492020.0, 6305592.0]
+- [491940.0, 6305628.0]
+- [491880.0, 6305672.0]
+- [491852.0, 6305708.0]
+- [491838.0, 6305727.0]
+- [491830.0, 6305738.0]
+green: [491838.0, 6305727.0]
+fairway:
+- [491990.0, 6305605.0]
+- [491930.0, 6305640.0]
+- [491885.0, 6305675.0]
+laser: data/glasriket/laser/y26a023-63050_4900_25.copc.laz
+hojd: data/glasriket/hojd/m630_49.tif

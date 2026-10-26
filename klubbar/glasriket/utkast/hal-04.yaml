@@ -1,0 +1,42 @@
+# Fröpunkter för hål 4 (SWEREF 99 TM, meter). Satta 2026-10-23 mot ortofoto 2025-07-01 (rutnätsutsnitt),
+# klubbens hålkarta H04-1 (banguide 2025) och översiktskartan.
+# Par 3 rakt söderut (svagt sydsydväst) i en skogsgata. Green med en bunker till höger framför
+# och en till vänster bredvid green (fotot juli 2025; klubben har byggt om bunkrarna 2025, så
+# bunkerläget ska bekräftas av klubben). Hål 5:s tees ligger bakom greenen.
+# Tees: teeboxarna syns otydligt på fotot (trädskugga, klippt yta utan tydliga kanter).
+#  56/52 = vid den vita markeringen på klippta ytan; läget satt på scorekortets längd
+#          längs hålets riktning (beräknad, teeboxen syns inte tydligt).
+#  49/44 = framför 56/52 på samma yta, satt på scorekortets längd (beräknad, syns inte separat).
+#  60    = "+36" bakom 56 vid gången, där en ljus träkonstruktion syns på fotot (osäker).
+club: Glasrikets Golfklubb
+hole: 4
+par: 3
+index: 14
+orto: data/glasriket/orto/o63050_4900_25_mr25.tif
+tees:
+- {name: '60', point: [491746.5, 6305642.5], length_m: 176}
+- {name: 56/52, point: [491737.3, 6305607.7], length_m: 140}
+- {name: 49/44, point: [491733.4, 6305593.3], length_m: 125}  # beräknad, syns inte på fotot
+centerline:
+- [491746.5, 6305642.5]
+- [491737.3, 6305607.7]
+- [491700.0, 6305472.0]
+green: [491700.0, 6305472.0]
+fairway:
+- [491712.0, 6305525.0]
+# Greenen: trollstaven tog med kragen mot bunkrarna. Kanten inritad ur fotot (ovalen, ca 35 × 30 m).
+green_polygon:
+- [491718.5, 6305472.5]
+- [491716.2, 6305480.0]
+- [491709.8, 6305485.5]
+- [491701.0, 6305487.5]
+- [491692.2, 6305485.5]
+- [491685.8, 6305480.0]
+- [491683.5, 6305472.5]
+- [491685.8, 6305465.0]
+- [491692.2, 6305459.5]
+- [491701.0, 6305457.5]
+- [491709.8, 6305459.5]
+- [491716.2, 6305465.0]
+laser: data/glasriket/laser/y26a023-63050_4900_25.copc.laz
+hojd: data/glasriket/hojd/m630_49.tif

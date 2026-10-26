@@ -1,0 +1,140 @@
+# Texter per hål till hålsidorna på Glasrikets hemsida.
+# Källa: klubbens egna "Råd från PRO:n" i banguiden 2025 (glasriketsgk.se/haloversikt, hämtad 2026-10-20,
+# ordagrant i /mnt/project-files/glasriket/banguide-2025/pro-rad.md), lätt redigerade. Klubben godkänner.
+#
+# Hål som har ett hålkort (klubbar/glasriket/halkort/hal-NN.yaml) tar rubrik, beskrivning och råd därifrån;
+# det som står här för samma hål används bara om hålkortet saknar fältet.
+#
+# Fält:  rubrik, beskrivning, rad (lista), slutrad, obs (regler och säkerhet, visas i en egen ruta)
+#        sponsor: {name: "Företag AB", url: "https://…", logo: "sökväg till logga i en färg (SVG/PNG)"}
+#        Sponsorn kan också stå i hålkortet. Utan sponsor visas inget sponsorfält.
+1:
+  rubrik: "Rundan börjar med en chans"
+  beskrivning: "Klubbhuset i ryggen och en kort par 5 som svänger mjukt vänster. Out på båda sidor håller dig skärpt, och längre fram blänker två dammar till höger. Lägg bollen rätt, så är greenen nära."
+  rad:
+    - "Ett relativt kort öppningshål, men det är out både till vänster och till höger."
+    - "Lägg andra slaget på högersidan. Då får du ett ganska kort inspel mot en green som sluttar svagt ifrån dig."
+  slutrad: "Vänsterkanten ger dig medstuds."
+2:
+  rubrik: "Dammen bestämmer längden"
+  beskrivning: "Hålet ser rakt och öppet ut. Men cirka 220 meter från tee 56 skär en fyrkantig damm tvärs över fairway, och hela högersidan fram till dammen är rött pliktområde. Index 4. Här vinner den som känner sin längd."
+  rad:
+    - "Lägg utslaget kort om den fyrkantiga dammen, som ligger cirka 220 meter från tee 56."
+    - "Då återstår ungefär 120 meter till en green som sluttar åt höger."
+  slutrad: "Högersidan fram till dammen är rött pliktområde."
+3:
+  rubrik: "Frestelsen heter 240 meter"
+  beskrivning: "Ett kort par 4 som svänger höger mot en liten, inbunkrad green. Genvägen lockar redan på tee, men out följer hela högersidan. Hålet avgörs innan du slår: modigt eller klokt?"
+  rad:
+    - "Den långtslående genar mot greenen, men det kräver en carry på cirka 240 meter."
+    - "Medelgolfaren slår cirka 170 meter rakt fram och får då ett inspel på cirka 100 meter mot den lilla greenen."
+  slutrad: "Out längs hela högersidan."
+4:
+  rubrik: "Rakt genom skogsgatan"
+  beskrivning: "Ett fint par 3 genom en smal skogsgata. Två bunkrar vaktar greenens framkant, en på var sida, och skogen står tätt inpå. Hålet begär bara ett rakt slag. Det är svårare än det låter."
+  rad:
+    - "Ett fint korthål där en sak gäller: spela rakt."
+    - "Bunkern till höger fångar de flesta bollar som går åt höger, så du slipper leta."
+  slutrad: "Rakt är rätt på det här hålet."
+5:
+  rubrik: "Mer plats än du tror"
+  beskrivning: "Från tee ser fairway smalare ut än den är. En damm tidigt till vänster och en bunker längre fram på samma sida drar blicken åt fel håll. Den som litar på högersidan får en stor green att sikta på."
+  rad:
+    - "Det finns mer plats på högersidan än vad som syns från tee. Använd den."
+    - "Sneddar du för tight längs vänstersidan blir du lätt mask."
+  slutrad: "Greenen är stor och lätträffad."
+6:
+  rubrik: "Vänster först, sedan platån"
+  beskrivning: "Index 2, och det märks. Fairway viker av åt höger bakom en rad träd som är mycket svåra att slå över. Greenen är stor men har platåer, så hålet är inte klart förrän bollen ligger på rätt nivå."
+  rad:
+    - "Håll vänster med utslaget. Träden på högersidan är mycket svåra att slå över."
+    - "Placera inspelet på rätt platå, annars väntar lätt en treputt."
+  slutrad: "Rätt platå sparar slag."
+7:
+  rubrik: "Banans bästa birdiechans"
+  beskrivning: "Index 18: det lättaste hålet på scorekortet. Ett kort par 3 mot en rund green med bunkrar runt om, som fångar nästan allt som missar. Träffa ytan, så står du med en birdieputt."
+  rad:
+    - "Ett bra birdiehål. Bunkrarna fångar upp det mesta som missar greenen."
+    - "Hamnar du i en bunker: gå inte ner eller upp via de höga slänterna. De blir lösa och risken för pluggade bollar ökar."
+  slutrad: "Träffa greenen, sedan är chansen din."
+8:
+  rubrik: "Banans snabbaste green"
+  beskrivning: "Utslaget går ut ur en smal gata i skogen, med out längs vänstersidan och tjock ruff till höger. Två fairwaybunkrar väntar på var sin sida. Belöningen är banans snabbaste green."
+  rad:
+    - "Ganska smalt utslag: out längs vänstersidan och tjock ruff till höger."
+    - "Placera utslaget på fairway, så blir hålet lättspelat."
+  slutrad: "Banans snabbaste green – var rädd om farten."
+9:
+  rubrik: "Bred start, smal final"
+  beskrivning: "Ett långt par 5 där utslaget får flyga. Gott om plats från tee, två fairwaybunkrar att hålla koll på, och sedan smalnar hålet av fram mot greenen. Det är transportslaget som avgör."
+  rad:
+    - "Här finns gott om plats från tee."
+    - "Framme vid greenen blir det ganska smalt. Placera transportslaget med precision."
+  slutrad: "Väl framme väntar en snäll green."
+10:
+  rubrik: "Läs flaggan, känn vinden"
+  beskrivning: "Ett långt par 3 ut ur skogen mot en smal green som är över 40 meter lång. Bunkrar vaktar både sidan och baksidan. Var flaggan står kan skilja flera klubbor, och vinden vill alltid vara med."
+  rad:
+    - "Ett bra korthål. Ta reda på var pinnen står innan du väljer klubba."
+    - "Känn efter hur vinden rör sig innan du slår."
+  slutrad: "Greenen är väl inbunkrad."
+11:
+  rubrik: "Nålsögat från tee"
+  beskrivning: "Utslaget går genom en smal ränna mellan träden. Klara den, så öppnar sig hålet efter dungarna med gott om plats på båda sidor. Sist väntar en liten, upphöjd green som kräver rätt längd."
+  rad:
+    - "Väldigt smalt från tee, men efter dungarna finns det mycket plats på båda sidor."
+    - "Placera transportslaget med precision, för inspelet kräver längdkontroll."
+  slutrad: "Liten, upphöjd green – längden avgör."
+12:
+  rubrik: "Tålamod genom skogen"
+  beskrivning: "En lång par 5 i en skogsgata, index 3. De sista hundra metrarna smalnar fairway av och svänger svagt vänster, med två bunkrar vänster framför greenen. Tålamod lönar sig: greenen är stor och snäll."
+  rad:
+    - "En lång par femma som kräver ett bra utslag."
+    - "Ta gärna ett lite längre tredjeslag, för framme vid greenen är det väldigt smalt."
+  slutrad: "Stor och snäll green."
+13:
+  rubrik: "Sikta höger, landa mitt i"
+  beskrivning: "Index 17 på scorekortet, men fairway har en egen vilja. Den lutar mot vänster, där rött pliktområde och en lång bunker väntar. Greenen vaktas av bunkrar på båda sidor. Rätt linje gör halva jobbet."
+  rad:
+    - "Fairway lutar mot vänster och bunkern. Håll utslaget mot högersidan, så hamnar du mitt i med bästa vinkeln in mot greenen."
+    - "Den stora bunkern till höger har höga kanter på sina ställen. Gå aldrig ner i eller upp ur bunkern via slänterna."
+  slutrad: "Vänster fram till bunkern: rött pliktområde."
+14:
+  rubrik: "Banans svåraste utslag"
+  beskrivning: "Index 1. Fairway böjer av åt höger genom granskogen, med out längs hela vänstersidan och skog till höger. En bunker vaktar greenen. Långtslående frestas att gena. Alla andra vinner hålet på tålamod."
+  rad:
+    - "Den långtslående genar över skogen mot greenen och får ett kort inspel."
+    - "Medelgolfaren ska inte utmana här. Det är out till vänster och skog till höger."
+  slutrad: "Spela hålet som ett par 5 – det är säkrast."
+15:
+  rubrik: "Följ den vänstra björken"
+  beskrivning: "Inte en enda bunker, och ändå index 7. Out följer högersidan, fairway smalnar av mellan granarna och framför greenen står en gran som ett plank. Här vinner den som läser hålet rätt."
+  rad:
+    - "Bästa linjen är rakt över den vänstra björken. Då hamnar du mitt i fairway."
+    - "Undvik högersidan, där det är out."
+    - "Håll inspelet högt. Granen före greenen fungerar som ett plank, och greenen är liten."
+  slutrad: "Björken från tee, högt inspel in."
+16:
+  rubrik: "En snäll green bland vatten"
+  beskrivning: "Ett kort par 4 som svänger höger upp mot greenen. Vattnet ramar in slutet, till vänster om greenen och i en damm till höger bakom. Ett kontrollerat utslag räcker långt. Flaggan avgör hur modig du ska vara."
+  rad:
+    - "En lätt fade på cirka 170 meter från tee ger dig ett kort inspel."
+    - "Står flaggan till vänster krävs längdkontroll."
+    - "Säkerhet: slå bara ut när blixtlampan framme till höger är släckt. Tänd lampan när du lämnat tee och släck den med knappen innan du går in på greenen."
+  slutrad: "Snäll green."
+  obs: "Säkerhet: slå ut bara när blixtlampan framme till höger är släckt. Tänd lampan när du lämnat tee – den sitter på högersidan cirka 110 meter från tee 49. Släck den med knappen innan du går in på greenen; knappen sitter före vägen mot hål 17."
+17:
+  rubrik: "Signaturhålet över vattnet"
+  beskrivning: "Hålet alla pratar om efter rundan. Ett kort par 3 över vatten, förbi en trädö i dammen, mot en green med vatten till vänster, framför och bakom. Rätt klubba ger ett lugnt par. Fel klubba hörs."
+  rad:
+    - "Banans signaturhål. Rätt längd och riktning, så gör du ett säkert par."
+    - "Slår du vänster, kort eller långt blir det blött."
+  slutrad: "Bakom greenen är det rött pliktområde hela vägen."
+18:
+  rubrik: "Precision hela vägen hem"
+  beskrivning: "Sista hålet går hem mot klubbhuset. Två fairwaybunkrar ligger cirka 225–250 meter från tee 60 och kräver ett klokt utslag. Sedan väntar ett långt andra slag mot en green som lutar svagt ifrån dig."
+  rad:
+    - "Ett hål som kräver precision från tee. Lägg gärna utslaget hitom bunkrarna, så tappar du inte längd."
+    - "Andra slaget blir ganska långt, mot en svagt frånlutande green."
+    - "Se upp för flyers från ruffen. Bollen kan flyga över greenen, och där är det hård mark och övningsgreen."
+  slutrad: "Spela in från fairway, inte från ruffen."

@@ -1,0 +1,21 @@
+# TESTKLUBB – påhittad klubb och påhittad sponsor (Nordvik) för tester och demo.
+# Används av tests/test_statistik.py och tests/test_partnerexport.py. Ingen riktig klubb.
+club: Ekbacka Golfklubb
+bana: Ekbackabanan
+testdata: true            # allt material från den här klubben märks TESTDATA
+web_base: https://exempel.se/ekbacka
+ronder_per_ar:
+  2027: 24000             # påhittad siffra
+statistik:
+  plausible_doman: exempel.se
+holes:
+  - {hole: 13, par: 3}
+  - {hole: 14, par: 4}
+sponsors:
+  14:
+    name: Nordvik
+    url: nordvik.se
+    logo: loggor/nordvik.svg
+    naming_rights: true
+    giltig_fran: 2027-04-01
+    giltig_till: 2027-10-31

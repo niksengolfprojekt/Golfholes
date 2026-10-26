@@ -1,0 +1,91 @@
+# Klubbens fakta till hemsidan. Källa: glasriketsgk.se (sidorna Klubbinformation, 18-hålsbanan,
+# Bli medlem, Greenfee, Boka starttid och Kontakta oss), hämtad 2026-10-23.
+# Priserna gäller 2026. Nya avgifter för 2027 beslutas på höstmötet – byt siffrorna här och kör bygget.
+hamtad: 2026-10-23
+namn: Glasrikets Golfklubb
+kortnamn: Glasrikets GK
+adress: [Glasrikets GK, Fylleryd, 355 92 Växjö]
+epost: info@glasriketsgk.se
+telefon: 0470-653 20
+swish: 123 476 30 90
+instagram: https://www.instagram.com/glasriketsgk/
+facebook: https://www.facebook.com/profile.php?id=100063828841768
+karta: https://www.google.com/maps/search/?api=1&query=Glasrikets+Golfklubb+V%C3%A4xj%C3%B6
+
+bana:
+  karaktar: Ängs- och skogsbana
+  par: 72
+  plats: i naturreservatet Fylleryd, 4,5 km nordost om Växjö centrum
+  spelklar: 18 hål sedan 1997
+  bandesigner: Kenneth Magnusson (1992–2000)
+  banarkitekt: Rolf Collijn, FSGA (från 2001)
+  sasong: april–oktober
+  golfvecka: vecka 30
+  pay_play: 12-hålsbana (Pay & Play), sex hål med tolv tees
+
+oppettider:
+  reception:
+    rubrik: Reception och shop
+    not: Ingång via gaveln mot drivingrangen.
+    tider: [["Måndag", "Stängt"], ["Tisdag–torsdag", "12–18"], ["Fredag", "10–16"], ["Lördag–söndag", "10–14"]]
+  kansli:
+    rubrik: Kansli
+    not: Under lågsäsong når du oss bäst via e-post, så bokar vi en tid.
+    tider: [["Telefontid måndag–torsdag", "10–12"]]
+
+restaurang: {telefon: 0470-653 48, not: "Stängd för säsongen, öppnar igen 1 maj 2027."}
+proshop: {namn: Golfhuset, url: http://www.golfhuset.com/}
+
+greenfee:
+  giltig: 2026
+  krav: För att spela 18-hålsbanan krävs aktivt medlemskap i en golfklubb.
+  stora:
+    - [Senior, vardag, 600]
+    - [Senior, helg, 800]
+    - [Junior (född 2005 eller senare), vardag, 300]
+    - [Junior (född 2005 eller senare), helg, 400]
+  nio:
+    not: Vardagar, bara hål 1–9. Inga rabatter på 9-hålsgreenfee.
+    rader: [[Senior, vardag, 380], [Junior, vardag, 190]]
+  pay_play:
+    not: Ordinarie greener året runt.
+    rader: [[Senior, vardag, 250], [Senior, helg, 300], [Junior, vardag, 125], [Junior, helg, 150]]
+  betalning: >-
+    Kort eller Swish i receptionen/shopen. När receptionen är obemannad betalar du med Swish och skriver in
+    dig i greenfeeboken vid entrédörren. Gäller även 12-hålsbanan.
+  samarbete:
+    rabatt: 20 % på ordinarie greenfee på 18-hålsbanan alla dagar
+    klubbar: [Alvesta GK, Carlskrona GK, Emmaboda GK, Lagans GK, Niklastorp GK, Ramkvilla GK, Ronneby GK,
+              Skinnarbo GK, Uppvidinge GK, Växjö GK, Älmhults GK]
+  golfhaftet: >-
+    Golfhäftet (Golfamore) gäller alla vardagar på ordinarie greenfee, inte vecka 27, 28, 29 och 31.
+    Inte på tävlingsgreenfee eller greenfeesamarbeten. Vi tar inte Golfhäftet Plus.
+  bokning:
+    period: Tidsbokning 2026 – 24 april till 31 oktober.
+    regler:
+      - Bokningar fylls i möjligaste mån upp till fyrbollar, för bästa spelrytm.
+      - Receptionen får flytta bokade spelare till närliggande starttid vid behov.
+      - Bollränna varannan tid på vardagar och varannan tid efter kl. 13 på lördagar och helgdagar.
+      - Större sällskap bokar via e-post.
+
+medlemskap:
+  giltig: 2026
+  not: >-
+    Avgifterna gäller kalenderår och räknas på födelseår. Beslutade av medlemmarna på höstmötet 12 november 2025.
+  former:
+    - {namn: Senior med spelrätt, villkor: från 22 år, pris: 7000, ingar: "Medlemsavgift 995 kr, spelavgift 5 805 kr, aktivitetsavgift 200 kr. Tre samtida bokningar."}
+    - {namn: Senior utan spelrätt, villkor: från 22 år, pris: 8200, ingar: "Medlemsavgift 995 kr, spelavgift 7 005 kr, aktivitetsavgift 200 kr. Tre samtida bokningar."}
+    - {namn: Långboende, villkor: minst 10 mil bort, pris: 4300, ingar: "Medlemsavgift 995 kr, spelavgift 3 305 kr. En samtida bokning."}
+    - {namn: Studerande, villkor: "heltidsstuderande vid högskola eller universitet, intyg krävs", pris: 4100, ingar: "Medlemsavgift 995 kr, spelavgift 2 905 kr, aktivitetsavgift 200 kr. En samtida bokning."}
+    - {namn: Junior, villkor: 17–21 år, pris: 3450, ingar: "Medlemsavgift 995 kr, spelavgift 2 355 kr, aktivitetsavgift 100 kr. En samtida bokning."}
+    - {namn: Yngre junior, villkor: 12–16 år, pris: 2600, ingar: "Medlemsavgift 995 kr, spelavgift 1 505 kr, aktivitetsavgift 100 kr. En samtida bokning."}
+    - {namn: Knattegolf, villkor: 0–11 år, pris: 1100, ingar: "Medlemsavgift 600 kr, spelavgift 500 kr. En samtida bokning."}
+    - {namn: 12-hålsbanan utan spelrätt, villkor: Pay & Play, pris: 3500, ingar: "Medlemsavgift 995 kr, spelavgift 2 305 kr, aktivitetsavgift 200 kr. En personlig greenfeebiljett till 18-hålsbanan via Min Golf. En samtida bokning."}
+    - {namn: 12-hålsbanan med spelrätt, villkor: Pay & Play, pris: 2900, ingar: "Medlemsavgift 995 kr, spelavgift 1 705 kr, aktivitetsavgift 200 kr. Två personliga greenfeebiljetter till 18-hålsbanan via Min Golf. En samtida bokning."}
+    - {namn: Greenfeemedlemskap, villkor: 20 % rabatt på ordinarie greenfee, pris: 995, ingar: "Aktivt medlemskap: spela greenfee på alla banor, träna på klubbens övningsområden och var med i klubbens verksamhet. En samtida bokning."}
+  delbetalning: Vill du dela upp betalningen går det att betala med autogiro i åtta delbetalningar.
+  friskvard: Friskvårdsbidrag kan sökas för spelavgiften.
+  aktivitet: Aktivitetsavgiften betalas tillbaka efter fyra timmars arbete vid någon av klubbens aktiviteter, eller om du är golfvärd vid ett tillfälle.
+  spelratt: >-
+    En spelrätt ger reducerad spelavgift varje år. Den kan köpas av klubben för 7 750 kr eller av en medlem
+    som vill sälja, till ett pris ni kommer överens om.

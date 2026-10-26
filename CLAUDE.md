@@ -13,12 +13,12 @@ Grafiska hålpresentationer och hålsponsorskyltar för svenska golfklubbar. Äg
 - Påhittade klubbar och sponsorer (t.ex. "Ekbacka Golfklubb", "Nordvik") används i demo; riktiga sponsorers loggor bara med tillstånd.
 
 ## Produktbeslut (2026-10-11)
-- En datagrund per klubb, fyra stilar: 1 Signatur (foto ovanifrån), 2 Klassisk (akvarell), 3 Arv (gravyr), 4 Nordisk (mjuk 3D-illustration). Klubben väljer med `stil: 1–4` i `klubb.yaml`; koden i `golfholes/render/styles.py` (hålbild) och `sign.py` (`THEMES`, skylt).
-- Tee-vy: kamera på tee, 1,6 m höjd, sikte 150 m ut längs mittlinjen (par 3: mot green). Flygfilm: 5 m höjd längs hålet, avslutas i hålbild ovanifrån med sponsorlogga.
+- En datagrund per klubb. Klubbens hålbildsstil anges i `klubb.yaml` som `stil:` med ett av de sex namnen nedan (t.ex. `stil: Gravyr`); tabellen `STILAR` i `golfholes/stilar.py` har AI-prompt och stilprov per stil. Glasriket har `stil: foto` (standardprompten). Gamla `stil: 1–4` läses med varning. De kodritade ritmotorerna i `golfholes/render/styles.py` och `sign.py` (`THEMES`) är bara reserv tills hålet är målat.
+- Tee-vy: kamera på tee, 1,6 m höjd, sikte 150 m ut längs mittlinjen (par 3: mot green). Flygfilm: 5 m höjd längs hålet, avslutas i hålbild ovanifrån med sponsorlogga. Rå film ur data: `python -m golfholes flygfilm <hålfil>` (`golfholes/render/flygfilm.py`); AI byter sedan bara yta (video-till-video).
 - Skylt 70 × 100 cm, tre plattor: rubrik ("[Sponsor]-hålet"), hålguide (byts aldrig), sponsorplatta med logga i en färg + QR-kod. Tillverkas av Ecosign.
 - Pilotklubb: Glasrikets GK, hål 3.
 
-- Stilmenyn på hemsidan (beslut 2026-10-22): klubben väljer stil innan vi gör deras hål bland sex AI-målade stilar: Akvarell, Sommarakvarell, Gravyr, Mjuk 3D, Arkitektskiss, Papperssnitt (prov: `klubbar/glasriket/typbilder/stilar/`). Bort: Blå gravyr, Platt grafisk, Screentryck, Foto höst, Vinterskymning och kodens fyra (Signatur, Klassisk, Arv, Nordisk). `stil:` 1–4 i koden är därmed föråldrat och ska bytas.
+- Stilmenyn på hemsidan (beslut 2026-10-22): klubben väljer stil innan vi gör deras hål bland sex AI-målade stilar: Akvarell, Sommarakvarell, Gravyr, Mjuk 3D, Arkitektskiss, Papperssnitt (prov: `klubbar/glasriket/typbilder/stilar/`). Bort: Blå gravyr, Platt grafisk, Screentryck, Foto höst, Vinterskymning och kodens fyra (Signatur, Klassisk, Arv, Nordisk). Inkopplat i koden 2026-10-23 (`stilprov`, `aiprompt`, `aiunderlag`, `aibild`, `halkort`, `webb` följer klubbens stil).
 - Hålbilder i målad stil: exakta masker från hålfilen + texturkit i `assets/texturer/<stil>/` (`golfholes/render/texture.py`). AI/skisser får bara leverera texturer, aldrig former.
 
 ## Miljö

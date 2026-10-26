@@ -2,9 +2,96 @@
 club: Glasrikets Golfklubb
 web: https://www.glasriketsgk.se
 contact: info@glasriketsgk.se, 0470-653 20
-layout: 1            # hålkortets layout: 1 Hålkort (spikad), 2 Poster, 3 Mörk, 4 Skärm, 5 Banguide, 6 Sponsorhål
+stil: foto           # hålbildens stil. Nya klubbar: Akvarell, Sommarakvarell, Gravyr, Mjuk 3D, Arkitektskiss
+                     # eller Papperssnitt. Glasriket har sin egen fotostil (standardprompten i docs/halproduktion.md).
+layout: 3            # Eric 2026-10-24: mörk botten på alla. Hålkortets layout: 1 Hålkort (spikad), 2 Poster, 3 Mörk, 4 Skärm, 5 Banguide, 6 Sponsorhål
 typsnitt: {siffror: Spectral, text: Hanken Grotesk}   # Glasrikets profil "Glas och skog" (förslag v0)
 caddee: false   # finns inte på caddee.se/anslutna-klubbar (2026-10-11)
+
+# Klubbens grafiska profil "Glas och skog" (förslag v0, 2026-10-18). Används av prospekt och inlägg.
+kortnamn: Glasrikets GK
+filnamn: Glasriket          # början på filnamnen i leveranserna
+bana: Fylleryd
+profil:
+  namn: Glas och skog
+  farger:
+    djup: "#10202E"         # mörka ytor, bär hålbilderna
+    sjo: "#1D4756"
+    glas: "#3F7F86"
+    is: "#9CC9C3"           # text på mörkt
+    kristall: "#EEF3EC"     # ljusa ytor
+    glod: "#D9A441"         # accent, bara på mörkt
+    glod_mork: "#8A6220"    # accent på ljust
+  rubrik: Spectral
+  brodtext: Hanken Grotesk
+  logga_pa_ljust: profil/sigill-marinbla.png
+  logga_pa_morkt: profil/sigill-vit.png
+  logga_farg: profil/sigill-fargad-mork.png   # sigillet "Småland" i färg på mörk botten
+
+# Flaggan på hålbilderna (Eric 2026-10-24: "All flaggor ska vi göra med klubbens egna logga på i deras färg").
+# Sigillet "Småland" i en färg (vitt) på duk i profilens Sjö. Saknas fältet ritas T-flaggan.
+flagga:
+  logga: profil/sigill-vit.png
+  farg: "#1D4756"
+
+# Hålsponsring: klubbens egna villkor. Prospektet läser allt härifrån.
+sponsring:
+  sasong: 2027
+  pris_per_hal: 25000       # kr per hål och år (Erics beslut 2026-10-24)
+  pris_villkor: per år
+  # Hålsidan blir `web` + /banan/hal-NN/ och QR-koden pekar dit med ?q=hNN (golfholes/statistik.py, qr_lank).
+  # Byts domänen: ändra `web` här och DOMAN i hemsidor/glasriket/bygg.py.
+  kontakt: info@glasriketsgk.se · 0470-653 20
+  ronder_per_ar: null       # klubbens antal ronder per år; tomt = riksgenomsnittet används som uppskattning
+                            # Erics beslut 2026-10-24: fjolårets siffra (2025). Ingen offentlig källa hittad
+                            # (glasriketsgk.se har ingen verksamhetsberättelse ute); senast publicerat är 2020:
+                            # 15 500 medlemsronder + 3 400 greenfeeronder bokade i GIT. Klubben lämnar 2025 års siffra.
+  # Den gemensamma presentationen (prospekt --gemensam): exempelhål och omslagets hål.
+  exempelhal: 17
+  omslagshal: [14, 17, 9]
+  sponsorsida: https://www.glasriketsgk.se/halsponsorer/   # QR-koden på sista sidan
+  # Tillval efter hålet (sidorna 8–9 i den gemensamma presentationen). Klubben sätter priserna.
+  # finns: klubbens anläggning i dag (glasriketsgk.se, 2026-10-25). nytt: förslag på nya produkter.
+  tillval:
+    finns:
+      - {namn: Rangen, text: "Där varje runda börjar. Er logotyp vid utslagsplatserna och på bollkorgarna, med ert namn på hela övningsområdet."}
+      - {namn: 12-hålsbanan, text: "Lilla banan, där nya golfare slår sina första slag. Ge den ert namn och var med från början."}
+      - {namn: Fotbollsgolfen, text: "Arton hål för familjer, barnkalas och kollegor hela sommaren. Er skylt mitt i leken."}
+      - {namn: Kiosken vid nian, text: "Halvvägsstoppet där alla stannar. Er logotyp precis där rundan tar paus."}
+      - {namn: Klubbens tävlingar, text: "Ge en tävling ert namn och dela ut priserna själva. Ni syns i startlistan, resultatet och vid prisbordet."}
+      - {namn: Juniorerna, text: "Er logotyp på träningströjorna hos klubbens unga golfare. Lokal stolthet som syns varje vecka."}
+    nytt:
+      - {namn: Hole-in-one-tavlan, text: "Vid banans par 3-hål. Varje hole-in-one hamnar på tavlan, med ert namn överst."}
+      - {namn: Företagsdagen, text: "Kunder eller kollegor på banan: prova på med klubbens tränare, en runda och middag. Klubben ordnar allt."}
+      - {namn: Skärmen i klubbhuset, text: "Hålen, dagens resultat och er logotyp, där alla samlas efter rundan."}
+      - {namn: Scorekortet, text: "Varje runda börjar med ett scorekort i handen. Er logotyp på baksidan, hela säsongen."}
+      - {namn: Första tee, text: "Varje runda på Fylleryd börjar här. Er skylt möter alla som slår ut på ettan."}
+      - {namn: Hjärtstartaren, text: "Tryggheten på banan, med ert namn. En sponsring alla förstår värdet av."}
+  # Kryssrutorna på sidan "Vilket blir ert hål?": ledig, bokad eller såld. Ändra och kör kommandot igen.
+  status:
+    1: ledig
+    2: ledig
+    3: ledig
+    4: ledig
+    5: ledig
+    6: ledig
+    7: ledig
+    8: ledig
+    9: ledig
+    10: ledig
+    11: ledig
+    12: ledig
+    13: ledig
+    14: ledig
+    15: ledig
+    16: ledig
+    17: ledig
+    18: ledig
+
+# Sociala medier: kontonamn och hashtaggar som följer med alla inlägg (some/inlagg.yaml)
+some:
+  konto: glasriketsgk
+  hashtags: ["#glasriketsgk", "#fylleryd", "#golfvaxjo", "#golfismaland", "#smaland", "#golf"]
 
 # Banans yta med 100 m marginal, SWEREF 99 TM (EPSG:3006).
 # Underlag från OpenStreetMap (relation 2715292). Ladda ner detta område från Geotorget.

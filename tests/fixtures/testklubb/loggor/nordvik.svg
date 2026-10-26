@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80"><!-- Påhittad demo-logga, Nordvik finns inte -->
+<path d="M8 66 L36 14 L50 40 L60 24 L84 66 Z" fill="#1d4e6b"/>
+<path d="M8 72 Q46 60 84 72" stroke="#3b8fb5" stroke-width="5" fill="none"/>
+<text x="100" y="56" font-family="Hanken Grotesk, Arial, sans-serif" font-size="40" font-weight="600" letter-spacing="3" fill="#1d4e6b">NORDVIK</text>
+</svg>

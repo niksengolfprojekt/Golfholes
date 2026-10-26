@@ -54,6 +54,12 @@ class Hole:
     # hur långt (m) åt sidan av linjen tee→green hålbilden får visa, t.ex. {"vanster": 32}
     # när grannhålets green annars kommer med
     bildgrans_m: dict[str, float] = field(default_factory=dict)
+    # flaggans plats (SWEREF E, N) när greenpolygonens tyngdpunkt inte ligger mitt på den
+    # synliga greenen; annars None och flaggan står i tyngdpunkten
+    flagga_punkt: g.Point | None = None
+    # out of bounds ur klubbens banguide: [{"sida": "vanster"|"hoger", "fran_m": .., "till_m": ..}]
+    # (meter längs spellinjen från bakre tee). Linjen ritas längs trädlinjen (`trees`).
+    ob: list[dict] = field(default_factory=list)
 
     # ---------- inläsning ----------
     @classmethod
@@ -79,6 +85,8 @@ class Hole:
             ortho=(Path(path).parent / d["ortho"]).resolve() if d.get("ortho") else None,
             source=d.get("source", ""),
             bildgrans_m=d.get("bildgrans_m", {}) or {},
+            flagga_punkt=pts([d["flagga_punkt"]])[0] if d.get("flagga_punkt") else None,
+            ob=list(d.get("ob") or []),
         )
 
     # ---------- avstånd ----------
