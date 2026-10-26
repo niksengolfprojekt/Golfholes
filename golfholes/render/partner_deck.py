@@ -334,8 +334,8 @@ def a08_ytor(prog: Program) -> str:
 
 def a09_partnervecka(prog: Program, sp: Sponsor) -> str:
     v = prog.partnerveckor()
-    ytor = [y for y in prog.vecka["ytor"]] + [y for y in prog.vecka.get("villkor") or []
-                                               if (prog.cfg.get("partnerveckor") or {}).get("skarm")]
+    ytor = prog.veckoytor()
+    skylt = any(y.get("kraver") == "entreskylt" for y in ytor)
     lista = "".join(f"<li><i>{e(y['namn'])}.</i> {e(y['text'])}</li>" for y in ytor if y["namn"] != "Foto till rapporten")
     exv = next((w for w, (k, _) in v["plan"].items() if k == f"hal-{int((prog.cfg.get('exempel') or {}).get('hal', 14)):02d}"), None)
     remsa = "".join(
@@ -350,8 +350,8 @@ def a09_partnervecka(prog: Program, sp: Sponsor) -> str:
  <p class='lead' style='font-size:25px'>Varje hålpartner får en egen vecka under säsongen. Ingen extra kostnad,
  inget extra arbete för er.</p>
  <ul class='d' style='margin-top:34px'>{lista}</ul></div>
-{entreskylt(prog, sp, 1290, 150, 1.0)}
-<div class='abs note' style='left:1310px;top:790px;width:400px'>Partnerveckans skylt vid entrén. Plattan med er logotyp byts in en måndag.</div>
+{entreskylt(prog, sp, 1290, 150, 1.0) if skylt else inlagg(prog, sp, 1240, 130, 480)}
+{"<div class='abs note' style='left:1310px;top:790px;width:400px'>Partnerveckans skylt vid entrén. Plattan med er logotyp byts in en måndag.</div>" if skylt else ""}
 <div class='abs' style='left:{M}px;right:{M}px;top:900px'>
  <div style='font:600 13px/1 var(--sans);letter-spacing:.2em;color:var(--glas);margin-bottom:14px'>SÄSONGENS VECKOR · {'EXEMPEL: ' + e(sp.hal_namn).upper() + ' VECKA ' + str(exv) if exv else ''}</div>
  <div style='display:flex;gap:6px'>{remsa}</div></div></div>"""

@@ -112,9 +112,11 @@ class Program:
                     raise SystemExit(f"partnerprogram.yaml: okänd produkt {pid!r} (finns: {', '.join(std['produkter'])})")
                 p = _slå_ihop(std["produkter"][pid], andringar.get(pid) or {})
                 p["id"], p["status"] = pid, status
-                if not (cfg.get("partnerveckor") or {}).get("skarm") and p.get("ytor"):
-                    # Utan bekräftad skärm i klubbhuset lovas ingen yta på skärmen.
-                    p["ytor"] = {typ: [y for y in lista if "skärm" not in y]
+                pv = cfg.get("partnerveckor") or {}
+                bort = [o for o, flagga in (("skärm", "skarm"), ("entré", "entreskylt")) if not pv.get(flagga)]
+                if bort and p.get("ytor"):
+                    # Utan bekräftad skärm eller entréskylt lovas ingen yta där.
+                    p["ytor"] = {typ: [y for y in lista if not any(o in y for o in bort)]
                                  for typ, lista in p["ytor"].items()}
                 produkter[pid] = _formatera(p, ord)
         if "halsponsor" in produkter:
@@ -198,6 +200,11 @@ class Program:
             if p.get("partnervecka") and p["niva"] == "verksamhet":
                 ut.append((p["id"], p["namn"]))
         return ut
+
+    def veckoytor(self) -> list[dict]:
+        """Partnerveckans ytor: de som alltid finns + villkorade (skärm, entréskylt) som klubben har."""
+        pv = self.cfg.get("partnerveckor") or {}
+        return list(self.vecka["ytor"]) + [y for y in self.vecka.get("villkor") or [] if pv.get(y.get("kraver"))]
 
     def partnerveckor(self) -> dict:
         """Förslag på vecka per partner. Reserverade veckor (t.ex. golfveckan) går till sin produkt."""
@@ -303,7 +310,7 @@ class Program:
             if any(p["id"] == q for q in (self.cfg.get("produkter") or {}).get("aktiva") or []):
                 ut.append(("stopp", f"{p['namn']} är en framtida produkt och får inte vara aktiv."))
         if not (self.cfg.get("partnerveckor") or {}).get("skarm"):
-            ut.append(("info", "Ingen skärm i klubbhuset är bekräftad: partnerveckan använder bara entréskylten och de digitala ytorna."))
+            ut.append(("info", "Ingen skärm i klubbhuset är bekräftad: partnerveckan använder de digitala ytorna."))
         return ut
 
 

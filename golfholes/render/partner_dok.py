@@ -187,7 +187,7 @@ def kalender(prog: Program) -> str:
     s = prog.sasong
     rader = [
         ("Försäljning", {0: "Säljstart. Förnyelser först", 1: "Avtal skrivs", 2: "Avtal skrivs", 3: "Sista dag för skylt i april"}),
-        ("Skyltar och platser", {3: "Logotyper in", 4: "Tryck av plattor", 5: "Allt upp före första start", 11: "Banderoller och flaggor in"}),
+        ("Skyltar och platser", {3: "Logotyper in. TACADA levererar allt digitalt", 4: "Tryck av plattor", 5: "Allt upp före första start", 11: "Banderoller och flaggor in"}),
         ("Inlägg", {2: "Nya partners presenteras", 3: "Nya partners presenteras", 4: "Nya partners presenteras", 5: "Säsongsstart med partners",
                     6: "Veckans partner varje måndag", 7: "Veckans partner", 8: "Veckans partner", 9: "Veckans partner", 10: "Veckans partner",
                     11: "Tack till partners"}),
@@ -212,7 +212,7 @@ def kalender(prog: Program) -> str:
     halv = (len(rad) + 1) // 2
     plan = "".join(f"<table style='font-size:8pt;margin:0'><tr><th>Vecka</th><th>Partner</th><th>Klar</th></tr>{''.join(d)}</table>"
                    for d in (rad[:halv], rad[halv:]))
-    ytor = "".join(f"<li><b>{e(y['namn'])}</b> ({y['tid_min']} min): {e(y['text'])}</li>" for y in prog.vecka["ytor"])
+    ytor = "".join(f"<li><b>{e(y['namn'])}</b> ({y['tid_min']} min): {e(y['text'])}</li>" for y in prog.veckoytor())
     tid = prog.klubbens_tid(len(prog.hal) + 4)
     return f"""
 <div style='display:flex;justify-content:space-between;align-items:flex-end'>
@@ -225,9 +225,10 @@ def kalender(prog: Program) -> str:
   <h3>Vem gör vad</h3>
   <ul class='liten' style='color:#33454B'>
    <li><b>Klubbchefen:</b> säljer, skriver avtal, för partneröversikten, för förnyelsesamtalen.</li>
-   <li><b>Receptionen:</b> byter plattan i entréskylten måndag morgon och mejlar ett foto.</li>
+   {"<li><b>Receptionen:</b> byter plattan i entréskylten måndag morgon och mejlar ett foto.</li>" if (prog.cfg.get("partnerveckor") or {}).get("entreskylt") else ""}
    <li><b>Banpersonalen:</b> sätter upp skyltar, banderoller och flaggor i april och tar in dem i oktober.</li>
-   <li><b>TACADA:</b> tar fram plattor, inlägg, hålsidor och veckans partner på hemsidan, schemalägger inläggen och sammanställer årsrapporterna.</li></ul>
+   <li><b>TACADA:</b> tar fram allt digitalt material och levererar det färdigt i ett paket inför säsongen: plattornas tryckfiler, hålsidorna, inläggen och veckans partner på startsidan. Årsrapporterna sammanställs automatiskt efter säsongen.</li>
+   <li><b>Klubben och partnern:</b> formar partnerveckan tillsammans, till exempel med ett erbjudande till medlemmarna eller en träff på klubben.</li></ul>
   <div class='ruta'><b>Klubbens arbetstid:</b> ungefär {round(tid)} timmar per år med alla 18 hål och fyra verksamhetspartners sålda,
   eller cirka {str(round(tid / (len(prog.hal) + 4), 1)).replace('.', ',')} timmar per avtal. Det mesta är säljmöten och förnyelsesamtal.</div></div>
  <div style='flex:.9'>
@@ -266,7 +267,7 @@ Det nya hålsponsorskapet innehåller tio delar i stället för två, och priset
 <p style='margin:0'>En dubblering av priset för dagens sju hålsponsorer är den största risken i programmet. Utan en övergång kan
 klubben tappa partners som betalat i flera år. Förslaget är en trappa med treårsavtal ({' / '.join(kr(t) for t in trappa)} kr) och
 förstahandsrätt till sitt hål till {e((prog.cfg.get('befintliga') or {}).get('sista_dag', ''))}. Den andra risken är tid: programmet
-kräver säljmöten. Material och leveranser tar TACADA hand om, men ingen produkt säljer sig själv.</p></div>
+kräver säljmöten. Materialet kommer färdigt från TACADA. Klubbens kontakter och säljmöten gör resten.</p></div>
 
 <h2>Räkneexempel: hålsponsringen</h2>
 <table><tr><th>Exempel</th><th class='n'>Per år</th><th></th></tr>{sc}</table>
@@ -291,7 +292,7 @@ säljmötet. TACADA:s material ingår i klubbens avtal med TACADA.</p>
  (ca 6 000–9 000 kr för skärm och mediaspelare).</li>
  <li><b>Juniorpartner: 10 000 kr, men bara om tröjorna redan köps.</b> Annars äter tröjorna upp intäkten.</li>
  <li><b>Första tee och hole-in-one-tavlan</b> är inte längre egna tillval. De är premiumhålens extra yta, så att samma yta inte säljs två gånger.</li>
- <li><b>Partnerveckan</b> använder entrén, inte puttinggreenen, eftersom greenens ytor tillhör puttinggreenpartnern.</li>
+ <li><b>Partnerveckan</b> är digital: hålets inlägg den veckan och partnern på hemsidans startsida. Ingen skylt att byta, inget veckoarbete för klubben.</li>
  <li><b>Företagsdag:</b> räknemall i stället för fast pris. Exempel: {fd['deltagare']} gäster, självkostnad {kr(fd['sjalvkostnad'])} kr,
  pris {kr(fd['pris'])} kr (ca {kr(fd['per_person'])} kr per gäst).</li></ul>
 
@@ -333,8 +334,9 @@ def beslut(prog: Program) -> list[tuple[str, str, str]]:
         ("Kiosken vid nian", "Är den öppen 2027?", "Tillägg bara om den är öppen."),
         ("Huvudpartnerns branschskydd", "Ger huvudpartnern ensamrätt i sin bransch bland klubbens partners.", "Ja, bara för huvudpartnern."),
         ("Vem säljer", "Klubbchefen eller någon i styrelsen med kontaktnät.", "Klubbchefen, med styrelsen som dörröppnare."),
-        ("TACADA:s del", "Plattor, inlägg, veckans partner och årsrapporter varje säsong: ingår det i klubbens avtal med TACADA "
-         "eller är det en tilläggstjänst?", "Beslutas mellan klubben och TACADA (öppen fråga hos TACADA)."),
+        ("TACADA:s del", "Sponsorplattornas tryckoriginal, loggan på hålsidorna, inläggen, veckans partner på startsidan och "
+         "årsrapporterna varje säsong. Fysiska skyltar och plattor är tillägg enligt TACADA:s prislista.",
+         "Ingår i referensavtalet under avtalets tre år (Erics beslut 2026-10-26). Därefter enligt TACADA:s prislista."),
         ("Exempelföretaget", "Materialet visar Nordvik (påhittat). Emtec kan visas bara med Emtecs skriftliga tillstånd.", "Nordvik tills tillstånd finns."),
     ]
 
@@ -529,8 +531,8 @@ och er partnervecka.</p>
 <ol>
  <li>Skriv in företaget i partneröversikten och ändra status till sålt.</li>
  <li>Skicka tackmejlet (utkast 6) och be om logotypen.</li>
- <li>Mejla logotyp och avtalskopia till TACADA. Vi tar fram platta, hålsida och inlägg och skickar för godkännande.</li>
- <li>Partnern godkänner. Plattan trycks i nästa tryckomgång (mars).</li>
+ <li>Samla logotyperna i partneröversikten. Sista dag är i februari, för då gör TACADA säsongens leverans: plattor, hålsidor och inlägg i ett paket.</li>
+ <li>Partnern godkänner sitt material. Plattan trycks i mars.</li>
  <li>Partnerveckan bokas i kalendern.</li></ol>
 <p class='liten'>Frågor om materialet: TACADA. Frågor om avtalet: klubbchefen.</p>"""
 
@@ -561,7 +563,7 @@ def rapport(prog: Program, partner: dict, data: dict) -> str:
 
     r, kalla = prog.ronder()
     ytor = "".join(f"<li>{e(y)}</li>" for y in (p.get("ytor") or {}).get("fysiska", []) + (p.get("ytor") or {}).get("digitala", []))
-    foton = data.get("foton") or [{"text": t} for t in ("Skylten vid tee", "Partnerveckans skylt vid entrén", "Hålets sida på hemsidan",
+    foton = data.get("foton") or [{"text": t} for t in ("Skylten vid tee", "Veckans inlägg under partnerveckan", "Hålets sida på hemsidan",
                                                        "Presentationsinlägget")]
     fotohtml = "".join(
         f"<div style='break-inside:avoid'><div style='height:150px;background:{'#E4EAE6' if not f.get('bild') else 'var(--djup)'};"

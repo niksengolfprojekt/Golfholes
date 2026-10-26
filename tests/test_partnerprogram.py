@@ -46,7 +46,8 @@ def test_ingen_yta_saljs_tva_ganger_och_veckorna_racker():
     # utan bekräftad skärm lovas ingen skärm i något hålsponsorskap
     for pid in ("halsponsor", "premiumhal"):
         ytor = p.produkter[pid]["ytor"]
-        assert not any("skärm" in y for y in ytor["fysiska"] + ytor["digitala"])
+        assert not any("skärm" in y or "entré" in y for y in ytor["fysiska"] + ytor["digitala"])
+    assert not any(y.get("kraver") for y in p.veckoytor())             # partnerveckan är digital för Glasriket
 
 
 def test_foretagsdagen_raknas_ur_mallen():

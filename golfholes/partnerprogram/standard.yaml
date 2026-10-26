@@ -43,7 +43,7 @@ produkter:
       - {rubrik: "Hålets sida på webben", text: "Er logotyp och länk på hålets egen sida, med hålets nya bild och spelråd."}
       - {rubrik: "Presentationsinlägget", text: "Klubben presenterar er som ny partner i Instagram och Facebook när avtalet är klart."}
       - {rubrik: "Ett färdigt inlägg till er", text: "Bild och text klara att publicera i era egna kanaler, i samma profil som klubbens."}
-      - {rubrik: "Er partnervecka", text: "En vecka då ni lyfts fram vid entrén, i klubbens kanaler och på hemsidans startsida."}
+      - {rubrik: "Er partnervecka", text: "En vecka då klubben lyfter fram er: hålets inlägg och er logotyp på hemsidans startsida."}
       - {rubrik: "Årsrapporten", text: "Vad som visades, vad som mättes och vad som genomfördes. Svart på vitt efter säsongen."}
       - {rubrik: "Partnertävlingen", text: "Inbjudan till klubbens partnertävling, enligt klubbens villkor."}
       - {rubrik: "Flygfilmen över hålet", text: "Er logotyp när kameran landar över green.", senare: true}
@@ -56,9 +56,9 @@ produkter:
       - "Logotyp: företaget skickar logotypen i vektorformat (SVG, PDF eller EPS) till kansliet."
       - "TACADA tar fram sponsorplatta, hålsida, presentationsinlägg och företagets eget inlägg. Företaget godkänner."
       - "Plattan monteras på skylten när den levereras (ca 10 minuter för banpersonalen)."
-      - "Partnerveckan sköts enligt årskalendern: plattan i entréskylten byts måndag morgon."
+      - "Partnerveckan sköts enligt årskalendern: inlägget och startsidan byts automatiskt."
     tacada: [Sponsorplatta (tryckoriginal), Hålsidan med logotyp och länk, Presentationsinlägg 4:5, Företagets eget inlägg 4:5 och 9:16,
-             Partnerveckans skylt och inlägg, Årsrapport (PDF)]
+             Partnerveckans inlägg och startsida, Årsrapport (PDF)]
     pris: 20000
     prisenhet: per år
     startkostnad: 2500
@@ -122,7 +122,7 @@ produkter:
       - {rubrik: "Två banderoller vid utslagsplatserna", text: "Er logotyp där alla står och slår."}
       - {rubrik: "Bollautomaten", text: "Er logotyp på automaten där varje hink fylls."}
       - {rubrik: "Presentationsinlägget och ett eget inlägg", text: "Samma som hålsponsorn."}
-      - {rubrik: "Er partnervecka", text: "En vecka i fokus vid entrén och i klubbens kanaler."}
+      - {rubrik: "Er partnervecka", text: "En vecka i fokus i klubbens inlägg och på hemsidans startsida."}
       - {rubrik: "Årsrapporten", text: "Vad som visades och genomfördes."}
     ytor:
       fysiska: [Två banderoller vid utslagsplatserna, Dekal på bollautomaten, Partnerveckans skylt (en vecka)]
@@ -171,7 +171,7 @@ produkter:
     tid_h: 2
     partnervecka: false
     max: 1
-    exklusivt: "Puttinggreenens flaggor och skylt tillhör bara den här partnern. Partnerveckans skylt står vid entrén, inte på greenen."
+    exklusivt: "Puttinggreenens flaggor och skylt tillhör bara den här partnern."
     kombineras: "Med hål och övriga verksamhetsprodukter."
     uppfoljning: [Visningar av inlägget (uppmätt), Uppsatta flaggor och skylt med foto (levererat)]
 
@@ -192,7 +192,7 @@ produkter:
       - {rubrik: "Skylten vid banans start", text: "En skylt med banans namn och er logotyp."}
       - {rubrik: "Nybörjarkurserna", text: "Ert namn i klubbens inbjudan till nybörjarkurser och prova på-dagar."}
       - {rubrik: "Presentationsinlägget och ett eget inlägg", text: "Samma som hålsponsorn."}
-      - {rubrik: "Er partnervecka", text: "En vecka i fokus vid entrén och i klubbens kanaler."}
+      - {rubrik: "Er partnervecka", text: "En vecka i fokus i klubbens inlägg och på hemsidans startsida."}
       - {rubrik: "Årsrapporten", text: "Vad som visades och genomfördes."}
     ytor:
       fysiska: [Skylt vid korthålsbanans första tee, Partnerveckans skylt (en vecka)]
@@ -518,13 +518,13 @@ villkor:
 # Partnerveckan: bara ytor som finns. Klubbens fil sätter veckorna och platserna.
 partnervecka:
   ytor:
-    - {namn: "Skylten vid entrén", text: "Partnerveckans skylt med företagets logotyp, där alla går in. Plattan byts måndag morgon.", tid_min: 5}
-    - {namn: "Inlägget på måndagen", text: "”Veckans partner” i Instagram och Facebook, schemalagt i förväg.", tid_min: 0}
+    - {namn: "Inlägget på måndagen", text: "Hålets inlägg i Instagram och Facebook lyfter fram er som veckans partner, schemalagt i förväg.", tid_min: 0}
     - {namn: "Hemsidans startsida", text: "”Veckans partner” med logotyp och länk, byts automatiskt enligt kalendern.", tid_min: 0}
-    - {namn: "Foto till rapporten", text: "Receptionen fotograferar skylten med mobilen och mejlar bilden till kansliet.", tid_min: 2}
     - {namn: "Erbjudande till medlemmarna", text: "Om partnern vill: ett erbjudande till klubbens medlemmar under veckan, i inlägget.", tid_min: 0}
   villkor:
     - {namn: "Klubbens skärm", text: "Partnerveckans bild i skärmens bildspel.", kraver: skarm}
+    - {namn: "Skylten vid entrén", text: "Partnerveckans skylt med företagets logotyp, där alla går in. Plattan byts måndag morgon. Fysiskt tillval med tilläggskostnad.", tid_min: 5, kraver: entreskylt}
+    - {namn: "Foto till rapporten", text: "Receptionen fotograferar skylten med mobilen och mejlar bilden till kansliet.", tid_min: 2, kraver: entreskylt}
 
 # Klubbens arbetstid per år för hela programmet utöver produkterna (timmar).
 administration:

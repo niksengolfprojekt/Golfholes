@@ -81,7 +81,8 @@ partnerveckor:
   sista: 41
   reserverade: {30: huvudpartner}
   skarm: false                          # klubben har ingen bekräftad skärm i klubbhuset
-  plats_entre: "Entrén vid gaveln mot drivingrangen"
+  entreskylt: false                     # förslag 2026-10-26: partnerveckan digital (hålets inlägg + startsidan)
+  plats_entre: "Entrén vid gaveln mot drivingrangen"   # används bara om entreskylt: true
 golfvecka: Golfveckan (vecka 30)
 
 # Tävlingar som kan få en partner 2027. Klubben fyller i sitt tävlingsprogram.
