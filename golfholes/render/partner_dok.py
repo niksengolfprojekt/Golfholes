@@ -335,7 +335,7 @@ def beslut(prog: Program) -> list[tuple[str, str, str]]:
         ("Huvudpartnerns branschskydd", "Ger huvudpartnern ensamrätt i sin bransch bland klubbens partners.", "Ja, bara för huvudpartnern."),
         ("Vem säljer", "Klubbchefen eller någon i styrelsen med kontaktnät.", "Klubbchefen, med styrelsen som dörröppnare."),
         ("TACADA:s del", "Sponsorplattornas tryckoriginal, loggan på hålsidorna, inläggen, veckans partner på startsidan och "
-         "årsrapporterna varje säsong. Fysiska skyltar och plattor är tillägg enligt TACADA:s prislista.",
+         "årsrapporterna varje säsong. Fysiska skyltar och plattor är tillägg enligt TACADA:s prislista, med olika pris med och utan fäste.",
          "Ingår i referensavtalet under avtalets tre år (Erics beslut 2026-10-26). Därefter enligt TACADA:s prislista."),
         ("Exempelföretaget", "Materialet visar Nordvik (påhittat). Emtec kan visas bara med Emtecs skriftliga tillstånd.", "Nordvik tills tillstånd finns."),
     ]
