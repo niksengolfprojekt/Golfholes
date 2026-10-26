@@ -40,3 +40,9 @@ def _rw(path, bbox):
 
 
 _ff.read_window = _rw
+
+
+from golfholes.render import foto as _foto  # noqa: E402
+
+_foto.read_window = lambda path, bbox: (ou.read_window_jpg(ou.LM / "orto.jpg", bbox) if Path(path).parent == DATA / "orto"
+                                        else ou.read_window_jpg(path, bbox))

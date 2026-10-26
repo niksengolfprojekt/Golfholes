@@ -2168,4 +2168,7 @@ trees:
   - [491816.0, 6305986.1]
   - [491816.6, 6305987.0]
   - [491817.9, 6305987.7]
-strategy: {}
+strategy:
+  kalla: "PRO-råd banguide 2025: Gott om plats från tee. Ganska smalt framme vid green, så placera transportslaget med precision. Snäll green."
+  tee: 56/60
+  slag: [210, 390]   # utslag före fairwaybunkrarna (cirka 225–255 m), transportslag till fairway 390 m; sista slaget till greenens mitt (Claudes förslag, klubben godkänner)

@@ -79,13 +79,13 @@ def _scen(hole: Hole, data_dir: Path):
 
 
 def kameror(hole: Hole, data_dir: Path, sekunder: float, slut_s: float = 4.0, forlopp: str = "rak",
-            tee: str | None = None) -> dict:
+            tee: str | None = None, hojd_m: float = 5.0, blick_m: float = 60.0) -> dict:
     """Kamerabanan precis som i den råa filmen, plus markhöjd runt hålet (för projektion)."""
     scen = _scen(hole, data_dir)
     if forlopp == "oversikt":
-        kams, info = kamerabana_oversikt(hole, scen, 24, standardtee(hole, tee))
+        kams, info = kamerabana_oversikt(hole, scen, 24, standardtee(hole, tee), hojd_m, blick_m)
     else:
-        kams, info = kamerabana(hole, scen, 24, sekunder, 5.0, 60.0, slut_s)
+        kams, info = kamerabana(hole, scen, 24, sekunder, hojd_m, blick_m, slut_s)
     # markhöjd i 2 m-rutnät runt hålet (räcker för att lägga konturer på marken)
     e0, n0, e1, n1 = hal_bbox(hole, 60.0 if forlopp == "rak" else 450.0)
     E = np.arange(e0, e1, 2.0)
@@ -696,6 +696,8 @@ def main(argv=None) -> int:
     p.add_argument("--rutor", default="")
     p.add_argument("--forlopp", choices=["rak", "oversikt"], default="rak")
     p.add_argument("--tee", default=None)
+    p.add_argument("--hojd", type=float, default=5.0, help="kameror: höjd över marken (samma som flygfilm --hojd)")
+    p.add_argument("--blick", type=float, default=60.0, help="kameror: blick framåt i m (samma som flygfilm --blick)")
     p.add_argument("--start", type=int, default=0, help="filmen börjar vid den här rutan i den råa filmen (klipp)")
     p.add_argument("--klipp", default="", help="hopklipp: AI-klippen i ordning, kommaseparerade")
     p.add_argument("--delar", default="", help="hopklipp/omproj: egna rutintervall, t.ex. 55-79,79-175")
@@ -734,7 +736,7 @@ def main(argv=None) -> int:
                 else hexfarg(a.bakgrund))
     data_dir = Path(a.data) if a.data else Path("data") / hp.parent.name
     if a.steg == "kameror":
-        Path(a.ut).write_text(json.dumps(kameror(hole, data_dir, a.sek, a.slut, a.forlopp, a.tee)))
+        Path(a.ut).write_text(json.dumps(kameror(hole, data_dir, a.sek, a.slut, a.forlopp, a.tee, a.hojd, a.blick)))
         return 0
     kd = json.loads(Path(a.kam).read_text())
     proj = Projektion(kd)

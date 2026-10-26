@@ -373,7 +373,7 @@ def partnerexport(club_dir: str) -> int:
 
 
 def flygfilm(path: str, data: str | None, ut: str | None, sek: float, slut: float,
-             forlopp: str = "rak", tee: str | None = None) -> int:
+             forlopp: str = "rak", tee: str | None = None, hojd: float = 5.0, blick: float = 60.0) -> int:
     from .render.flygfilm import ATTRIBUTION, flygfilm as rendera
 
     p = Path(path)
@@ -381,7 +381,7 @@ def flygfilm(path: str, data: str | None, ut: str | None, sek: float, slut: floa
     club_dir = _club_dir(p)
     data_dir = Path(data) if data else Path("data") / club_dir.name
     ut_dir = Path(ut) if ut else Path("output") / club_dir.name / "flygfilm"
-    r = rendera(hole, data_dir, ut_dir, sekunder=sek, slut_s=slut, forlopp=forlopp, tee=tee)
+    r = rendera(hole, data_dir, ut_dir, sekunder=sek, slut_s=slut, forlopp=forlopp, tee=tee, hojd_m=hojd, blick_m=blick)
     for k, v in r["filer"].items():
         print(f"  {k}: {v}")
     print("  " + ", ".join(f"{k}={v}" for k, v in r["info"].items() if k != "hojd_over_mark_m"))
@@ -447,6 +447,9 @@ def main(argv: list[str] | None = None) -> int:
     ff.add_argument("--forlopp", choices=["rak", "oversikt"], default="rak",
                     help="rak: tee → green → upp (standard). oversikt: ovanifrån → ner till tee → green → upp igen (~23 s)")
     ff.add_argument("--tee", default=None, help="tee att landa på i forlopp oversikt (standard 56)")
+    ff.add_argument("--hojd", type=float, default=5.0,
+                    help="kamerans höjd över marken i m (standard 5; ~28 visar grannhålen och djupet åt sidorna)")
+    ff.add_argument("--blick", type=float, default=60.0, help="hur långt fram kameran tittar i m (standard 60)")
     sr = sub.add_parser("sponsorrapport", help="Visningar per sponsor och kanal för en säsong (PNG + PDF per sponsor)")
     sr.add_argument("klubbmapp")
     sr.add_argument("--sasong", type=int, required=True)
@@ -460,7 +463,7 @@ def main(argv: list[str] | None = None) -> int:
     if a.cmd == "partnerexport":
         return partnerexport(a.klubbmapp)
     if a.cmd == "flygfilm":
-        return flygfilm(a.fil, a.data, a.ut, a.sek, a.slut, a.forlopp, a.tee)
+        return flygfilm(a.fil, a.data, a.ut, a.sek, a.slut, a.forlopp, a.tee, a.hojd, a.blick)
     if a.cmd == "aiunderlag":
         return aiunderlag(a.fil)
     if a.cmd == "aibild":

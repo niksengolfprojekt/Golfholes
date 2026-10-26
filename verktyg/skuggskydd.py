@@ -12,7 +12,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
 STYRKA = 0.7    # hur stor del av skuggan inom ytan som tas bort
-FAIRWAY = 0.35  # fairway: skuggan dämpas bara lite, den ger djup
+FAIRWAY = 0.55  # fairway: skuggan dämpas, men en del får vara kvar för djupet
 KANT_M = 3.0    # skyddet går så här långt utanför greenkanten
 
 
@@ -47,6 +47,8 @@ def skuggskydd(im: Image.Image, hole, px) -> dict:
             continue
         ljus = np.percentile(L[inne], 85)
         sol = inne & (L > np.percentile(L[inne], 65))
+        if sol.sum() < 20:
+            continue
         ref = np.median(rgb[sol], axis=0)                       # ytans solbelysta färg
         fore = float((L[inne] < ljus * 0.6).mean())
         Lm = np.asarray(Image.fromarray(L.clip(0, 255).astype(np.uint8)).filter(
@@ -54,7 +56,7 @@ def skuggskydd(im: Image.Image, hole, px) -> dict:
         detalj = np.clip(L / np.maximum(Lm, 1), 0.85, 1.15)[..., None]
         skugga = np.clip((ljus * 0.9 - L) / (ljus * 0.9), 0, 1)[..., None]
         k = (skugga * styrka * M[..., None])
-        a[..., :3] = np.clip(rgb * (1 - k) + ref * detalj * k, 0, 255)
+        a[..., :3] = np.where(k > 0, np.clip(rgb * (1 - k) + ref * detalj * k, 0, 255), rgb)
         L2 = a[..., :3].mean(axis=2)
         rapport[namn] = {"skugga_fore": round(fore, 3), "skugga_efter": round(float((L2[inne] < ljus * 0.6).mean()), 3)}
     im.paste(Image.fromarray(a.astype(np.uint8), "RGBA"))
