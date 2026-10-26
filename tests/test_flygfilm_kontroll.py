@@ -2,6 +2,7 @@
 import math
 
 import numpy as np
+import pytest
 
 from golfholes.render.flygfilm_kontroll import Projektion
 
@@ -91,6 +92,28 @@ def test_steg_plan_jamnar_ryck():
     steg = np.diff(np.interp(s, np.arange(150), C))
     mitt = steg[20:-20]
     assert mitt.std() / mitt.mean() < 0.02   # jämna steg, ingen puls
+
+
+def test_steg_plan_foljer_bas():
+    from golfholes.render.flygfilm_jamna import steg_plan
+    m = np.ones(99)
+    bas = np.linspace(0, 99, 50) ** 1.2 / 99 ** 0.2   # AI:n ligger efter i början
+    s = steg_plan(m, 50, bas=bas)
+    assert np.allclose(s, bas, atol=0.5) and np.all(np.diff(s) >= 0)
+
+
+def test_synk_bas_hittar_forskjuten_takt():
+    pytest.importorskip("cv2")
+    from golfholes.render.flygfilm_jamna import synk_bas
+    rng = np.random.default_rng(1)
+    bild = (rng.random((120, 600, 3)) * 255).astype(np.uint8)
+    bild = np.repeat(np.repeat(bild[::4, ::4], 4, 0), 4, 1)
+    def ruta(x):
+        return np.ascontiguousarray(bild[:, int(x):int(x) + 240])
+    ai = np.array([ruta(3 * i) for i in range(80)])          # AI flyger 3 px/bild
+    ra = np.array([ruta(3 * min(79, 1.5 * j)) for j in range(50)])   # den råa 1,5 gånger fortare
+    v = synk_bas(ai, ra, sigma=2.0)
+    assert abs(v[25] - 37.5) < 3 and abs(v[-1] - 73.5) < 4
 
 
 def test_avstand_star_pa_tee_och_gar_bara_ned():
