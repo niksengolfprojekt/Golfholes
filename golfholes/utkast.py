@@ -70,14 +70,15 @@ def matt(f: Fonster) -> dict[str, np.ndarray]:
             "ndvi": (N - R) / (N + R + 1e-3), "struktur": sd}
 
 
-def klassa(mt: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
+def klassa(mt: dict[str, np.ndarray], bunker_v: float = 172) -> dict[str, np.ndarray]:
     """Skog, vatten och bunker per pixel. Trösklarna är satta på Glasriket juli 2025
-    och kontrolleras visuellt per bana (kontrollbilden)."""
+    och kontrolleras visuellt per bana (kontrollbilden). bunker_v sänks i fröfilen när
+    fotot är disigare (Alvesta 2025: sanden har V ~165)."""
     sd4 = medel(mt["struktur"], 4)
     vatten = (medel(mt["ndvi"], 3) < -0.15) & (medel(mt["N"], 3) < 40)
     # sand är ljus och saknar klorofyll; torrt gräs (hål 5, juli) har V ~150 och ndvi ~0
     bunker = (mt["R"] > 150) & (mt["R"] >= mt["G"] - 5) & (mt["R"] - mt["B"] > 15) & (mt["ndvi"] < -0.04) \
-        & (mt["V"] > 172)
+        & (mt["V"] > bunker_v)
     skog = ((medel(mt["V"], 4) < 72) | (sd4 > 11)) & ~vatten
     return {"skog": skog, "vatten": vatten, "bunker": bunker}
 
@@ -365,7 +366,7 @@ def utkast_hal(fro: dict, orto: str | Path, marginal: float = 70.0) -> tuple[dic
     bbox = (min(es) - marginal, min(ns) - marginal, max(es) + marginal, max(ns) + marginal)
     f = las_fonster(orto, bbox)
     mt = matt(f)
-    kl = klassa(mt)
+    kl = klassa(mt, fro.get("bunker_v", 172))
     if fro.get("laser"):  # Laserdata Skog: vatten och träd ur punkterna i stället för ur färgen
         from .laser import till_fonster, vatten_och_trad
         lv, lt = vatten_och_trad(fro["laser"], fro["hojd"], bbox)
@@ -402,6 +403,11 @@ def utkast_hal(fro: dict, orto: str | Path, marginal: float = 70.0) -> tuple[dic
         if 4 <= a <= 700 and korridor[b].min() < fro.get("bunker_avstand", 45) \
                 and not (b & nara_tee).any() and kompakthet(b[y0:y1, x0:x1]) > 0.25:
             bunkrar += polygoner(b, f, min_m2=4, tol_m=0.3)
+    if fro.get("bunker_polygoner"):  # inritade för hand ur fotot (bunker i halvskugga); ersätter trollstavens bitar där
+        hand = rastrera(fro["bunker_polygoner"][0], f, kl["skog"].shape)
+        for p in fro["bunker_polygoner"][1:]:
+            hand |= rastrera(p, f, kl["skog"].shape)
+        bunkrar = [b for b in bunkrar if not hand[f.pix(*np.mean(b, axis=0))]]
     vatten = []
     for v, (y0, y1, x0, x1) in _bitar(oppna(kl["vatten"], 2)):
         a = v[y0:y1, x0:x1].sum() * f.res ** 2
@@ -434,6 +440,7 @@ def utkast_hal(fro: dict, orto: str | Path, marginal: float = 70.0) -> tuple[dic
         "green": ([list(p) for p in fro["green_polygon"]] if fro.get("green_polygon") else
                   [list(p) for p in max(polygoner(green, f, min_m2=50, tol_m=0.3), key=len, default=[])]),
         "hazards": [{"kind": "bunker", "name": "", "polygon": [list(p) for p in b]} for b in bunkrar]
+                   + [{"kind": "bunker", "name": "", "polygon": [list(p) for p in b]} for b in fro.get("bunker_polygoner", [])]
                    + [{"kind": "water", "name": "", "polygon": [list(p) for p in v]} for v in vatten],
         "fairways": [[list(p) for p in fw] for fw in polygoner(fairway, f, min_m2=150, tol_m=0.6)],
         "trees": [[list(p) for p in t] for t in trad],

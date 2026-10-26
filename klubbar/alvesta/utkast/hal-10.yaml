@@ -1,0 +1,30 @@
+# Fröpunkter för Alvesta GK hål 10 (SWEREF 99 TM, meter). Satta 2026-10-25 mot ortofoto 2025-07-02
+# (o63125_4725_25_mr25) och klubbens drönarbild av hål 10 (alvestagolf.se, Dronarbild_hal10): tee söder om
+# klubbhusets parkering, spelar rakt söderut med landsvägen till vänster och hål 18 bakom trädraden till höger,
+# green med bunker vänster fram och höger bak, sjön Salen bakom. Teerna ligger på båda sidor om gångvägen.
+# 63: liten klippt yta mellan gångvägarna söder om parkeringen – svagt synlig, fråga klubben.
+# 40 syns inte på fotot.
+club: Alvesta Golfklubb
+hole: 10
+par: 4
+index: 7   # scorekortet (PDF juni 2026); webbsidans tabell säger 9 – klubben bekräftar
+orto: data/alvesta/orto/o63125_4725_25_mr25.tif
+tees:
+- {name: '63', point: [473819.0, 6313497.0], length_m: 385}   # svagt synlig, fråga klubben
+- {name: '59', point: [473845.0, 6313471.0], length_m: 350}
+- {name: '54', point: [473854.0, 6313438.0], length_m: 315}
+- {name: '49', point: [473872.0, 6313428.0], length_m: 295}   # bakre delen av teeplatsen öster om gångvägen
+- {name: '40', point: [473875.0, 6313364.0], length_m: 235}   # beräknad, syns inte på fotot
+centerline:
+- [473819.0, 6313497.0]
+- [473868.0, 6313390.0]
+- [473915.0, 6313230.0]
+- [473937.0, 6313137.0]
+- [473940.0, 6313122.0]
+green: [473937.0, 6313137.0]
+fairway:
+- [473890.0, 6313330.0]
+- [473905.0, 6313260.0]
+- [473920.0, 6313200.0]
+laser: data/alvesta/laser/y26a022-63125_4725_25.copc.laz
+hojd: data/alvesta/hojd/m631_47.tif
