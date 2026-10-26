@@ -10,6 +10,11 @@ layout: 3
 kortnamn: Alvesta GK
 filnamn: Alvesta
 bana: Kronobergshed
+# Vad klubben har köpt (python -m golfholes paket klubbar/alvesta): inget än – referensklubb inför ett möte.
+paket:
+  avtal: "Referensklubb, Eric 2026-10-25 (inget avtal)"
+  produkter: [halguide]
+  hal: [1, 10]
 tees: [{namn: "63", farg: vit}, {namn: "59", farg: gul}, {namn: "54", farg: bla}, {namn: "49", farg: rod}, {namn: "40", farg: orange}]
 bbox_sweref99tm: {e_min: 472600, n_min: 6312600, e_max: 474950, n_max: 6314950}   # grov ruta runt klubbens adress (golf.se 56.9682, 14.5703), krymps när banan är hittad
 
