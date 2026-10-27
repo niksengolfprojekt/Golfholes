@@ -25,8 +25,8 @@ Registrerad i `hemsidor/designregister.yaml` (riktning `arstiderna`, toppbild `s
    efter en (hål 1–18) direkt, så att man förstår att de går att trycka på. Tryck på ett hål: hålbilden (samma årstid),
    par, längd och rubrik visas under knapparna; andra trycket går till hålet. Under hålet en ruta för hålsponsorns logga.
    På mobil: rubrik, karta, sedan hålet.
-2. **Tre hål avgör din runda:** hål 14, 3 och 5 i ögonhöjd (godkända vyer v2) med kort säljtext ur pro:ns råd.
-   **Alla arton hål:** en rad hålkort att svepa i sidled.
+2. **Alla arton hål:** en rad hålkort att svepa i sidled. Ett avsnitt med hål i ögonhöjd väntar tills alla
+   18 hål har en sådan vy (Eric 2026-10-27); CSS-klasserna `signatur`/`sig-*` finns kvar för det.
 3. **Naturen:** bilden går ut i kanten, kort text om Fylleryd.
 4. **Vägar in:** greenfee, medlemskap, hålsponsor – ytor utan ramar.
 5. **Hitta hit** med öppettider.
@@ -50,4 +50,4 @@ aldrig ändrad. Inga personer. Lantmäteriet-raden och "Vissa bilder är visuali
 - v1 standardmall – fälld i mätt kontroll.
 - v2 flygfilm över hål 14 med nedräkning – filmen fälld av Eric (för låg kvalitet), nedräkningen behölls.
 - v3 (2026-10-25) stämningsbild, årstid efter datum, sponsorruta. Nedräkningen borttagen samma kväll.
-- Förslag 2 (2026-10-27): banan som toppbild, tre signaturhål, svepbar rad med alla hål, nya säljtexter. Stämningsfotot finns kvar i forbered.py men används inte på startsidan.
+- Förslag 2 (2026-10-27): banan som toppbild, svepbar rad med alla hål, nya säljtexter. Stämningsfotot finns kvar i forbered.py men används inte på startsidan.
