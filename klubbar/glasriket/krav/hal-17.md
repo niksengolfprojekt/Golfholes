@@ -11,3 +11,4 @@
 - 2026-10-25 omg 3 (stil A): 0,78. 240 kr.
 - 2026-10-25 omg 4: levande vatten, 0,80; AI tog bort vassen → återlagd med kod. 240 kr.
 - 2026-10-26 omg 5: skuggskydd, greenens skugga 22 % → 13 %, vass återlagd. 0 kr. Kvar: vasskanten lite hård.
+- 2026-10-27: fairway_frisk – bruna fläckar i fairway färgade gröna (bara kulör, Eric). Kortet omgjort.
