@@ -79,7 +79,7 @@ def _scen(hole: Hole, data_dir: Path):
 
 
 def kameror(hole: Hole, data_dir: Path, sekunder: float, slut_s: float = 4.0, forlopp: str = "rak",
-            tee: str | None = None, hojd_m: float = 5.0, blick_m: float = 60.0) -> dict:
+            tee: str | None = None, hojd_m: float = 15.0, blick_m: float = 110.0) -> dict:
     """Kamerabanan precis som i den råa filmen, plus markhöjd runt hålet (för projektion)."""
     scen = _scen(hole, data_dir)
     if forlopp == "oversikt":
@@ -758,8 +758,8 @@ def main(argv=None) -> int:
     p.add_argument("--rutor", default="")
     p.add_argument("--forlopp", choices=["rak", "oversikt"], default="rak")
     p.add_argument("--tee", default=None)
-    p.add_argument("--hojd", type=float, default=5.0, help="kameror: höjd över marken (samma som flygfilm --hojd)")
-    p.add_argument("--blick", type=float, default=60.0, help="kameror: blick framåt i m (samma som flygfilm --blick)")
+    p.add_argument("--hojd", type=float, default=15.0, help="kameror: höjd över marken (samma som flygfilm --hojd, standard 15)")
+    p.add_argument("--blick", type=float, default=110.0, help="kameror: blick framåt i m (samma som flygfilm --blick, standard 110)")
     p.add_argument("--start", type=int, default=0, help="filmen börjar vid den här rutan i den råa filmen (klipp)")
     p.add_argument("--klipp", default="", help="hopklipp: AI-klippen i ordning, kommaseparerade")
     p.add_argument("--delar", default="", help="hopklipp/omproj: egna rutintervall, t.ex. 55-79,79-175")

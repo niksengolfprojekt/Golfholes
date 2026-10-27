@@ -4,7 +4,7 @@
 
 Ränderna letas i hålets lyft-underlag (hal-NN-lyft.webp), där utsnittets kant syns som vågräta streck
 (jämnt i sidled, hackigt i höjdled), inte i målningen: där skulle mörk skog också slå ut. De ytorna
-(med marginal) tonas till bildens egen bakgrundsfärg med mjuk kant. `--i-bilden` letar även ränder i själva målningen (bara på hål där
+(med marginal) görs genomskinliga med mjuk kant (alfakanalen behålls). `--i-bilden` letar även ränder i själva målningen (bara på hål där
 de syns: mörk skog kan annars slå ut); -utan-flagga-versionen tvättas med samma mask. Bilder utan ränder lämnas orörda.
 """
 import sys
@@ -47,9 +47,9 @@ def tvatta(fil):
         return
     for f in (fil, fil.with_name(fil.stem + "-utan-flagga.webp")):
         if f.exists():
-            a = np.asarray(Image.open(f).convert("RGB"), dtype=np.float32)
-            bg = np.median(a[:40, :40].reshape(-1, 3), axis=0)
-            Image.fromarray((a * (1 - m) + bg * m).astype(np.uint8)).save(f, quality=92)
+            a = np.asarray(Image.open(f).convert("RGBA"), dtype=np.float32)
+            a[..., 3:] *= 1 - m  # ränderna blir genomskinliga: hålkortet visar sin egen botten där
+            Image.fromarray(a.astype(np.uint8), "RGBA").save(f, quality=92)
             print(f, f"{(m > 0.5).mean():.1%} tvättat")
 
 

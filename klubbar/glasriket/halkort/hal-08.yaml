@@ -9,7 +9,7 @@ hole: 8
 par: 4
 index: 6
 tees: [["60", 380], ["56", 347], ["52 · 49", 318], ["44", 243]]
-bild: ../halbilder/hal-08-malad.webp
+bild: ../halbilder/hal-08-a5.webp   # stil A kvällsljus (Eric 2026-10-27)
 typbild: false
 rubrik: "Banans snabbaste green"
 beskrivning: "Utslaget går ut ur en smal gata i skogen, med out längs vänstersidan och tjock ruff till höger. Två fairwaybunkrar väntar på var sin sida. Belöningen är banans snabbaste green."

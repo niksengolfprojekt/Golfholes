@@ -90,3 +90,12 @@ def test_standardtee_valjer_56():
     hal = _hal()
     hal.tees = [Tee("60", (300.0, 90.0), 310), Tee("52/56", (300.0, 100.0), 300)]
     assert standardtee(hal) == "52/56" and standardtee(hal, "60") == "60"
+
+
+def test_standardhojd_ar_15_m():
+    import inspect
+
+    from golfholes.render.flygfilm import STANDARD_HOJD_M, flygfilm
+
+    assert STANDARD_HOJD_M == 15.0  # Eric 2026-10-27
+    assert inspect.signature(flygfilm).parameters["hojd_m"].default == STANDARD_HOJD_M

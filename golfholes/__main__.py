@@ -373,7 +373,7 @@ def partnerexport(club_dir: str) -> int:
 
 
 def flygfilm(path: str, data: str | None, ut: str | None, sek: float, slut: float,
-             forlopp: str = "rak", tee: str | None = None, hojd: float = 5.0, blick: float = 60.0) -> int:
+             forlopp: str = "rak", tee: str | None = None, hojd: float = 15.0, blick: float = 110.0) -> int:
     from .render.flygfilm import ATTRIBUTION, flygfilm as rendera
 
     p = Path(path)
@@ -438,7 +438,7 @@ def main(argv: list[str] | None = None) -> int:
     ai.add_argument("fil")
     ai.add_argument("malning", nargs="+", help="AI-bilder gjorda på aiunderlag; den med bäst formpoäng väljs")
     ai.add_argument("--stil", default=None, help="stilen målningen är gjord i (standard: klubbens val)")
-    ff = sub.add_parser("flygfilm", help="Rå flygfilm 5 m över hålet ur Lantmäteriets data (MP4 + nyckelbilder)")
+    ff = sub.add_parser("flygfilm", help="Rå flygfilm 15 m över hålet ur Lantmäteriets data (MP4 + nyckelbilder)")
     ff.add_argument("fil")
     ff.add_argument("--data", default=None, help="mapp med orto/, hojd/, laser/ (standard: data/<klubb>)")
     ff.add_argument("--ut", default=None, help="utmapp (standard: output/<klubb>/flygfilm)")
@@ -447,9 +447,9 @@ def main(argv: list[str] | None = None) -> int:
     ff.add_argument("--forlopp", choices=["rak", "oversikt"], default="rak",
                     help="rak: tee → green → upp (standard). oversikt: ovanifrån → ner till tee → green → upp igen (~23 s)")
     ff.add_argument("--tee", default=None, help="tee att landa på i forlopp oversikt (standard 56)")
-    ff.add_argument("--hojd", type=float, default=5.0,
-                    help="kamerans höjd över marken i m (standard 5; ~28 visar grannhålen och djupet åt sidorna)")
-    ff.add_argument("--blick", type=float, default=60.0, help="hur långt fram kameran tittar i m (standard 60)")
+    ff.add_argument("--hojd", type=float, default=15.0,
+                    help="kamerans höjd över marken i m (standard 15, Erics beslut 2026-10-27; 5 = gamla låga filmen)")
+    ff.add_argument("--blick", type=float, default=110.0, help="hur långt fram kameran tittar i m (standard 110)")
     sr = sub.add_parser("sponsorrapport", help="Visningar per sponsor och kanal för en säsong (PNG + PDF per sponsor)")
     sr.add_argument("klubbmapp")
     sr.add_argument("--sasong", type=int, required=True)

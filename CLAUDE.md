@@ -14,7 +14,7 @@ Grafiska hålpresentationer och hålsponsorskyltar för svenska golfklubbar. Äg
 
 ## Produktbeslut (2026-10-11)
 - En datagrund per klubb. Klubbens hålbildsstil anges i `klubb.yaml` som `stil:` med ett av de sex namnen nedan (t.ex. `stil: Gravyr`); tabellen `STILAR` i `golfholes/stilar.py` har AI-prompt och stilprov per stil. Glasriket har `stil: foto` (standardprompten). Gamla `stil: 1–4` läses med varning. De kodritade ritmotorerna i `golfholes/render/styles.py` och `sign.py` (`THEMES`) är bara reserv tills hålet är målat.
-- Tee-vy: kamera på tee, 1,6 m höjd, sikte 150 m ut längs mittlinjen (par 3: mot green). Flygfilm: 5 m höjd längs hålet, avslutas i hålbild ovanifrån med sponsorlogga. Rå film ur data: `python -m golfholes flygfilm <hålfil>` (`golfholes/render/flygfilm.py`); AI byter sedan bara yta (video-till-video).
+- Tee-vy: kamera på tee, 1,6 m höjd, sikte 150 m ut längs mittlinjen (par 3: mot green). Flygfilm: 15 m höjd längs hålet (Eric 2026-10-27, var 5 m), blick 110 m, avslutas i hålbild ovanifrån med sponsorlogga. Glasriket: 1–2 visningshål nu, resten efter betalning, klart 2027-03-15. Rå film ur data: `python -m golfholes flygfilm <hålfil>` (`golfholes/render/flygfilm.py`); AI byter sedan bara yta (video-till-video).
 - Skylt 70 × 100 cm, tre plattor: rubrik ("[Sponsor]-hålet"), hålguide (byts aldrig), sponsorplatta med logga i en färg + QR-kod. Tillverkas av Ecosign.
 - Pilotklubb: Glasrikets GK, hål 3.
 
