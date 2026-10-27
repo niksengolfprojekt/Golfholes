@@ -37,18 +37,46 @@ premiumhal:
     extra: >-
       En andra skylt vid bollrännan på första tee, där alla väntar på sin starttid. Hål 1 spelas
       dessutom av alla niohålsronder.
-    yta: Skylt vid bollrännan på hål 1
+    yta: Skylt vid bollrännan
+  4:
+    namn: Skogsgatan
+    extra: >-
+      Par 3 genom skogsgatan, där bollarna oftast väntar på tee. Varje hole-in-one på hålet lyfts fram i
+      klubbens inlägg, med ert namn.
+    yta: Hole-in-one-inlägg med ert namn
+  7:
+    namn: Birdiehålet
+    extra: >-
+      Banans bästa birdiechans, ett kort par 3 där bollarna väntar på tee. Varje hole-in-one på hålet lyfts
+      fram i klubbens inlägg, med ert namn.
+    yta: Hole-in-one-inlägg med ert namn
+  9:
+    namn: Halvvägshålet
+    extra: >-
+      Vid nian stannar rundan. Er logotyp vid kiosken, där golfarna fyller på inför de sista nio.
+    yta: Skylt vid kiosken
+  16:
+    namn: Vattenhålet
+    extra: >-
+      En snäll green bland vatten, med vatten till vänster och en damm bakom till höger. Er logotyp på flaggan på
+      sextonde green.
+    yta: Flagga med er logotyp på greenen
   17:
     namn: Signaturhålet
     extra: >-
       Hole-in-one-tavlan. Varje hole-in-one på banans signaturhål skrivs upp på tavlan, under ert namn.
-    yta: Hole-in-one-tavlan vid tee 17
-# Hål 18 kan bli premiumhål om greenen syns från klubbhuset. Klubben bekräftar (se besluten).
+    yta: Hole-in-one-tavlan vid tee
+  18:
+    namn: Hemmahålet
+    extra: >-
+      Sista hålet, hem mot klubbhuset. Er logotyp på flaggan på artonde green, rundans sista mål.
+    yta: Flagga med er logotyp på greenen
+# Premiumhålen är Erics val 2026-10-27: hål 1, 4, 7, 9, 16, 17 och 18 har mest exponering.
 
 # Produkterna i Glasrikets erbjudande. Pris och text ur standardbiblioteket om inget annat står.
 produkter:
   aktiva: [halsponsor, premiumhal, range, puttinggreen, korthal, junior, tavling, foretagsdag, huvudpartner]
-  tillagg: [fotbollsgolf, halvvagen, hjartstartare]
+  tillagg: [fotbollsgolf, hjartstartare]      # kiosken vid nian är premiumhål 9:s extra yta
   vilande: [klubbhusskarm]
   framtid: [digital_kanal]
   andringar:

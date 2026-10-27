@@ -24,11 +24,11 @@ def _text(html: str) -> str:
 def test_glasrikets_program_och_priser():
     p = _prog()
     assert p.sasong == 2027 and len(p.hal) == 18
-    assert {h.nr for h in p.hal if h.premium} == {1, 17}
+    assert {h.nr for h in p.hal if h.premium} == {1, 4, 7, 9, 16, 17, 18}
     assert all(h.pris == (25000 if h.premium else 20000) for h in p.hal)
-    assert {m["nyckel"]: m["summa"] for m in p.modeller()} == {"differentierad": 370000, "enhetlig": 360000,
+    assert {m["nyckel"]: m["summa"] for m in p.modeller()} == {"differentierad": 395000, "enhetlig": 360000,
                                                           "enhetlig_25": 450000}
-    assert p.helt_program()["summa"] == 502500
+    assert p.helt_program()["summa"] == 527500
     assert [r["summa"] for r in p.scenarier()][:1] == [70000]          # dagens läge: 7 × 10 000
     assert p.befintliga_trappa() == [15000, 17500, 20000]
     assert 6 <= len(p.aktiva()) <= 10                                   # briefen: 6–10 aktiva produkter

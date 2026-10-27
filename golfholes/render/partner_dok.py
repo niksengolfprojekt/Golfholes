@@ -291,7 +291,7 @@ säljmötet. TACADA:s material ingår i klubbens avtal med TACADA.</p>
  <li><b>Digital klubbhuspartner: vilande.</b> Klubben har ingen bekräftad skärm. Produkten säljs först när skärmen finns
  (ca 6 000–9 000 kr för skärm och mediaspelare).</li>
  <li><b>Juniorpartner: 10 000 kr, men bara om tröjorna redan köps.</b> Annars äter tröjorna upp intäkten.</li>
- <li><b>Första tee och hole-in-one-tavlan</b> är inte längre egna tillval. De är premiumhålens extra yta, så att samma yta inte säljs två gånger.</li>
+ <li><b>Första tee, hole-in-one-tavlan och kiosken vid nian</b> är inte längre egna tillval. De är premiumhålens extra yta, så att samma yta inte säljs två gånger.</li>
  <li><b>Partnerveckan</b> är digital: hålets inlägg den veckan och partnern på hemsidans startsida. Ingen skylt att byta, inget veckoarbete för klubben.</li>
  <li><b>Företagsdag:</b> räknemall i stället för fast pris. Exempel: {fd['deltagare']} gäster, självkostnad {kr(fd['sjalvkostnad'])} kr,
  pris {kr(fd['pris'])} kr (ca {kr(fd['per_person'])} kr per gäst).</li></ul>
@@ -315,14 +315,20 @@ säljmötet. TACADA:s material ingår i klubbens avtal med TACADA.</p>
 <h3>Att bekräfta</h3><ul class='liten' style='color:#33454B'>{kontroller}</ul>"""
 
 
+def _och(delar: list[str]) -> str:
+    return ", ".join(delar[:-1]) + " och " + delar[-1] if len(delar) > 1 else "".join(delar)
+
+
 def beslut(prog: Program) -> list[tuple[str, str, str]]:
     """(beslut, varför, förslag) – det klubben (och TACADA) måste ta ställning till."""
     idag = prog.cfg.get("idag") or {}
     trappa = prog.befintliga_trappa()
     return [
         ("Prismodell för hålen", "Två priser (20 000 / 25 000 för premiumhål) eller ett pris för alla.", "Två priser."),
-        ("Premiumhål", "Hål 1 (första tee) och 17 (signaturhålet) har en extra yta. Hål 18 kan bli premium om greenen syns från klubbhuset.",
-         "Hål 1 och 17. Hål 18 om klubben bekräftar."),
+        ("Premiumhål", "Hålen med mest exponering, var och en med en egen extra yta: "
+         + "; ".join(f"hål {h.nr}: {h.premium['yta'][0].lower() + h.premium['yta'][1:]}" for h in prog.hal if h.premium) + ".",
+         "Hål " + _och([str(h.nr) for h in prog.hal if h.premium])
+         + ". Klubben bekräftar att kiosken vid nian är öppen 2027."),
         ("Dagens sponsorer", f"{idag.get('salda_hal', 0)} hål till {kr(idag.get('pris', 0))} kr. Vilka hål och vilka företag?",
          f"Trappa {' / '.join(kr(t) for t in trappa)} kr med treårsavtal och förstahandsrätt."),
         ("Övriga produkters priser", "Range, puttinggreen, Pay & Play, junior, tävling, huvudpartner.", "Enligt prislistan."),
