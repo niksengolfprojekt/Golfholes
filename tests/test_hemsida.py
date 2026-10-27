@@ -30,11 +30,18 @@ def test_inga_priser_fran_tacada():
             assert pris not in text, (html, pris)
 
 
+AI_RADEN = "Vi tar hjälp av AI när vi gör visualiseringar och bilder."
+
+
 def test_inga_ai_stamplar():
     import re
     from pathlib import Path
     publik = Path(__file__).resolve().parents[1] / "hemsida" / "public"
     for fil in publik.rglob("*.html"):
         text = fil.read_text(encoding="utf-8")
+        # Eric 2026-10-27: en enda förklarande rad om AI är tillåten, och bara på Om oss.
+        if fil.parent.name == "om":
+            assert text.count(AI_RADEN) == 1, f"AI-raden saknas på {fil}"
+            text = text.replace(AI_RADEN, "")
         assert not re.search(r"\bAI\b", text), f"AI-stämpel i {fil}"
         assert 'class="ai"' not in text, f"AI-etikett i {fil}"
