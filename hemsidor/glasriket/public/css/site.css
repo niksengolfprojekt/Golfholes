@@ -303,24 +303,21 @@ address{font-style:normal;margin:0 0 1em}
 
 
 /* ---------------------------------------------------------------- startsidan: skogsjuvelen */
-/* Scenen: en stämningsbild över hela skärmen */
-.scen{position:relative;min-height:min(92svh,860px);display:flex;align-items:flex-end;background:var(--natt);color:var(--vit);overflow:hidden;isolation:isolate}
-.scen-bild{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%;z-index:-2;animation:andas 14s cubic-bezier(.2,.6,.3,1) both}
-@keyframes andas{from{transform:scale(1.08)}to{transform:none}}
-.scen::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(16,32,46,.05) 25%,rgba(16,32,46,.88) 100%),linear-gradient(90deg,rgba(16,32,46,.5) 0%,rgba(16,32,46,0) 55%)}
-.scen-inne{display:grid;gap:36px;padding-top:140px;padding-bottom:40px}
-.scen h1{color:var(--vit);font-size:clamp(46px,8vw,112px);line-height:.98;letter-spacing:-.02em;max-width:12ch;margin-bottom:.32em;animation:stig 1.1s cubic-bezier(.2,.7,.2,1) both}
-.scen .ingress,.scen .knapp{animation:stig 1.1s .15s cubic-bezier(.2,.7,.2,1) both}
+/* Banan överst: hela banan ovanifrån i dagens årstid, varje siffra öppnar hålet */
+.bana{background:#FBF2ED;padding:40px 0 56px}
+.bana-grid{display:grid;gap:24px;grid-template-areas:"topp" "bild" "panel"}
+.bana-topp{grid-area:topp}
+.bana-bild{grid-area:bild}
+.bana-panel{grid-area:panel}
+.bana h1{font-size:clamp(44px,7vw,96px);line-height:.98;letter-spacing:-.02em;max-width:13ch;margin-bottom:.3em;text-wrap:balance;animation:stig 1.1s cubic-bezier(.2,.7,.2,1) both}
+.bana .ingress{color:var(--djup);max-width:34ch;animation:stig 1.1s .15s cubic-bezier(.2,.7,.2,1) both}
+.bana-knappar{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;margin:28px 0 0;animation:stig 1.1s .25s cubic-bezier(.2,.7,.2,1) both}
 @keyframes stig{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:none}}
-.scen .ingress{color:rgba(248,250,246,.94);max-width:34ch;margin-bottom:28px}
 @media (min-width:900px){
-  .scen-inne{grid-template-columns:1.5fr 1fr;align-items:end;padding-bottom:72px}
-  }
-
-/* Kartan: banan ovanifrån i dagens årstid, varje siffra öppnar hålet */
-.karta{background:#FBF2ED;padding:72px 0}
-.karta-grid{display:grid;gap:32px}
-.karta-text h2{font-size:clamp(34px,4.6vw,60px);line-height:1.02;max-width:14ch}
+  .bana{padding:72px 0 96px}
+  .bana-grid{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);grid-template-areas:"topp bild" "panel bild";grid-template-rows:auto 1fr;column-gap:72px;row-gap:40px;align-items:start}
+  .bana-panel{position:sticky;top:120px}
+}
 .karta-hal{min-height:150px}
 .karta-hal-tom{font:400 21px/1.5 var(--serif);color:var(--djup);max-width:30ch}
 .karta-kort{display:grid;grid-template-columns:96px 1fr;gap:18px;align-items:center;animation:in .35s ease-out}
@@ -345,11 +342,34 @@ address{font-style:normal;margin:0 0 1em}
 .karta-bild.runda .pin::after{animation:tand .9s ease-out backwards;animation-delay:calc(var(--n) * 90ms)}
 @keyframes tand{0%,100%{box-shadow:0 0 0 0 rgba(217,164,65,0)}35%{box-shadow:0 0 0 4px var(--glod),0 0 0 14px rgba(217,164,65,.3)}}
 .pin:hover::after,.pin.vald::after{box-shadow:0 0 0 4px var(--glod),0 0 0 12px rgba(217,164,65,.28)}
+
+/* Tre hål som avgör rundan */
+.signatur{padding:72px 0;background:var(--natt);color:var(--vit)}
+.signatur h2{color:var(--vit);font-size:clamp(34px,4.6vw,60px);line-height:1.02;max-width:14ch;margin-bottom:40px}
+.sig-lista{list-style:none;margin:0;padding:0;display:grid;gap:24px}
+.sig-kort{display:flex;flex-direction:column;height:100%;text-decoration:none;color:var(--vit);background:var(--djup);border-radius:var(--radie);overflow:hidden;transition:transform .25s}
+.sig-kort:hover{color:var(--vit);transform:translateY(-4px)}
+.sig-kort img{width:100%;aspect-ratio:3/2;object-fit:cover}
+.sig-text{padding:22px 24px 28px}
+.sig-nr{font:400 48px/1 var(--serif);color:var(--glod);margin:0 0 10px;display:flex;align-items:baseline;gap:14px}
+.sig-nr span{font:500 15px/1.3 var(--sans);color:var(--is)}
+.sig-text h3{color:var(--vit);font-size:26px;line-height:1.15;margin:0 0 10px}
+.sig-text p:last-child{color:rgba(248,250,246,.86);margin:0;max-width:44ch}
 @media (min-width:900px){
-  .karta{padding:120px 0}
-  .karta-grid{grid-template-columns:1fr 1.15fr;gap:72px;align-items:start}
-  .karta-text{position:sticky;top:120px}
+  .signatur{padding:120px 0}
+  .sig-lista{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
 }
+
+/* Alla arton hål i en rad som går att svepa */
+.alla{padding:72px 0;background:#FBF2ED}
+.alla-huvud{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:12px 32px;margin-bottom:28px}
+.alla-huvud h2{font-size:clamp(34px,4.6vw,60px);line-height:1.02;margin:0}
+.alla-rull{overflow-x:auto;scroll-snap-type:x mandatory;padding:4px var(--gutter) 20px;scroll-padding:0 var(--gutter)}
+.alla-rull .hk-lista{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(200px,62vw);grid-template-columns:none;gap:16px;width:max-content}
+.alla-rull .hk-lista li{scroll-snap-align:start}
+@media (min-width:700px){.alla-rull .hk-lista{grid-auto-columns:240px}}
+@media (min-width:1240px){.alla-rull{padding-left:calc((100vw - var(--max)) / 2 + var(--gutter));scroll-padding-left:calc((100vw - var(--max)) / 2 + var(--gutter))}}
+@media (min-width:900px){.alla{padding:120px 0}}
 
 /* Naturen */
 .natur{padding:72px 0;background:var(--dimma)}
@@ -382,9 +402,4 @@ address{font-style:normal;margin:0 0 1em}
   *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
   .js [data-visa]{opacity:1;transform:none}
 }
-@media (max-width:899px){
-  .scen-inne{padding-top:96px}
-  }
-@media (max-width:899px){
-  .scen::after{background:linear-gradient(180deg,rgba(16,32,46,.6) 0%,rgba(16,32,46,0) 34%,rgba(16,32,46,0) 48%,rgba(16,32,46,.9) 100%)}
-}
+

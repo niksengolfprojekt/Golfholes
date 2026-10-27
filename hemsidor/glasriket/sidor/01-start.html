@@ -1,42 +1,81 @@
 <!--
 titel: Glasrikets Golfklubb · Golf i naturreservatet Fylleryd, Växjö
-beskrivning: Arton hål genom naturreservatet Fylleryd, 4,5 km från Växjö centrum. Gå banan i förväg, hål för hål, och boka din starttid.
+beskrivning: Arton hål genom naturreservatet Fylleryd, 4,5 km från Växjö centrum. Spela banan hål för hål redan nu, och boka din starttid.
 sokvag:
-bild: img/stamning-1600.webp
+bild: img/karta-sommar-2000.webp
 -->
-<section class="scen" aria-labelledby="scen-rubrik">
-  <img class="scen-bild" src="/img/stamning-1600.webp" srcset="/img/stamning-800.webp 800w, /img/stamning-1600.webp 1600w, /img/stamning-2400.webp 2400w" sizes="100vw" width="1600" height="1073" alt="Hål 14 sett från tee: fairway i kvällssol mellan granskog och björkar" fetchpriority="high" decoding="async">
-  <div class="inne scen-inne">
-    <div class="scen-text">
-      <h1 id="scen-rubrik">Ett smycke i&nbsp;skogen</h1>
-      <p class="ingress">Arton hål genom naturreservatet Fylleryd, 4,5&nbsp;kilometer från Växjö centrum. Vid första tee har bruset redan tystnat.</p>
-      <a class="knapp knapp-glod" href="{{bokning_url}}" rel="noopener">Boka starttid</a>
+<section class="bana" id="kartan" aria-labelledby="bana-rubrik">
+  <div class="inne bana-grid">
+    <div class="bana-topp">
+      <h1 id="bana-rubrik">Arton hål som stannar&nbsp;kvar</h1>
+      <p class="ingress" data-arstid-text
+         data-text-var="Vitsipporna lyser i skogsbrynet och greenerna har just vaknat. Tryck på ett hål och spela det i förväg."
+         data-text-host="Björkarna längs fjortonde har gått i guld. Tryck på ett hål och spela det i förväg."
+         data-text-vinter="Banan vilar under snön. Tryck på ett hål och planera vårens första runda.">Fairway glöder i kvällssol och det är tyst mellan granarna. Tryck på ett hål och spela det i förväg.</p>
+      <p class="bana-knappar"><a class="knapp knapp-glod" href="{{bokning_url}}" rel="noopener">Boka starttid</a> <a class="pil" href="/banan/">Se alla 18 hål</a></p>
+    </div>
+    <div class="karta-bild bana-bild" data-karta>
+      <img class="karta-lager aktiv" data-lager="sommar" src="/img/karta-sommar-1200.webp" srcset="/img/karta-sommar-1200.webp 800w, /img/karta-sommar-2000.webp 1334w" sizes="(min-width: 900px) 50vw, 92vw" width="800" height="1200" alt="Glasrikets 18-hålsbana ovanifrån, med hålens nummer" fetchpriority="high" decoding="async">
+      <img class="karta-lager" data-lager="var" data-src="/img/karta-var-1200.webp" data-srcset="/img/karta-var-1200.webp 800w, /img/karta-var-2000.webp 1334w" sizes="(min-width: 900px) 50vw, 92vw" width="800" height="1200" alt="Glasrikets 18-hålsbana ovanifrån på våren, med hålens nummer" decoding="async">
+      <img class="karta-lager" data-lager="host" data-src="/img/karta-host-1200.webp" data-srcset="/img/karta-host-1200.webp 800w, /img/karta-host-2000.webp 1334w" sizes="(min-width: 900px) 50vw, 92vw" width="800" height="1200" alt="Glasrikets 18-hålsbana ovanifrån på hösten, med hålens nummer" decoding="async">
+      <img class="karta-lager" data-lager="vinter" data-src="/img/karta-vinter-1200.webp" data-srcset="/img/karta-vinter-1200.webp 800w, /img/karta-vinter-2000.webp 1334w" sizes="(min-width: 900px) 50vw, 92vw" width="800" height="1200" alt="Glasrikets 18-hålsbana ovanifrån i snö, med hålens nummer" decoding="async">
+      {{karta_pins}}
+    </div>
+    <div class="bana-panel">
+      <div class="karta-hal" data-karta-hal aria-live="polite">
+        <p class="karta-hal-tom">Par {{par}} och {{total}}&nbsp;meter genom naturreservatet Fylleryd, 4,5&nbsp;kilometer från Växjö. Börja med fjortonde: banans svåraste utslag.</p>
+      </div>
+      <div class="sponsorruta" data-sponsorruta hidden></div>
     </div>
   </div>
 </section>
 
-<section class="karta" id="kartan" aria-labelledby="karta-rubrik">
-  <div class="inne karta-grid">
-    <div class="karta-text" data-visa>
-      <h2 id="karta-rubrik">Gå rundan i förväg</h2>
-      <p class="ingress" data-arstid-text
-         data-text-var="Vitsipporna är på väg upp i Fylleryd. Tryck på ett hål och se hur det spelas."
-         data-text-host="Björkarna längs hål 14 har gått i guld. Tryck på ett hål och se hur det spelas."
-         data-text-vinter="Banan vilar under snön och väntar på våren. Tryck på ett hål och planera säsongens första runda.">Långa kvällar och fairways i solnedgång. Tryck på ett hål och se hur det spelas.</p>
-      <div class="karta-hal" data-karta-hal aria-live="polite">
-        <p class="karta-hal-tom">Arton hål, par {{par}}, {{total}}&nbsp;meter från de bakre tee. Hål 14 har banans svåraste utslag.</p>
-      </div>
-      <div class="sponsorruta" data-sponsorruta hidden></div>
-      <p class="mer"><a class="pil" href="/banan/">Alla 18 hål</a></p>
-    </div>
-    <div class="karta-bild" data-karta>
-      <img class="karta-lager aktiv" data-lager="sommar" src="/img/karta-sommar-1200.webp" srcset="/img/karta-sommar-1200.webp 800w, /img/karta-sommar-2000.webp 1334w" sizes="(min-width: 900px) 46vw, 92vw" width="800" height="1200" alt="Glasrikets 18-hålsbana ovanifrån, med hålens nummer" loading="lazy" decoding="async">
-      <img class="karta-lager" data-lager="var" data-src="/img/karta-var-1200.webp" data-srcset="/img/karta-var-1200.webp 800w, /img/karta-var-2000.webp 1334w" sizes="(min-width: 900px) 46vw, 92vw" width="800" height="1200" alt="Glasrikets 18-hålsbana ovanifrån på våren, med hålens nummer" decoding="async">
-      <img class="karta-lager" data-lager="host" data-src="/img/karta-host-1200.webp" data-srcset="/img/karta-host-1200.webp 800w, /img/karta-host-2000.webp 1334w" sizes="(min-width: 900px) 46vw, 92vw" width="800" height="1200" alt="Glasrikets 18-hålsbana ovanifrån på hösten, med hålens nummer" decoding="async">
-      <img class="karta-lager" data-lager="vinter" data-src="/img/karta-vinter-1200.webp" data-srcset="/img/karta-vinter-1200.webp 800w, /img/karta-vinter-2000.webp 1334w" sizes="(min-width: 900px) 46vw, 92vw" width="800" height="1200" alt="Glasrikets 18-hålsbana ovanifrån i snö, med hålens nummer" decoding="async">
-      {{karta_pins}}
+<section class="signatur" aria-labelledby="sig-rubrik">
+  <div class="inne">
+    <h2 id="sig-rubrik" data-visa>Tre hål avgör din&nbsp;runda</h2>
+    <ul class="sig-lista">
+      <li data-visa>
+        <a class="sig-kort" href="/banan/hal-14/">
+          <img src="/img/hal-14-tee-800.webp" srcset="/img/hal-14-tee-800.webp 800w, /img/hal-14-tee-1600.webp 1600w" sizes="(min-width: 900px) 28vw, 100vw" width="800" height="537" alt="Hål 14 från tee: fairway som viker av höger mellan granskog och björkar" loading="lazy" decoding="async">
+          <div class="sig-text">
+            <p class="sig-nr">14 <span>Par 4 · index 1</span></p>
+            <h3>Banans svåraste utslag</h3>
+            <p>Out längs hela vänstersidan och granskog till höger. De långtslående genar över hörnet. Den som spelar hålet som ett par 5 går ofta därifrån med det bästa resultatet.</p>
+          </div>
+        </a>
+      </li>
+      <li data-visa>
+        <a class="sig-kort" href="/banan/hal-03/">
+          <img src="/img/hal-03-inspel-800.webp" srcset="/img/hal-03-inspel-800.webp 800w, /img/hal-03-inspel-1600.webp 1600w" sizes="(min-width: 900px) 28vw, 100vw" width="800" height="537" alt="Inspelet mot den lilla greenen på hål 3" loading="lazy" decoding="async">
+          <div class="sig-text">
+            <p class="sig-nr">3 <span>Par 4</span></p>
+            <h3>Frestelsen heter 240&nbsp;meter</h3>
+            <p>Genvägen syns redan från tee. 240 meter carry över hörnet, eller 170 rakt fram och ett kort inspel. Bestäm dig innan du drar fram drivern.</p>
+          </div>
+        </a>
+      </li>
+      <li data-visa>
+        <a class="sig-kort" href="/banan/hal-05/">
+          <img src="/img/hal-05-tee-800.webp" srcset="/img/hal-05-tee-800.webp 800w, /img/hal-05-tee-1600.webp 1600w" sizes="(min-width: 900px) 28vw, 100vw" width="800" height="537" alt="Hål 5 från tee, med dammen till vänster" loading="lazy" decoding="async">
+          <div class="sig-text">
+            <p class="sig-nr">5 <span>Par 4</span></p>
+            <h3>Mer plats än du tror</h3>
+            <p>Dammen till vänster drar blicken. Lita på högersidan, så väntar en stor och lätträffad green.</p>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="alla" aria-labelledby="alla-rubrik">
+  <div class="inne">
+    <div class="alla-huvud" data-visa>
+      <h2 id="alla-rubrik">Arton hål. Arton olika&nbsp;frågor.</h2>
+      <a class="pil" href="/banan/">Hela banan</a>
     </div>
   </div>
+  <div class="alla-rull">{{alla_hal}}</div>
 </section>
 
 <section class="natur" aria-labelledby="natur-rubrik">
@@ -46,7 +85,7 @@ bild: img/stamning-1600.webp
     </figure>
     <div class="natur-text" data-visa>
       <h2 id="natur-rubrik">Skogen sätter takten</h2>
-      <p>På våren breder vitsipporna ut sig, och ett slag i ruffen känns lättare när doften av liljekonvalj ligger över fairway. Stengärdsgårdar, enbuskar, ek och bok skiljer hålen åt, och djuren betar i hagarna intill.</p>
+      <p>Stengärdsgårdar, ek och bok skiljer hålen åt. På våren breder vitsipporna ut sig, och doften av liljekonvalj gör ett slag i ruffen lite lättare att bära.</p>
       <p>Lyft blicken mellan slagen. Ofta glider en rovfågel över landskapet.</p>
     </div>
   </div>
@@ -56,19 +95,19 @@ bild: img/stamning-1600.webp
   <div class="inne">
     <ul class="vagval">
       <li data-visa>
-        <h2>18 hål från {{gf_fran}} på vardagar</h2>
-        <p>Välkommen som gäst på 18-hålsbanan eller {{pay_play}}. Medlemmar i elva samarbetsklubbar får 20&nbsp;% rabatt.</p>
-        <a class="pil" href="/greenfee/">Greenfee och bokning</a>
+        <h2>Din starttid väntar</h2>
+        <p>18 hål från {{gf_fran}} på vardagar. Är du medlem i någon av elva samarbetsklubbar får du 20&nbsp;% rabatt.</p>
+        <a class="pil" href="/greenfee/">Se greenfee och boka</a>
       </li>
       <li data-visa>
-        <h2>En hemmabana för hela familjen</h2>
-        <p>Från knattegolf till senior, med eller utan spelrätt. Betala på en gång eller i åtta delar via autogiro.</p>
+        <h2>Gör Fylleryd till din hemmabana</h2>
+        <p>Från första knattesvingen till fredagsrundan med vännerna. Betala direkt eller i åtta delar via autogiro.</p>
         <a class="pil" href="/bli-medlem/">Bli medlem</a>
       </li>
       <li data-visa>
-        <h2>Ge ert företag ett eget hål</h2>
-        <p>Som hålsponsor syns ni på teeskylten, på hålets egen sida och i klubbens kanaler, hela säsongen.</p>
-        <a class="pil" href="/halsponsorer/">Hålsponsorer</a>
+        <h2>Ert namn på ett hål</h2>
+        <p>Golfarna minns hålet, och hålet bär ert namn. Ni syns på teeskylten, på hålets egen sida och i klubbens kanaler hela säsongen.</p>
+        <a class="pil" href="/halsponsorer/">Om hålsponsorer</a>
       </li>
     </ul>
   </div>
