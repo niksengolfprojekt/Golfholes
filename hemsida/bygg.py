@@ -70,6 +70,13 @@ def bygg_sida(meta, kropp, ordmarke):
         f'<li><a href="/{u}"{" aria-current=\"page\"" if sokvag == u else ""}>{n}</a></li>' for u, n in MENY
     )
     ljus = meta.get("huvud") == "ljus"
+    over = meta.get("huvud") == "over"
+    skript = ""
+    if meta.get("skript") == "start":
+        # Banrundan och hålrullen på startsidan. three.js laddas bara här.
+        skript = ('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>\n'
+                  '<script src="/js/start.js" defer></script>\n')
+    boka = "" if sokvag.startswith("kontakt/") else '<a class="bokaknapp" href="/kontakt/">Boka en visning</a>\n'
     robots = "" if LANSERAD else '<meta name="robots" content="noindex, nofollow">\n'
     url = DOMAN + "/" + sokvag
     sida = f"""<!doctype html>
@@ -95,7 +102,7 @@ def bygg_sida(meta, kropp, ordmarke):
 </head>
 <body>
 <a class="hoppa" href="#innehall">Till innehållet</a>
-<header class="huvud{" ljus" if ljus else ""}">
+<header class="huvud{" ljus" if ljus else ""}{" pa-ljus" if over else ""}">
   <div class="inne">
     <a class="ordmarke" href="/" aria-label="TACADA, till startsidan">{ordmarke}</a>
     <nav class="meny" aria-label="Huvudmeny"><ul>{meny}</ul></nav>
@@ -122,8 +129,8 @@ def bygg_sida(meta, kropp, ordmarke):
     </div>
   </div>
 </footer>
-<script src="/js/site.js" defer></script>
-</body>
+{boka}<script src="/js/site.js" defer></script>
+{skript}</body>
 </html>
 """
     return ersatt(sida)

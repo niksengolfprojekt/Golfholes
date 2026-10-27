@@ -2,17 +2,36 @@
 titel: TACADA · Er bana, hål för hål
 beskrivning: Hålguider, profil, hemsida och sociala medier för golfklubbar, gjorda med samma omsorg som banan. Ni sköter banan, vi sköter resten.
 sokvag:
+huvud: over
+skript: start
 -->
-<section class="hjalte">
-  <picture class="foto" aria-hidden="true">
-    <source media="(max-width: 720px)" srcset="/img/start-morgon-900.webp">
-    <img src="/img/start-morgon.webp" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center 62%">
-  </picture>
-  <div class="inne">
-    <span class="over pa-mork">För golfklubbar som är stolta över sin bana</span>
-    <h1>Ni har byggt en fantastisk bana. Nu ska alla se den.</h1>
-    <p>Ni har vårdat varje green i åratal. Nu får hålguiden, hemsidan och flödet samma omsorg. Från första skissen till sista inlägget sköter vi det, medan ni sköter banan.</p>
-    <a class="knapp" href="/kontakt/">Boka en visning</a>
+<section class="runda" id="runda" aria-label="En runda över banan">
+  <div class="scen">
+    <canvas class="bana" aria-hidden="true"></canvas>
+    <img class="reserv" src="/img/banrunda/karta-reserv.webp" alt="" aria-hidden="true">
+    <div class="tee" role="img" aria-label="Utsikten från tee på hål 14: fairway mellan granar och björkar i kvällssol"></div>
+    <div class="nalar" aria-hidden="true"></div>
+    <div class="slojan" aria-hidden="true"></div>
+    <div class="morkslojan" aria-hidden="true"></div>
+    <div class="kort pa" data-fran="0" data-till=".26">
+      <span class="over">Vi skapar värde till varje hål</span>
+      <h1>Ni har byggt en fantastisk bana. Nu ska <em>alla</em> se den.</h1>
+      <p>Vi gör banan till något golfarna längtar tillbaka till och lokala företag vill sätta sitt namn på. Ni sköter greenerna. Vi sköter resten.</p>
+      <a class="knapp" href="/kontakt/">Boka en visning</a>
+      <span class="scrolla">Scrolla, så tar vi en runda</span>
+    </div>
+    <div class="kort" data-fran=".3" data-till=".7">
+      <h2>Varje hål på sin plats. Varje <em>träd</em> där det står.</h2>
+      <p>Golfarna känner igen sin bana på en sekund. De har bara aldrig sett den så här vacker.</p>
+    </div>
+    <div class="kort sista" data-fran=".95" data-till="1.01">
+      <span class="over">Hål 14</span>
+      <h2>Utslaget alla pratar om efteråt.</h2>
+      <p>Här vill ett lokalt företag synas. Vi gör hålet värt sitt namn, på skylten, i guiden och i flödet.</p>
+      <a class="knapp" href="/kontakt/">Se ett av era egna hål</a>
+    </div>
+    <div class="hud" aria-hidden="true"><b>Hål 14</b>Par 4<br>369 · 335 · 290 m</div>
+    <p class="kalla">Underlag: Ortofoto, Markhöjdmodell och Laserdata Skog ©Lantmäteriet, bearbetat, CC BY 4.0</p>
   </div>
 </section>
 
@@ -22,21 +41,27 @@ sokvag:
   <div><b>Intäkten är klubbens</b>Sponsorpengarna går till klubben. Alltid.</div>
 </div>
 
-<section class="sek">
-  <div class="inne">
-    <div class="halexempel">
-      <figure>
-        <img src="/img/exempel-hal.webp" width="420" height="1067" alt="Ett par 4-hål ovanifrån: en svag högerdogleg genom tallskog, med fairway och greenen längst upp, vaktad av en bunker." loading="lazy">
-        <figcaption>Underlag: Ortofoto och Markhöjdmodell ©Lantmäteriet, bearbetat, CC BY 4.0.</figcaption>
-      </figure>
-      <div class="rubrikgrupp">
-        <span class="over">Ett hål från en riktig bana i Småland</span>
-        <h2>Hålet golfarna drömmer om kvällen innan</h2>
-        <p class="ingress">Doglegen genom tallarna. Bunkern som vaktar greenen. Golfaren ser hålet framför sig redan hemma i soffan, och känner igen varje detalj på tee.</p>
-        <p class="ingress">Det är skillnaden mellan en karta och en längtan.</p>
-        <a class="lank-pil" href="/kontakt/">Se ett hål från er egen bana</a>
+<section class="halrulle" id="halrulle" aria-label="Fyra hål ur en hålguide">
+  <div class="scen">
+    <div class="text">
+      <span class="over">Hålguiden</span>
+      <h2>Hål för hål, precis som golfarna <em>minns</em> dem.</h2>
+      <div class="hal-lista">
+        <div class="hal pa" data-langd="290"><b>3</b><span>Par 4 · <i>290</i> m</span><p>Nästan rakt, med en svag vänsterböj in mot greenen och en damm vid tee 49.</p></div>
+        <div class="hal" data-langd="473"><b>9</b><span>Par 5 · <i>473</i> m</span><p>Banans långa par 5. Bunkrarna mitt i fairway bestämmer hur modig andraslaget får vara.</p></div>
+        <div class="hal" data-langd="369"><b>14</b><span>Par 4 · <i>369</i> m</span><p>Banans svåraste utslag. Out till vänster, skog hela vägen till höger.</p></div>
+        <div class="hal" data-langd="128"><b>17</b><span>Par 3 · <i>128</i> m</span><p>Signaturhålet. Vatten till vänster, kort och långt. Bara greenen räcker.</p></div>
       </div>
+      <a class="lank-pil" href="/kontakt/">Se ett hål från er egen bana</a>
     </div>
+    <div class="bilder" aria-hidden="true">
+      <img src="/img/hal/hal-03.webp" alt="" width="582" height="1100">
+      <img src="/img/hal/hal-09.webp" alt="" width="258" height="1100" loading="lazy">
+      <img src="/img/hal/hal-14.webp" alt="" width="433" height="1100" loading="lazy">
+      <img src="/img/hal/hal-17.webp" alt="" width="565" height="1100" loading="lazy">
+    </div>
+    <div class="prickar" aria-hidden="true"><i class="pa"></i><i></i><i></i><i></i></div>
+    <p class="kalla">Underlag: Ortofoto och Markhöjdmodell ©Lantmäteriet, bearbetat, CC BY 4.0</p>
   </div>
 </section>
 
