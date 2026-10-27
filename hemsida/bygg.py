@@ -217,7 +217,11 @@ def forhandsvisning(mal):
         text = text.replace("url(/img/", f"url({rel}img/")
         html.write_text(text, encoding="utf-8")
     css = mal / "css" / "site.css"
-    css.write_text(css.read_text(encoding="utf-8").replace("url(/fonts/", "url(../fonts/"), encoding="utf-8")
+    css.write_text(css.read_text(encoding="utf-8").replace("url(/fonts/", "url(../fonts/").replace("url(/img/", "url(../img/"), encoding="utf-8")
+    # start.js körs bara på startsidan, som ligger i roten.
+    js = mal / "js" / "start.js"
+    if js.exists():
+        js.write_text(js.read_text(encoding="utf-8").replace("'/img/", "'img/"), encoding="utf-8")
     return mal
 
 
