@@ -17,6 +17,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
+from .. import geometry as g
 from ..hole import Hole
 from ..lantmateriet import read_window
 from ..utkast import Fonster, klassa, matt, medel
@@ -84,6 +85,43 @@ def _punkt_fore_green(linje, mitt, meter: float):
             return (a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1]))
         gick += L
     return None
+
+
+def _mitt_i_fairway(linje, p, fairways, max_m: float = 40.0):
+    """Flyttar en avståndspunkt i sidled (vinkelrätt mot spellinjen) till mitten av fairway där
+    den ligger, så pricken hamnar mitt i fairway och inte vid kanten (Eric 2026-10-29).
+    Avståndet längs linjen är detsamma. Ingen fairway inom `max_m` → punkten som den var."""
+    if not fairways:
+        return p
+    bast = None
+    for a, b in zip(linje, linje[1:]):
+        L = math.dist(a, b) or 1.0
+        t = max(0.0, min(1.0, ((p[0] - a[0]) * (b[0] - a[0]) + (p[1] - a[1]) * (b[1] - a[1])) / (L * L)))
+        q = (a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1]))
+        if bast is None or math.dist(q, p) < bast[0]:
+            bast = (math.dist(q, p), ((b[0] - a[0]) / L, (b[1] - a[1]) / L))
+    nx, ny = -bast[1][1], bast[1][0]
+    steg = [i * 0.5 for i in range(int(-max_m * 2), int(max_m * 2) + 1)]
+    inne = [k for k in steg if any(g.contains(f, (p[0] + k * nx, p[1] + k * ny)) for f in fairways)]
+    if not inne:
+        return p
+    # den sammanhängande biten av fairway som ligger närmast linjen
+    bitar, bit = [], [inne[0]]
+    for k in inne[1:]:
+        if k - bit[-1] > 0.6:
+            bitar.append(bit)
+            bit = []
+        bit.append(k)
+    bitar.append(bit)
+    bit = min(bitar, key=lambda b: 0 if b[0] <= 0 <= b[-1] else min(abs(b[0]), abs(b[-1])))
+    k = (bit[0] + bit[-1]) / 2
+    return (p[0] + k * nx, p[1] + k * ny)
+
+
+def avstandspunkt(hole: Hole, mitt, meter: float):
+    """Punkten `meter` före greenens mitt längs spellinjen, mitt i fairway."""
+    p = _punkt_fore_green(hole.centerline, mitt, meter)
+    return _mitt_i_fairway(hole.centerline, p, hole.fairways) if p else None
 
 
 def _ramp(L: np.ndarray, stopp) -> np.ndarray:
@@ -329,7 +367,7 @@ def rita_prickar(rot: Image.Image, hole: Hole, px) -> None:
     s = rot.height / 1000  # storlek på symboler oberoende av upplösning
     mitt = _tyngdpunkt(hole.green)
     for meter, farg in ([] if hole.par == 3 else PRICKAR):  # par 3: slås mot green, inga prickar
-        p = _punkt_fore_green(hole.centerline, mitt, meter)
+        p = avstandspunkt(hole, mitt, meter)
         if p:
             x, y = px(*p)
             r = 9 * s
@@ -832,7 +870,7 @@ def spelarvy(hole: Hole, orto: Path, bild: Path, ut: Path) -> dict:
     linje_x = sum(px(*p)[0] for p in hole.centerline) / len(hole.centerline)
     if hole.par != 3:
         for meter in (200, 150, 100):
-            p = _punkt_fore_green(hole.centerline, gm["mitt"], meter)
+            p = avstandspunkt(hole, gm["mitt"], meter)
             if not p:
                 continue
             x, y = px(*p)

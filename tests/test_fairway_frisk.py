@@ -19,3 +19,12 @@ def test_rod_spelprick_rors_inte():
     w = brunvikt(a)
     assert w[40, 40] == 0
     assert w[2, 2] > 0.9
+
+
+def test_avstandsprick_hamnar_mitt_i_fairway():
+    from golfholes.render.foto import _mitt_i_fairway
+    linje = [(0.0, 0.0), (0.0, 300.0)]
+    fairway = [[(2.0, 100.0), (32.0, 100.0), (32.0, 200.0), (2.0, 200.0)]]  # fairway till höger om linjen
+    x, y = _mitt_i_fairway(linje, (0.0, 150.0), fairway)
+    assert abs(x - 17.0) < 0.6 and y == 150.0
+    assert _mitt_i_fairway(linje, (0.0, 150.0), []) == (0.0, 150.0)

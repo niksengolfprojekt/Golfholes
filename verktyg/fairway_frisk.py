@@ -39,12 +39,16 @@ def brunvikt(rgb):
     slitage drar mot orange-brunt (R/G över 1). Kvällsljusets gulgröna sken ligger strax under 1 och lämnas."""
     rg = rgb[..., 0] / np.maximum(rgb[..., 1], 1)
     w = np.clip((rg - 0.97) / 0.08, 0, 1)
+    return np.where(prickmask(rgb), 0, w)
+
+
+def prickmask(rgb):
+    """Spelprickar, flagga och vita ringar (ritade av koden): de ska aldrig färgas om."""
     hsv = np.asarray(Image.fromarray(rgb.astype(np.uint8)).convert("HSV"), np.float32)
     h, s, v = hsv[..., 0] * 360 / 255, hsv[..., 1] / 255, hsv[..., 2] / 255
     prick = ((s > 0.78) & (v > 0.88)) | (((h > 330) | (h < 15)) & (s > 0.55) & (v > 0.6)) | ((s < 0.12) & (v > 0.9))
-    prick = np.asarray(Image.fromarray((prick * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(3))
-                       .filter(ImageFilter.MaxFilter(21))) > 0  # spelprickar, flagga och vita ringar: rör inte
-    return np.where(prick, 0, w)
+    return np.asarray(Image.fromarray((prick * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(3))
+                      .filter(ImageFilter.MaxFilter(21))) > 0
 
 
 def spelyta(im: Image.Image, hole: Hole, px) -> np.ndarray:
