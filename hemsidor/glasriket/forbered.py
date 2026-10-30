@@ -82,6 +82,14 @@ def sigill():
     duk.convert("RGB").save(UT / "apple-touch-icon.png")
 
 
+def sigill_vit():
+    """Vita sigillet till toppbilden på startsidan (genomskinlig PNG, ingen webbläsare behövs)."""
+    im = Image.open(KALLA / "logo-fornyad" / "sigill" / "smaland" / "Glasriket_sigill-smaland_enfarg_vit.png").convert("RGBA")
+    im = im.crop(im.getbbox())
+    for storlek in (96, 192, 288):
+        im.resize((storlek, storlek), Image.LANCZOS).save(UT / "img" / f"sigill-vit-{storlek}.png", optimize=True)
+
+
 def foton():
     (UT / "img").mkdir(parents=True, exist_ok=True)
     for namn, fil in FOTON.items():
@@ -97,9 +105,9 @@ def foton():
 
 
 ARSTIDER = ("var", "sommar", "host", "vinter")
-# Stämningsbilden överst på startsidan. Tills klubbens eget foto finns: hål 14 från tee i ögonhöjd
-# (godkänd vy, byggd på Lantmäteriets höjddata). Byt bara sökvägen när fotot är taget.
-STAMNINGSBILD = KALLA / "ogonhojd" / "v2" / "h14-tee.jpg"
+# Stämningsbilden överst på startsidan. Tills klubbens eget foto finns: fairway mellan tallarna
+# vid fjortonde green (godkänd vy, byggd på Lantmäteriets höjddata). Byt bara sökvägen när fotot är taget.
+STAMNINGSBILD = KALLA / "ogonhojd" / "v2" / "allm-h14green.jpg"
 
 
 def arstider():
@@ -123,6 +131,6 @@ def stamning():
 
 
 if __name__ == "__main__":
-    delar = sys.argv[1:] or ["typsnitt", "sigill", "foton", "arstider", "stamning"]
+    delar = sys.argv[1:] or ["typsnitt", "sigill", "sigill_vit", "foton", "arstider", "stamning"]
     for d in delar:
         globals()[d]()

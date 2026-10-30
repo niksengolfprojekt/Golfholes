@@ -25,6 +25,15 @@
     document.addEventListener('keydown', function (h) { if (h.key === 'Escape') meny.open = false; });
   }
 
+  // Startsidan: sidhuvudet är genomskinligt över entrébilden och blir fast när man skrollat förbi den
+  var entre = document.querySelector('[data-entre]'), huvud = document.querySelector('.huvud');
+  if (entre && huvud) {
+    var lage = function () { huvud.classList.toggle('pa-bild', entre.getBoundingClientRect().bottom > huvud.offsetHeight + 1); };
+    lage();
+    window.addEventListener('scroll', lage, { passive: true });
+    window.addEventListener('resize', lage);
+  }
+
   // Årstiden styr bilderna: kartan och hålbilderna visas som banan ser ut just nu.
   // Vår april–maj, sommar juni–augusti, höst september–oktober, vinter november–mars.
   // ?arstid=vinter (osv.) visar en annan årstid under besöket – för granskning.

@@ -1,9 +1,11 @@
 # Glasrikets GK – designfil
 
-**Idé:** Banan först. Det första besökaren ser är hela banan ovanifrån i dagens årstid (vår, sommar, höst eller vinter
-efter datum), med alla 18 hål klickbara. Förslag 2 (2026-10-27, Eric: banan i fokus och mycket bättre säljande texter).
+**Idé:** Banan i glaskulan. Överst ligger banan i ett glasklot mot nattblått, samma klot som i klubbens sigill
+"Småland": glaset i Glasriket och skogen i Fylleryd i en och samma bild. Sedan hela banan ovanifrån i dagens årstid,
+där varje hål går att zooma in på (Eric 2026-10-30: toppen ska andas kvalitet, Småland och skogsbana, stolthet för
+medlemmar och lust för gäster; banöversikten i avsnitt 2).
 
-Registrerad i `hemsidor/designregister.yaml` (riktning `arstiderna`, toppbild `stamningsfoto`).
+Registrerad i `hemsidor/designregister.yaml` (riktning `arstiderna`, toppbild `glaskula`).
 
 ## Typsnitt (klubbens profil "Glas och skog")
 - Rubriker och siffror: Spectral 400/500. Brödtext och knappar: Hanken Grotesk 400–600.
@@ -21,15 +23,19 @@ Registrerad i `hemsidor/designregister.yaml` (riktning `arstiderna`, toppbild `s
 | Knapp och vald hålsiffra | glöd `#D9A441` |
 
 ## Startsidan, avsnitt för avsnitt
-1. **Banan (toppen):** rubrik, en mening som byts efter årstid och "Boka starttid" bredvid kartan. Siffrorna tänds en
+1. **Entrén:** banan i en rund glaskula med tunn guldring, vita sigillet, rubriken "Nära Växjö. Djupt i skogen.",
+   en mening plus "Välkommen hem. Eller välkommen hit." (medlem och gäst), "Boka starttid" och "Se banan".
+   Ingen versalrad, inga textskuggor, ingen sifferrad. Sidhuvudet är genomskinligt över entrén och sigillet i
+   huvudet syns först när man skrollat förbi. Bilden byts mot klubbens eget foto i `forbered.py` (STAMNINGSBILD).
+2. **Banan:** rubrik, en mening som byts efter årstid och "Se alla 18 hål" bredvid kartan. Siffrorna tänds en
    efter en (hål 1–18) direkt, så att man förstår att de går att trycka på. Tryck på ett hål: hålbilden (samma årstid),
    par, längd och rubrik visas under knapparna; andra trycket går till hålet. Under hålet en ruta för hålsponsorns logga.
-   På mobil: rubrik, karta, sedan hålet.
-2. **Alla arton hål:** en rad hålkort att svepa i sidled. Ett avsnitt med hål i ögonhöjd väntar tills alla
+   Tryck zoomar kartan in på hålet ("Visa hela banan" eller Esc zoomar ut). På mobil: rubrik, karta, sedan hålet.
+3. **Alla arton hål:** en rad hålkort att svepa i sidled. Ett avsnitt med hål i ögonhöjd väntar tills alla
    18 hål har en sådan vy (Eric 2026-10-27); CSS-klasserna `signatur`/`sig-*` finns kvar för det.
-3. **Naturen:** bilden går ut i kanten, kort text om Fylleryd.
-4. **Vägar in:** greenfee, medlemskap, hålsponsor – ytor utan ramar.
-5. **Hitta hit** med öppettider.
+4. **Naturen:** bilden går ut i kanten, kort text om Fylleryd.
+5. **Vägar in:** greenfee, medlemskap, hålsponsor – ytor utan ramar.
+6. **Hitta hit** med öppettider.
 
 ## Årstider
 - Vår april–maj, sommar juni–augusti, höst september–oktober, vinter november–mars (i `site.js`).
@@ -51,3 +57,6 @@ aldrig ändrad. Inga personer. Lantmäteriet-raden och "Vissa bilder är visuali
 - v2 flygfilm över hål 14 med nedräkning – filmen fälld av Eric (för låg kvalitet), nedräkningen behölls.
 - v3 (2026-10-25) stämningsbild, årstid efter datum, sponsorruta. Nedräkningen borttagen samma kväll.
 - Förslag 2 (2026-10-27): banan som toppbild, svepbar rad med alla hål, nya säljtexter. Stämningsfotot finns kvar i forbered.py men används inte på startsidan.
+- 2026-10-29: inzoomning på hålet och hålen i raden som växer fram ett i taget.
+- 2026-10-30 (Eric): ny entré överst. Första försöket (helbild, versalrad, två knappar) fälldes i smakgranskningen som
+  standardmall; ersatt av glaskulan. Banöversikten flyttad till avsnitt 2.
