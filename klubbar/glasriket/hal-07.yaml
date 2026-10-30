@@ -1,6 +1,8 @@
 # UTKAST – genererat 2026-10-23 av `python -m golfholes utkast klubbar/glasriket/utkast/hal-07.yaml`.
 # Granska mot klubbens hålkarta och kontrollbilden innan det godkänns.
 # Borttaget ur utkastet: 5 falska vatten (skugga på landsvägen bakom tee).
+# 2026-10-30 (Eric): bunkern bakom greenen (öster om green, E 491928–491931) är borttagen av klubben och
+#   igensådd med gräs. Polygonen struken; ortofotot från juli 2025 visar den fortfarande.
 club: Glasrikets Golfklubb
 hole: 7
 par: 3
@@ -70,27 +72,6 @@ hazards:
   - [491907.2, 6305770.2]
   - [491907.7, 6305772.9]
   - [491909.5, 6305774.9]
-- kind: bunker
-  name: ''
-  polygon:
-  - [491930.2, 6305758.4]
-  - [491930.8, 6305758.2]
-  - [491931.0, 6305757.5]
-  - [491930.8, 6305756.1]
-  - [491931.0, 6305753.3]
-  - [491930.7, 6305752.1]
-  - [491930.1, 6305750.9]
-  - [491929.6, 6305748.1]
-  - [491929.4, 6305747.8]
-  - [491928.8, 6305747.7]
-  - [491928.6, 6305748.6]
-  - [491929.1, 6305750.5]
-  - [491929.1, 6305752.4]
-  - [491928.9, 6305753.8]
-  - [491928.2, 6305755.3]
-  - [491928.2, 6305756.2]
-  - [491928.8, 6305757.6]
-  - [491929.5, 6305758.2]
 - kind: bunker
   name: ''
   polygon:
