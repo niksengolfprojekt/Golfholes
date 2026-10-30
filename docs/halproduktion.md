@@ -119,3 +119,20 @@ Under prov 2026-10-25 (Eric vill ha "mer renderat och krispigt"): ett andra AI-p
 referens ("premium high-end 3D render, ultra crisp…") och/eller en skärpning i kod (klarhet + mikrokontrast)
 innan inpassningen. Det andra AI-passet tog bort vassen i dammen på hål 17, så kontrollera vegetation i vatten.
 Uppdateras när Eric valt.
+
+## Stil B · Tecknad bokstil (Eric 2026-10-30, gäller nu för Glasriket)
+
+Alla 18 hål gjorda om i stil B. Samma kedja som stil A, men prompten byter ytan till en tecknad banguide
+(nano-banana-2-1 image2image, 3 bilder per hål, 9:16, 4K, 240 krediter per hål). Ordagrant slut på prompten:
+
+> Only turn this aerial image into a premium hand-finished golf course illustration seen straight from above, the quality of a luxury resort yardage book: fine ink linework with soft painted colour, late afternoon golden-hour sunlight from the upper right, long soft blue-green shadows exactly where the existing shadows are, fresh lush green fairway with soft alternating mowing stripes only on the fairway, a finely mown green with a darker collar ring, slightly darker textured rough, bright clean sand with a crisp lip[, clear deep blue-green water with gentle light reflections]. Trees are Swedish Norway spruce and Scots pine drawn with dense rounded dark-green crowns and real volume, NEVER star-shaped, NEVER palm-like, plus birches with small rounded warm muted-gold crowns (not neon). Roads and buildings in quiet muted grey. Rich, saturated but natural colour, good contrast, high micro-detail, sharp. The surroundings fall off into the dark navy background exactly as now. No text, no people, no flags, no cars. Do not add any path, tee, bunker or building that is not already there.
+
+Början är densamma som för stil A (låst inramning + hålets egna former). Lärdomar:
+- Stil B drar en tuschkant runt varje fairway. En smal fairwaybit som i underlaget ser ut som ruff blir
+  då två skilda fairways (hål 1). Tona biten i underlaget först: `python verktyg/underlag_fairway_ton.py
+  klubbar/glasriket/hal-01.yaml 2`, och säg i prompten att det är EN sammanhängande fairway.
+- Formpoängen blir något lägre än i stil A eftersom kanterna ritas skarpare. Hål 17 nådde 0,68 på sex
+  försök; vatten, ö och green låg exakt, bara fairwaykanten avvek, och bilden godkändes efter ögonkontroll.
+- Hål 6: ta bort sandfrasen ur prompten (hålet har ingen bunker). Hål 7: "the area behind the green is grass".
+- Kedja per hål: `ai_tillbaka_test <hålfil> b5 data/<klubb>/ai-b/hNN-?.png` → (fairway_ton) → `fairway_frisk
+  --namn b5` → `prick_flytt --namn b5` → `halkort` (bild: ../halbilder/hal-NN-b5.webp).
