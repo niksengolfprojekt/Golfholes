@@ -15,9 +15,9 @@ HS = '/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell'
 PF = '/mnt/project-files/glasriket'
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 SIGILL = f'{PF}/logo-fornyad/sigill/smaland'
-HALBILDER = os.environ.get('HALBILDER', f'{PF}/halbilder-stil-b')
-HALKORT = os.environ.get('HALKORT', f'{PF}/halkort-stil-b')
-VERSION = 'Version 1.3 · Oktober 2026'
+HALBILDER = os.environ.get('HALBILDER', f'{PF}/halbilder-stil-a')
+HALKORT = os.environ.get('HALKORT', f'{PF}/halkort-stil-a')
+VERSION = 'Version 1.4 · Oktober 2026'
 
 # Profilen "Glas och skog"
 # v1.1 (Eric 2026-10-27): den ljusa färgen är Sand i stället för den ljusblå Kristall.
@@ -50,9 +50,9 @@ def prep(out):
         s = re.sub(r'<rect x="-10" y="-10" width="220" height="220" fill="[^"]+"/>', '', s, count=1)
         open(f'{out}/logo/' + os.path.basename(f), 'w').write(s)
     # Målade hålbilder (repo) -> PNG med alfa, 1600 px hög
-    # Senaste hålbilder (stil B, tecknad, vald 2026-10-30) och hålkort (mörk layout 3)
+    # Hålbilder i stil A (Eric 2026-10-31: A, tills den förfinade A-versionen finns) och hålkort (mörk layout 3)
     for n in range(1, 19):
-        im = Image.open(f'{HALBILDER}/hal-{n:02d}-b5.webp'); im.thumbnail((1600, 1600))
+        im = Image.open(f'{HALBILDER}/hal-{n:02d}-a5.webp'); im.thumbnail((1600, 1600))
         im.save(f'{out}/img/hal-{n:02d}-malad.png', optimize=True)
     for n in (3, 5, 9, 11, 14, 17, 18):
         im = Image.open(f'{HALKORT}/hal-{n:02d}-layout3.png').convert('RGB'); im.thumbnail((1100, 1640))
@@ -362,7 +362,7 @@ def build_pages():
     im = ''.join(f'<div class="abs" style="left:{M + i * (bw + 15)}px;top:180px;width:{bw}px;height:{bh}px;background:url(img/hal-{n:02d}-malad.png) 50% 50%/contain no-repeat"></div>'
                  f'<div class="abs xs" style="left:{M + i * (bw + 15)}px;top:{180 + bh + 8}px;width:{bw}px;text-align:center;opacity:.75">Hål {n}</div>' for i, n in enumerate(holes))
     P.append(page(f'''{title('Bildspråk', 'Banan i huvudrollen', w=560)}
-{txt(640, 94, 423, '<p class="sm mut">Banan visas ovanifrån som tecknad bild, med riktiga former: fairway, green, bunkrar, vatten och skog ligger där de ligger. Samma tecknade stil på alla 18 hål. Inga människor i bilderna.</p>')}{im}
+{txt(640, 94, 423, '<p class="sm mut">Banan visas ovanifrån, med riktiga former: fairway, green, bunkrar, vatten och skog ligger där de ligger. Ljuset är sol och tidig höst, och banan i toppskick. Inga människor i bilderna.</p>')}{im}
 <div class="abs" style="left:{M}px;top:650px;width:{W - 2 * M}px;display:flex;gap:30px">
  <div style="flex:1"><h3 style="color:{GRON}">Alltid</h3><div class="sm" style="margin-top:6px">Hela hålet i bild, från tee till green. Samma storlek när flera hål visas tillsammans.</div></div>
  <div style="flex:1"><h3 style="color:{GRON}">Aldrig</h3><div class="sm" style="margin-top:6px">Påhittade hinder, flyttade green eller bilder från en annan bana.</div></div>
