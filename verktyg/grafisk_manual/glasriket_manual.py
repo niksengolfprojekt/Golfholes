@@ -17,11 +17,14 @@ REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 SIGILL = f'{PF}/logo-fornyad/sigill/smaland'
 HALBILDER = os.environ.get('HALBILDER', f'{PF}/halbilder-stil-b')
 HALKORT = os.environ.get('HALKORT', f'{PF}/halkort-stil-b')
-VERSION = 'Version 1.2 · Oktober 2026'
+VERSION = 'Version 1.3 · Oktober 2026'
 
 # Profilen "Glas och skog"
 # v1.1 (Eric 2026-10-27): den ljusa färgen är Sand i stället för den ljusblå Kristall.
-DJUP, SJO, GRON, IS, KRIST, GLOD, GLOD_D = '#10202E', '#1D4756', '#3F7F86', '#9CC9C3', '#EFE6D2', '#D9A441', '#8A6220'
+# v1.3 (Eric 2026-10-31): glas och skog = tre blå, två gröna, sand och glöd; Glasgrön (petrol) utgår.
+# Samma värden som styrelsedecken. KRIST är namnet i koden på den ljusa färgen (Sand).
+DJUP, SJO, IS, SKOG, MOSSA, KRIST, GLOD, GLOD_D = '#10202E', '#1D4756', '#9CC9C3', '#1F3A2E', '#6E8B5B', '#EEE6D1', '#D49A4E', '#8A6220'
+GRON = MOSSA              # etiketter och linjer på ljust
 # Sigillets egna toner (står i logotypfilerna)
 S_BRONS, S_BRONS_L = '#8C5A22', '#D49A4E'
 STEN = '#E5DAC2'          # mellanyta, en ton mörkare än Sand (för rutor)
@@ -179,7 +182,7 @@ def build_pages():
     toc = ''.join(f'<div style="display:flex;justify-content:space-between;padding:7px 0" class="rule"><span class="sm">{t}</span><span class="sm mut">{n:02d}</span></div>' for t, n in TOC)
     P.append(page(f'''{title('Inledning', 'Glas och skog')}
 {txt(M, 196, 450, f"""<p class="lead">Färgerna kommer ur glaset i Glasriket och skogen runt banan. Mörkt glas bär bilderna, ljus sand bär texten och glöden är accenten.</p>
-<p style="margin-top:18px">Profilen vilar på fyra saker: sigillet, sex färger, två typsnitt och banan själv som bild. Med dem ser allt från scorekort och hålskyltar till inlägg och klubbtröjor ut att komma från samma klubb.</p>
+<p style="margin-top:18px">Profilen vilar på fyra saker: sigillet, sju färger, två typsnitt och banan själv som bild. Med dem ser allt från scorekort och hålskyltar till inlägg och klubbtröjor ut att komma från samma klubb.</p>
 <p>Den här manualen visar hur delarna används. Följ den så långt det går. Står ni inför något manualen inte täcker, välj det enklaste alternativet med mest luft.</p>""")}
 <div class="abs" style="left:{M}px;top:520px;display:flex;gap:28px">
  <div style="width:132px"><h2>Lugnt</h2><div class="sm mut" style="margin-top:6px">Få element och mycket luft.</div></div>
@@ -209,7 +212,7 @@ def build_pages():
 
     # 4 Frizon och minsta storlek --------------------------------
     D = 300; X = D / 4
-    fz = (f'<div class="abs" style="left:{M}px;top:170px;width:{D + 2 * X}px;height:{D + 2 * X}px;border:1px dashed {GRON};background:rgba(63,127,134,.07)">'
+    fz = (f'<div class="abs" style="left:{M}px;top:170px;width:{D + 2 * X}px;height:{D + 2 * X}px;border:1px dashed {GRON};background:rgba(110,139,91,.08)">'
           f'<div class="abs" style="left:{X}px;top:{X}px;width:{D}px;height:{D}px;background:{KRIST};outline:1px solid rgba(63,127,134,.35)"></div>'
           f'<div class="abs" style="left:{X}px;top:{X}px">{seal("ljus", D)}</div>'
           + ''.join(f'<div class="abs" style="left:{l}px;top:{t}px;width:{X}px;height:{X}px;display:flex;align-items:center;justify-content:center;font:500 13px Spectral;color:{GRON}">X</div>'
@@ -232,7 +235,7 @@ def build_pages():
             ('mork', DJUP, 'Färgad, mörk botten', 'Djupglas och Sjöglas. Omslag, skylt, inlägg.', False),
             ('marin', '#FFFFFF', 'Enfärg Djupglas', 'Enfärgstryck, stämplar, dokument.', True),
             ('brons', KRIST, 'Enfärg brons', 'Folie och prägling på ljust.', True),
-            ('vit', SJO, 'Enfärg vit', 'Mörka ytor, glas, gravyr och dekaler.', False),
+            ('vit', SKOG, 'Enfärg vit', 'Mörka ytor, glas, gravyr och dekaler.', False),
             ('keps', None, 'Broderad', 'Kläder. Färgad mörk version i tråd.', False)]
     tiles = ''
     tw, th, gx = 315, 196, 24
@@ -251,7 +254,7 @@ def build_pages():
               ('Vrid inte', KRIST, seal('ljus', 140, 'transform:rotate(-14deg)')),
               ('Byt inte färger', KRIST, seal('ljus', 140, 'filter:hue-rotate(150deg) saturate(1.6)')),
               ('Ingen skugga, glöd eller effekt', KRIST, seal('ljus', 140, 'filter:drop-shadow(5px 7px 4px rgba(0,0,0,.55))')),
-              ('Inte på mellantoner med låg kontrast', GRON, seal('marin', 140)),
+              ('Inte på mellantoner med låg kontrast', MOSSA, seal('marin', 140)),
               ('Beskär inte och bryt inte ut delar', KRIST, f'<div style="width:150px;height:150px;overflow:hidden;position:relative"><div class="abs" style="left:-140px;top:-45px">{seal("ljus", 430)}</div></div>')]
     wt = ''
     for i, (t, bg, inner) in enumerate(wrongs):
@@ -263,48 +266,49 @@ def build_pages():
 {txt(640, 94, 423, '<p class="sm mut">Sigillet används precis som det levereras. Behöver ni en variant som inte finns i filpaketet, fråga hellre än bygg själva.</p>')}{wt}''', 6))
 
     # 7 Färger ---------------------------------------------------
-    cols = [('Djupglas', DJUP, 'Mörka ytor, rubriker och text', KRIST, 160),
-            ('Sjöglas', SJO, 'Ramar, skyltkant, mörka ytor', KRIST, 160),
-            ('Glasgrön', GRON, 'Detaljer och etiketter', KRIST, 160),
-            ('Isglas', IS, 'Text och linjer på mörkt', DJUP, 160),
-            ('Sand', KRIST, 'Ljusa ytor och text på mörkt', DJUP, 160),
-            ('Glöd', GLOD, 'Accent, bara på mörkt', DJUP, 163)]
+    cw7 = (W - 2 * M - 6 * 8) / 7
+    cols = [('Djupglas', DJUP, 'Mörka ytor, rubriker och text', KRIST, cw7),
+            ('Sjöglas', SJO, 'Mörka ytor och ramar', KRIST, cw7),
+            ('Isglas', IS, 'Text och linjer på mörkt', DJUP, cw7),
+            ('Skog', SKOG, 'Mörka ytor, skylt och inlägg', KRIST, cw7),
+            ('Mossa', MOSSA, 'Etiketter och detaljer', KRIST, cw7),
+            ('Sand', KRIST, 'Ljusa ytor och text på mörkt', DJUP, cw7),
+            ('Glöd', GLOD, 'Accent, bara på mörkt', DJUP, cw7)]
     sw = ''; x = M
     for nm, hx, role, tc, wd in cols:
         b = 'border:1px solid rgba(16,32,46,.15);' if hx == KRIST else ''
-        sw += (f'<div class="abs" style="left:{x}px;top:164px;width:{wd}px;height:330px;background:{hx};color:{tc};{b}padding:16px">'
+        sw += (f'<div class="abs" style="left:{x:.1f}px;top:164px;width:{wd:.1f}px;height:330px;background:{hx};color:{tc};{b}padding:16px">'
                f'<div style="font:400 20px/1.1 Spectral">{nm}</div>'
                f'<div class="xs" style="position:absolute;left:16px;right:12px;bottom:14px;opacity:.9">{role}</div></div>'
-               f'<div class="abs xs" style="left:{x}px;top:506px;width:{wd}px;line-height:1.7"><span class="b">{hx}</span><br>RGB {rgb(hx)}<br>'
+               f'<div class="abs xs" style="left:{x:.1f}px;top:506px;width:{wd:.1f}px;line-height:1.7"><span class="b">{hx}</span><br>RGB {rgb(hx)}<br>'
                f'<span class="mut">CMYK fastställs efter tryckprov<br>Pantone fastställs efter tryckprov</span></div>')
         x += wd + 8.0
     extra = ''
     for i, (nm, hx, d) in enumerate((('Mörk glöd', GLOD_D, 'Glöd som text och linje på ljus botten.'),
-                                     ('Sigillets brons', S_BRONS, 'Bara i sigillet, ljus botten. Står i logotypfilerna.'),
-                                     ('Sigillets ljusa brons', S_BRONS_L, 'Bara i sigillet, mörk botten. Står i logotypfilerna.'))):
+                                     ('Sigillets brons', S_BRONS, 'Bara i sigillet, ljus botten. Står i logotypfilerna.'))):
         xx = M + i * 340
         extra += (f'<div class="abs" style="left:{xx}px;top:620px;width:320px;display:flex;gap:12px">'
                   f'<div style="width:46px;height:46px;background:{hx};flex:none"></div>'
                   f'<div class="xs"><span class="b">{nm} {hx}</span> · RGB {rgb(hx)}<br><span class="mut">{d}</span></div></div>')
-    P.append(page(f'''{title('Färger', 'Sex färger ur glas och skog', w=600)}
+    P.append(page(f'''{title('Färger', 'Sju färger ur glas och skog', w=600)}
 {txt(640, 94, 423, '<p class="sm mut">Skärmvärdena gäller alltid för webb, sociala medier och film. Tryckvärdena sätts mot ett riktigt tryckprov innan första tryckningen och förs in i nästa version av manualen.</p>')}
 {sw}<div class="abs rule" style="left:{M}px;top:600px;width:{W - 2 * M}px"></div>{extra}''', 7))
 
     # 8 Färger i bruk: proportioner + kontrast --------------------
-    prop = [(DJUP, 30, 'Djupglas'), (KRIST, 40, 'Sand'), (SJO, 12, 'Sjöglas'), (GRON, 8, 'Glasgrön'), (IS, 6, 'Isglas'), (GLOD, 4, 'Glöd')]
+    prop = [(DJUP, 22, 'Djupglas'), (KRIST, 40, 'Sand'), (SKOG, 14, 'Skog'), (SJO, 8, 'Sjöglas'), (MOSSA, 8, 'Mossa'), (IS, 4, 'Isglas'), (GLOD, 4, 'Glöd')]
     bar = ''; x = M; tot = W - 2 * M
     for hx, pc, nm in prop:
         wd = tot * pc / 100
         b = 'border:1px solid rgba(16,32,46,.15);' if hx == KRIST else ''
         bar += f'<div class="abs" style="left:{x:.1f}px;top:170px;width:{wd:.1f}px;height:64px;background:{hx};{b}"></div><div class="abs xs" style="left:{x:.1f}px;top:242px;width:{max(wd, 60):.0f}px">{nm} {pc} %</div>'
         x += wd
-    pairs = [(KRIST, DJUP), (DJUP, KRIST), (IS, DJUP), (GLOD, DJUP), (KRIST, SJO), (DJUP, IS),
-             (GLOD_D, KRIST), (GRON, KRIST), (KRIST, GRON), (GLOD, KRIST)]
+    pairs = [(KRIST, DJUP), (DJUP, KRIST), (KRIST, SKOG), (IS, DJUP), (GLOD, SKOG),
+             (GLOD_D, KRIST), (SKOG, KRIST), (MOSSA, KRIST), (KRIST, MOSSA), (GLOD, KRIST)]
     cards = ''
     for i, (fg, bg) in enumerate(pairs):
         c = contrast(fg, bg)
         ok = 'Löptext och rubriker' if c >= 4.5 else ('Rubriker och etiketter, inte löptext' if c >= 3 else 'Undvik')
-        nm = {DJUP: 'Djupglas', KRIST: 'Sand', IS: 'Isglas', GLOD: 'Glöd', SJO: 'Sjöglas', GRON: 'Glasgrön', GLOD_D: 'Mörk glöd'}
+        nm = {DJUP: 'Djupglas', KRIST: 'Sand', IS: 'Isglas', GLOD: 'Glöd', SJO: 'Sjöglas', SKOG: 'Skog', MOSSA: 'Mossa', GLOD_D: 'Mörk glöd'}
         x = M + (i % 5) * 201; y = 330 + (i // 5) * 196
         b = 'border:1px solid rgba(16,32,46,.12);' if bg == KRIST else ''
         bad = c < 3
@@ -313,7 +317,7 @@ def build_pages():
                   + (f'<svg class="x" width="189" height="112"><line x1="14" y1="98" x2="175" y2="14" stroke="#7A2430" stroke-width="2"/></svg>' if bad else '') +
                   f'</div><div class="abs xs" style="left:{x}px;top:{y + 120}px;width:192px"><span class="b">Kontrast {c:.1f}:1</span><br><span class="mut">{ok}</span></div>')
     P.append(page(f'''{title('Färger', 'Färger i bruk', w=600)}
-{txt(640, 94, 423, '<p class="sm mut">Sand och Djupglas bär profilen. Sjöglas och Glasgrön ger djup, Isglas och Glöd är detaljer. Proportionerna nedan är en riktlinje för en hel trycksak eller ett flöde, inte för varje enskild yta.</p>')}
+{txt(640, 94, 423, '<p class="sm mut">Sand och Djupglas bär profilen. Skog och Sjöglas ger djup, Mossa, Isglas och Glöd är detaljer. Proportionerna nedan är en riktlinje för en hel trycksak eller ett flöde, inte för varje enskild yta.</p>')}
 {bar}<div class="abs" style="left:{M}px;top:296px"><h3 style="color:{GRON}">Text på färg</h3></div>{cards}''', 8, ft_text='Kontrast enligt WCAG 2.1. Löptext kräver minst 4,5:1, stor text och etiketter minst 3:1.'))
 
     # 9 Typsnitt -------------------------------------------------
@@ -388,7 +392,7 @@ def build_pages():
     # 14 Hålskylt ------------------------------------------------
     s = 0.56  # px per cm*10 -> skylt 700 x 1000 mm = 392 x 560 px
     sw_, sh_ = 700 * s, 1000 * s
-    sign = f'''<div class="abs" style="left:{M + 40}px;top:150px;width:{sw_:.0f}px;height:{sh_:.0f}px;background:{SJO};padding:8px;box-shadow:0 16px 36px rgba(16,32,46,.25);display:flex;flex-direction:column;gap:6px">
+    sign = f'''<div class="abs" style="left:{M + 40}px;top:150px;width:{sw_:.0f}px;height:{sh_:.0f}px;background:{SKOG};padding:8px;box-shadow:0 16px 36px rgba(16,32,46,.25);display:flex;flex-direction:column;gap:6px">
  <div style="height:{150 * s:.0f}px;background:{DJUP};color:{KRIST};display:flex;align-items:center;justify-content:center;font:400 34px Spectral">Nordvik-hålet</div>
  <div style="flex:1;background:{DJUP};color:{KRIST};position:relative">
    <div class="abs" style="left:10px;top:10px;width:146px;bottom:10px;background:url(img/hal-14-malad.png) 50% 50%/contain no-repeat"></div>
@@ -411,7 +415,7 @@ def build_pages():
     spec = [('Format', '70 × 100 cm, stående.'), ('Platta 1 · Rubrik', 'Sponsorns namn följt av ”-hålet”, i Spectral. Sand på Djupglas.'),
             ('Platta 2 · Hålguide', 'Hålbild, nummer, par, index och längder. Byts aldrig.'),
             ('Platta 3 · Sponsor', 'Sponsorns logga i en färg och QR-kod på Sand. Byts när sponsorn byts.'),
-            ('Ram', 'Sjöglas runt plattorna.'), ('Tillverkning', 'Ecosign. Färger stäms av mot tryckprov.')]
+            ('Ram', 'Skog runt plattorna.'), ('Tillverkning', 'Ecosign. Färger stäms av mot tryckprov.')]
     sp = ''.join(f'<div class="rule" style="padding:8px 0"><div class="sm b">{a}</div><div class="sm mut">{b}</div></div>' for a, b in spec)
     P.append(page(f'''{title('Tillämpningar', 'Hålskylt', w=560)}
 {sign}<div class="abs" style="left:560px;top:150px;width:503px">{sp}</div>
@@ -429,7 +433,7 @@ def build_pages():
 <div style="font:400 14px/1.12 Spectral;margin-top:18px">Banans svåraste utslag.</div></div>{lmline}''', DJUP)
     p2 = post(M + pw + 18, f'''{rings(pw, ph, pw / 2, 114, IS, n=7, r0=84, step=22, op=.14)}<div class="abs" style="left:{(pw - 150) / 2}px;top:39px">{seal('mork', 150)}</div>
 <div class="abs" style="left:0;right:0;top:218px;text-align:center;color:{KRIST}"><div style="font:600 6.5px Hanken;letter-spacing:.2em;color:{GLOD}">SÄSONGEN 2027</div>
-<div style="font:400 20px/1.15 Spectral;margin-top:10px">Banan,<br>hål för hål.</div></div>''', DJUP)
+<div style="font:400 20px/1.15 Spectral;margin-top:10px">Banan,<br>hål för hål.</div></div>''', SKOG)
     p3 = post(M + 2 * (pw + 18), f'''<div class="abs" style="left:8px;top:10px;width:118px;bottom:18px;background:url(img/hal-17-malad.png) 50% 50%/contain no-repeat"></div>
 <div class="abs" style="left:132px;top:24px;right:12px;color:{KRIST}"><div style="font:600 6.5px Hanken;letter-spacing:.2em;color:{GLOD}">SPELA BANAN</div>
 <div style="font:400 70px/.9 Spectral;margin-top:8px">17</div><div style="font:600 6.5px Hanken;letter-spacing:.14em;margin-top:8px;color:{IS}">PAR 3 · INDEX 5</div>
