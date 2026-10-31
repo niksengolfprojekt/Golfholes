@@ -307,7 +307,7 @@ address{font-style:normal;margin:0 0 1em}
 .entre{position:relative;min-height:100svh;display:flex;align-items:flex-end;background:var(--natt);color:var(--vit);overflow:hidden;isolation:isolate}
 .js .entre{margin-top:-68px}
 .entre-glas{position:absolute;inset:0;z-index:-2;will-change:transform;transform:translate3d(0,var(--djup,0px),0)}
-.entre-bild{width:100%;height:100%;object-fit:cover;object-position:42% 62%;animation:andas 20s cubic-bezier(.2,.6,.3,1) both}
+.entre-bild{width:100%;height:100%;object-fit:cover;object-position:54% 62%;animation:andas 20s cubic-bezier(.2,.6,.3,1) both}
 .entre-glas::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(105deg,rgba(255,255,255,0) 38%,rgba(255,248,230,.22) 50%,rgba(255,255,255,0) 62%) no-repeat;background-size:260% 100%;background-position:120% 0;opacity:0;pointer-events:none}
 .entre-glas::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(16,32,46,.5) 0%,rgba(16,32,46,0) 20%,rgba(16,32,46,0) 40%,rgba(16,32,46,.62) 68%,rgba(16,32,46,.92) 100%),linear-gradient(90deg,rgba(16,32,46,.5) 0%,rgba(16,32,46,0) 58%)}
 .js .entre.klar .entre-glas{animation:oppna 1.9s cubic-bezier(.7,0,.2,1) both}
@@ -330,6 +330,7 @@ address{font-style:normal;margin:0 0 1em}
 @keyframes skimmer{0%{opacity:0;background-position:120% 0}15%{opacity:1}100%{opacity:0;background-position:-20% 0}}
 @keyframes andas{from{transform:scale(1.1)}to{transform:scale(1)}}
 @media (min-width:900px){
+  .entre-bild{object-position:42% 62%}
   .entre-inne{padding-bottom:96px}
   .entre-sigill{width:72px;height:72px}
 }

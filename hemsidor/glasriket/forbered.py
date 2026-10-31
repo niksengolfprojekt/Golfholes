@@ -106,8 +106,9 @@ def foton():
 
 ARSTIDER = ("var", "sommar", "host", "vinter")
 # Stämningsbilden överst på startsidan. Tills klubbens eget foto finns: fairway mellan tallarna
-# vid fjortonde green (godkänd vy, byggd på Lantmäteriets höjddata). Byt bara sökvägen när fotot är taget.
-STAMNINGSBILD = KALLA / "ogonhojd" / "v2" / "allm-h14green.jpg"
+# vid fjortonde green (godkänd vy, byggd på Lantmäteriets höjddata; träden omgjorda 2026-10-31 efter Eric: höger ~90 % björk,
+# vänster ~50 % björk, bara björk bakom green). Byt bara sökvägen när klubbens eget foto är taget.
+STAMNINGSBILD = KALLA / "ogonhojd" / "v2" / "allm-h14green-bjork.jpg"
 
 
 def arstider():
