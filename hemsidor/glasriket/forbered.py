@@ -71,7 +71,7 @@ def sigill():
             sida.screenshot(path=str(png), omit_background=True)
             sida.close()
             im = Image.open(png).convert("RGBA")
-            for storlek in (96, 192):
+            for storlek in ((96, 192) if namn == "sigill" else (192,)):
                 im.resize((storlek, storlek), Image.LANCZOS).save(UT / "img" / f"{namn}-{storlek}.png", optimize=True)
             png.unlink()
         b.close()
@@ -80,6 +80,14 @@ def sigill():
     duk = Image.new("RGBA", (180, 180), (238, 243, 236, 255))
     duk.alpha_composite(ljus.resize((160, 160), Image.LANCZOS), (10, 10))
     duk.convert("RGB").save(UT / "apple-touch-icon.png")
+
+
+def sigill_vit():
+    """Vita sigillet till toppbilden på startsidan (genomskinlig PNG, ingen webbläsare behövs)."""
+    im = Image.open(KALLA / "logo-fornyad" / "sigill" / "smaland" / "Glasriket_sigill-smaland_enfarg_vit.png").convert("RGBA")
+    im = im.crop(im.getbbox())
+    for storlek in (96, 192, 288):
+        im.resize((storlek, storlek), Image.LANCZOS).save(UT / "img" / f"sigill-vit-{storlek}.png", optimize=True)
 
 
 def foton():
@@ -97,9 +105,10 @@ def foton():
 
 
 ARSTIDER = ("var", "sommar", "host", "vinter")
-# Stämningsbilden överst på startsidan. Tills klubbens eget foto finns: hål 14 från tee i ögonhöjd
-# (godkänd vy, byggd på Lantmäteriets höjddata). Byt bara sökvägen när fotot är taget.
-STAMNINGSBILD = KALLA / "ogonhojd" / "v2" / "h14-tee.jpg"
+# Stämningsbilden överst på startsidan. Tills klubbens eget foto finns: fairway mellan tallarna
+# vid fjortonde green (godkänd vy, byggd på Lantmäteriets höjddata; träden omgjorda 2026-10-31 efter Eric: höger ~90 % björk,
+# vänster ~50 % björk, bara björk bakom green). Byt bara sökvägen när klubbens eget foto är taget.
+STAMNINGSBILD = KALLA / "ogonhojd" / "v2" / "allm-h14green-bjork.jpg"
 
 
 def arstider():
@@ -123,6 +132,6 @@ def stamning():
 
 
 if __name__ == "__main__":
-    delar = sys.argv[1:] or ["typsnitt", "sigill", "foton", "arstider", "stamning"]
+    delar = sys.argv[1:] or ["typsnitt", "sigill", "sigill_vit", "foton", "arstider", "stamning"]
     for d in delar:
         globals()[d]()

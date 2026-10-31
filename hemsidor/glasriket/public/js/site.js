@@ -25,6 +25,28 @@
     document.addEventListener('keydown', function (h) { if (h.key === 'Escape') meny.open = false; });
   }
 
+  // Startsidan: sidhuvudet är genomskinligt över entrébilden och blir fast när man skrollat förbi den
+  var entre = document.querySelector('[data-entre]'), huvud = document.querySelector('.huvud');
+  if (entre) {
+    var bild = entre.querySelector('.entre-bild'), klar = function () { entre.classList.add('klar'); };
+    if (bild && !bild.complete) { bild.addEventListener('load', klar); bild.addEventListener('error', klar); setTimeout(klar, 2500); } else klar();
+  }
+  if (entre && huvud) {
+    var lage = function () { huvud.classList.toggle('pa-bild', entre.getBoundingClientRect().bottom > huvud.offsetHeight + 1); };
+    lage();
+    window.addEventListener('scroll', lage, { passive: true });
+    // Bilden glider lite långsammare än sidan när man skrollar (djupkänsla)
+    var glas = entre.querySelector('[data-entre-glas]');
+    if (glas && !lugn) {
+      var ram = 0;
+      window.addEventListener('scroll', function () {
+        if (ram) return;
+        ram = requestAnimationFrame(function () { ram = 0; var y = Math.min(window.scrollY, entre.offsetHeight); glas.style.setProperty('--djup', (y * 0.35) + 'px'); });
+      }, { passive: true });
+    }
+    window.addEventListener('resize', lage);
+  }
+
   // Årstiden styr bilderna: kartan och hålbilderna visas som banan ser ut just nu.
   // Vår april–maj, sommar juni–augusti, höst september–oktober, vinter november–mars.
   // ?arstid=vinter (osv.) visar en annan årstid under besöket – för granskning.
@@ -69,6 +91,7 @@
     var sponsorruta = document.querySelector('[data-sponsorruta]');
     var sponsorsida = document.querySelector('a[href*="halsponsorer"]');
     var visa = function (pin) {
+      if (pin.classList.contains('vald')) return;
       karta.querySelectorAll('.pin.vald').forEach(function (p) { p.classList.remove('vald'); });
       pin.classList.add('vald');
       pin.visadTid = Date.now();
@@ -91,19 +114,40 @@
         sponsorruta.hidden = false;
       }
     };
+    // Inzoomning: tryck på ett hål så glider kartan in mot det; "Visa hela banan" eller Esc zoomar ut
+    var ut = karta.querySelector('[data-karta-ut]');
+    var zooma = function (pin) {
+      if (!karta.querySelector('[data-karta-zoom]')) return;
+      var x = parseFloat(pin.style.left), y = parseFloat(pin.style.top), s = window.innerWidth < 900 ? 2 : 2.2;
+      var klamp = function (v, p) { return Math.max(-(100 - p) * (s - 1), Math.min(p * (s - 1), v)); };
+      karta.style.setProperty('--zx', x + '%'); karta.style.setProperty('--zy', y + '%');
+      karta.style.setProperty('--tx', klamp(50 - x, x) + '%'); karta.style.setProperty('--ty', klamp(50 - y, y) + '%');
+      karta.style.setProperty('--s', s);
+      karta.classList.add('zoomad');
+      if (ut) ut.hidden = false;
+    };
+    var zoomaUt = function () {
+      karta.classList.remove('zoomad');
+      if (ut) ut.hidden = true;
+    };
+    if (ut) ut.addEventListener('click', zoomaUt);
+    document.addEventListener('keydown', function (k) { if (k.key === 'Escape' && karta.classList.contains('zoomad')) zoomaUt(); });
     karta.querySelectorAll('.pin').forEach(function (pin) {
       pin.addEventListener('mouseenter', function () { if (matchMedia('(hover: hover)').matches) visa(pin); });
       pin.addEventListener('focus', function () { visa(pin); });
       pin.addEventListener('click', function (h) {
         // Första trycket visar hålet bredvid kartan, andra trycket går till hålets sida.
         // (Ett tryck på mobilen ger fokus och klick samtidigt – därför tidsgränsen.)
-        if (!pin.classList.contains('vald') || Date.now() - pin.visadTid < 500) {
-          h.preventDefault(); visa(pin);
-          if (window.innerWidth < 900) ruta2.scrollIntoView({ behavior: lugn ? 'auto' : 'smooth', block: 'center' });
+        if (!pin.classList.contains('vald') || Date.now() - pin.visadTid < 500 || !karta.classList.contains('zoomad') || pin !== karta.zoomPin) {
+          h.preventDefault(); visa(pin); zooma(pin); karta.zoomPin = pin;
+          if (window.innerWidth < 900) ruta2.scrollIntoView({ behavior: lugn ? 'auto' : 'smooth', block: 'nearest' });
         }
       });
     });
   }
+
+  // Hål för hål: varje hålbild i raden får sin tur när raden kommer in i bild
+  document.querySelectorAll('[data-hal-rad] li').forEach(function (li, i) { li.style.setProperty('--i', i); });
 
   // Delar som glider in när de kommer in i bild
   var delar = document.querySelectorAll('[data-visa]');

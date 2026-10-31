@@ -58,7 +58,7 @@ sajter:
   - id: glasriket
     namn: Glasrikets Golfklubb
     typ: klubb
-    status: "startsidan v3 2026-10-25 (Erics synpunkter), väntar på klubbens stämningsfoto och OK"
+    status: "startsidan 2026-10-31: glaskulan öppnas till helskärm, banan som avsnitt 2 (Eric), väntar på Erics OK och klubbens stämningsfoto"
     inventering:
       - Naturreservatet Fylleryd, äng och hagmark, vitsippor i maj
       - 4,5 km nordost om Växjö centrum, långt från vägbruset
@@ -71,12 +71,12 @@ sajter:
       - Nya bunkrar 2025 på hål 4, 7 och 13
     ide: En skogsjuvel som följer säsongen – stämningsbild, sedan hela banan som den ser ut just nu, hål för hål.
     riktning: arstiderna
-    toppbild: stamningsfoto
+    toppbild: glaskula
     typsnitt: {rubrik: Spectral, text: Hanken Grotesk}
     palett: {huvud: "#EEF3EC", ljus: "#FBF2ED", accent: "#D9A441", ovriga: ["#10202E", "#1D4756", "#9CC9C3"]}
     halbildstil: målad (Glas och skog, mörk bakgrund)
     halkortslayout: 3
-    rorelse: siffror som tänds hål för hål, toppbilden andas in, delar som glider in
+    rorelse: glaskulan öppnas till helskärm med ljusskimmer, bilden andas och glider vid skroll, siffror som tänds hål för hål, inzoomning på hålet, hålen i raden växer fram
     designfil: hemsidor/glasriket/DESIGN.md
     anteckning: >
       v1 (standardmall: helbild, versalrad, två knappar, sifferrad) fälldes 2026-10-25 med 7 fel i mätt kontroll.
