@@ -516,33 +516,26 @@ fairways:
   - [491523.2, 6306285.2]
   - [491524.1, 6306286.0]
   - [491525.7, 6306286.8]
-# Fairway sammanhängande (Eric 2026-10-29: "fairway är sammanhängande, inte två olika"): tredje
-# polygonen kopplar ihop de två fairwayytorna förbi dammarna. Inritad ur ortofotot 2025-07-01: det
-# klippta stråket mellan berghällen/ljungen till vänster och dammarnas sandkant till höger (ca 8–15 m
-# brett där det är smalast). Överlappar båda fairwayytorna. Klubben bekräftar.
-- - [491534.3, 6306280.4]
-  - [491525.0, 6306286.2]
-  - [491527.0, 6306293.8]
-  - [491529.4, 6306301.8]
-  - [491531.3, 6306308.1]
-  - [491533.2, 6306312.3]
-  - [491535.3, 6306317.8]
-  - [491536.1, 6306325.5]
-  - [491537.9, 6306331.1]
-  - [491538.1, 6306336.4]
-  - [491538.3, 6306343.1]
-  - [491540.6, 6306351.2]
-  - [491553.5, 6306334.9]
-  - [491549.5, 6306330.7]
-  - [491543.1, 6306329.2]
-  - [491539.5, 6306326.1]
-  - [491536.7, 6306321.0]
-  - [491536.7, 6306315.6]
-  - [491536.7, 6306310.2]
-  - [491534.8, 6306303.9]
-  - [491535.0, 6306295.6]
-  - [491535.0, 6306288.1]
-  - [491536.2, 6306281.2]
+# Fairway sammanhängande (Eric 2026-10-29 och 2026-10-31: "en enda stor fairway hela vägen fram till
+# green, inte två med en mellanväg"): tredje polygonen fyller hela passagen förbi dammarna, från
+# berghällen/ljungen till vänster till strax innanför dammarnas kant till höger (ca 15–30 m bred, var
+# 8–15 m). Inritad ur ortofotot 2025-07-01 med Erics uppgift som grund. Klubben bekräftar.
+- - [491539.0, 6306266.7]
+  - [491534.7, 6306279.8]
+  - [491523.3, 6306286.2]
+  - [491516.7, 6306294.2]
+  - [491522.3, 6306298.4]
+  - [491527.8, 6306303.3]
+  - [491531.8, 6306311.4]
+  - [491535.7, 6306324.4]
+  - [491539.1, 6306337.6]
+  - [491540.2, 6306350.1]
+  - [491549.7, 6306340.6]
+  - [491559.8, 6306327.5]
+  - [491551.6, 6306322.1]
+  - [491546.0, 6306310.2]
+  - [491543.2, 6306296.5]
+  - [491541.8, 6306281.9]
 trees:
 - - [491739.8, 6306556.2]
   - [491742.4, 6306554.8]
