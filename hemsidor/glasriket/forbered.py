@@ -71,7 +71,7 @@ def sigill():
             sida.screenshot(path=str(png), omit_background=True)
             sida.close()
             im = Image.open(png).convert("RGBA")
-            for storlek in (96, 192):
+            for storlek in ((96, 192) if namn == "sigill" else (192,)):
                 im.resize((storlek, storlek), Image.LANCZOS).save(UT / "img" / f"{namn}-{storlek}.png", optimize=True)
             png.unlink()
         b.close()
