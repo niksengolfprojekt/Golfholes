@@ -27,10 +27,23 @@
 
   // Startsidan: sidhuvudet är genomskinligt över entrébilden och blir fast när man skrollat förbi den
   var entre = document.querySelector('[data-entre]'), huvud = document.querySelector('.huvud');
+  if (entre) {
+    var bild = entre.querySelector('.entre-bild'), klar = function () { entre.classList.add('klar'); };
+    if (bild && !bild.complete) { bild.addEventListener('load', klar); bild.addEventListener('error', klar); setTimeout(klar, 2500); } else klar();
+  }
   if (entre && huvud) {
     var lage = function () { huvud.classList.toggle('pa-bild', entre.getBoundingClientRect().bottom > huvud.offsetHeight + 1); };
     lage();
     window.addEventListener('scroll', lage, { passive: true });
+    // Bilden glider lite långsammare än sidan när man skrollar (djupkänsla)
+    var glas = entre.querySelector('[data-entre-glas]');
+    if (glas && !lugn) {
+      var ram = 0;
+      window.addEventListener('scroll', function () {
+        if (ram) return;
+        ram = requestAnimationFrame(function () { ram = 0; var y = Math.min(window.scrollY, entre.offsetHeight); glas.style.setProperty('--djup', (y * 0.35) + 'px'); });
+      }, { passive: true });
+    }
     window.addEventListener('resize', lage);
   }
 

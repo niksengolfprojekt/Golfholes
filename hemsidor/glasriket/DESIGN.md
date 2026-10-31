@@ -1,7 +1,7 @@
 # Glasrikets GK – designfil
 
-**Idé:** Banan i glaskulan. Överst ligger banan i ett glasklot mot nattblått, samma klot som i klubbens sigill
-"Småland": glaset i Glasriket och skogen i Fylleryd i en och samma bild. Sedan hela banan ovanifrån i dagens årstid,
+**Idé:** Glaskulan öppnas. Sidan börjar med banan i ett glasklot mot nattblått, samma klot som i klubbens sigill
+"Småland", och klotet vidgas till hela skärmen: glaset i Glasriket och skogen i Fylleryd i en och samma rörelse. Sedan hela banan ovanifrån i dagens årstid,
 där varje hål går att zooma in på (Eric 2026-10-30: toppen ska andas kvalitet, Småland och skogsbana, stolthet för
 medlemmar och lust för gäster; banöversikten i avsnitt 2).
 
@@ -23,7 +23,9 @@ Registrerad i `hemsidor/designregister.yaml` (riktning `arstiderna`, toppbild `g
 | Knapp och vald hålsiffra | glöd `#D9A441` |
 
 ## Startsidan, avsnitt för avsnitt
-1. **Entrén:** banan i en rund glaskula med tunn guldring, vita sigillet, rubriken "Nära Växjö. Djupt i skogen.",
+1. **Entrén (helskärm, Eric 2026-10-31):** glaskulan med guldring öppnas till helbild (1,9 s, startar först när
+   bilden är laddad), ett ljusskimmer drar genom glaset, bilden andas ut och glider långsammare än sidan vid skroll.
+   Sedan vita sigillet, rubriken "Nära Växjö. Djupt i skogen.",
    en mening plus "Välkommen hem. Eller välkommen hit." (medlem och gäst), "Boka starttid" och "Se banan".
    Ingen versalrad, inga textskuggor, ingen sifferrad. Sidhuvudet är genomskinligt över entrén och sigillet i
    huvudet syns först när man skrollat förbi. Bilden byts mot klubbens eget foto i `forbered.py` (STAMNINGSBILD).
@@ -60,3 +62,4 @@ aldrig ändrad. Inga personer. Lantmäteriet-raden och "Vissa bilder är visuali
 - 2026-10-29: inzoomning på hålet och hålen i raden som växer fram ett i taget.
 - 2026-10-30 (Eric): ny entré överst. Första försöket (helbild, versalrad, två knappar) fälldes i smakgranskningen som
   standardmall; ersatt av glaskulan. Banöversikten flyttad till avsnitt 2.
+- 2026-10-31 (Eric: hero som täcker hela skärmen, med effekt): glaskulan öppnas till helbild i stället för att stå kvar.
