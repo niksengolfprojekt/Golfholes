@@ -48,9 +48,9 @@
   }
 
   // Årstiden styr bilderna: kartan och hålbilderna visas som banan ser ut just nu.
-  // Vår april–maj, sommar juni–augusti, höst september–oktober, vinter november–mars.
-  // ?arstid=vinter (osv.) visar en annan årstid under besöket – för granskning.
-  var arstid = ['vinter', 'vinter', 'vinter', 'var', 'var', 'sommar', 'sommar', 'sommar', 'host', 'host', 'vinter', 'vinter'][new Date().getMonth()];
+  // Vår april–maj, sommar juni–augusti, höst september–oktober. November–mars visas vårbilderna
+  // (beslut 2026-11-01: ingen vinterbana på sajten). ?arstid=var (osv.) visar en annan årstid under besöket.
+  var arstid = ['var', 'var', 'var', 'var', 'var', 'sommar', 'sommar', 'sommar', 'host', 'host', 'var', 'var'][new Date().getMonth()];
   try {
     var vald = new URLSearchParams(location.search).get('arstid');
     if (/^(var|sommar|host|vinter)$/.test(vald || '')) sessionStorage.setItem('arstid', vald);
