@@ -6,6 +6,18 @@ Skillen `ny-golfklubb` pekar hit. Detaljer per hål: [halproduktion.md](halprodu
 
 ## 0. Start
 
+**Ett kommando håller ordningen:** `python -m golfholes nyklubb klubbar/<slug>` visar varje steg nedan för
+just det klubben köpt, och om det är klart, kan köras, väntar på Claude, på Eric, på klubben eller kräver
+krediter. Ändrar inget.
+- Ny klubb: `python -m golfholes nyklubb klubbar/<slug> --skapa "Klubbens namn"` skapar mappen, `klubb.yaml`
+  (TODO där något saknas) och `godkant.yaml`.
+- `--kor` kör alla gratis kodsteg som är redo (hämta Lantmäteriet, utkast, AI-underlag, hålkort, hemsida,
+  inlägg, prospekt, partnerprogram, granskningssida). AI-målning och film körs **aldrig** av kommandot.
+- Godkännanden koden inte kan se (paketet bekräftat, stil, kredittak, testhål, logga, granskning skickad,
+  hål klubben godkänt, tryckprov) skrivs i `klubbar/<slug>/godkant.yaml` med datum och vem.
+- Hål 2 och framåt låses tills testhålet är godkänt (`testhal_ok`).
+- Status sparas i `output/<slug>/nyklubb-status.txt`.
+
 - Utgå från `main`. Kontrollera att verktygen finns:
   `python -m golfholes --help` ska lista `hamta utkast aiunderlag aibild halkort prospekt inlagg flygfilm sponsorrapport designregister`.
   Saknas något ligger det på en ej sammanslagen gren – säg det till Eric i stället för att bygga om.
