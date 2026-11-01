@@ -149,7 +149,7 @@ address{font-style:normal;margin:0 0 1em}
 .hk-tom span{font:400 clamp(72px,16vw,120px)/1 var(--serif);color:var(--djup);opacity:.35;letter-spacing:-.03em}
 .hk-text{display:grid;gap:2px;padding:12px 14px 16px}
 .hk-nr{font:500 22px/1.1 var(--serif)}
-.hk-fakta{font:600 12px/1.3 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--sjo-text)}
+.hk-fakta{font:600 13px/1.3 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--sjo-text)}
 .hk-rubrik{font-size:15px;line-height:1.35;color:var(--text-2);margin-top:4px}
 
 /* banöversikt */
@@ -303,24 +303,62 @@ address{font-style:normal;margin:0 0 1em}
 
 
 /* ---------------------------------------------------------------- startsidan: skogsjuvelen */
-/* Scenen: en stämningsbild över hela skärmen */
-.scen{position:relative;min-height:min(92svh,860px);display:flex;align-items:flex-end;background:var(--natt);color:var(--vit);overflow:hidden;isolation:isolate}
-.scen-bild{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%;z-index:-2;animation:andas 14s cubic-bezier(.2,.6,.3,1) both}
-@keyframes andas{from{transform:scale(1.08)}to{transform:none}}
-.scen::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(16,32,46,.05) 25%,rgba(16,32,46,.88) 100%),linear-gradient(90deg,rgba(16,32,46,.5) 0%,rgba(16,32,46,0) 55%)}
-.scen-inne{display:grid;gap:36px;padding-top:140px;padding-bottom:40px}
-.scen h1{color:var(--vit);font-size:clamp(46px,8vw,112px);line-height:.98;letter-spacing:-.02em;max-width:12ch;margin-bottom:.32em;animation:stig 1.1s cubic-bezier(.2,.7,.2,1) both}
-.scen .ingress,.scen .knapp{animation:stig 1.1s .15s cubic-bezier(.2,.7,.2,1) both}
-@keyframes stig{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:none}}
-.scen .ingress{color:rgba(248,250,246,.94);max-width:34ch;margin-bottom:28px}
+/* Entrén: glaskulan ur sigillet öppnas till hela skärmen, ett ljusskimmer drar genom glaset, bilden andas */
+.entre{position:relative;min-height:100svh;display:flex;align-items:flex-end;background:var(--natt);color:var(--vit);overflow:hidden;isolation:isolate}
+.js .entre{margin-top:-68px}
+.entre-glas{position:absolute;inset:0;z-index:-2;will-change:transform;transform:translate3d(0,var(--djup,0px),0)}
+.entre-bild{width:100%;height:100%;object-fit:cover;object-position:54% 62%;animation:andas 20s cubic-bezier(.2,.6,.3,1) both}
+.entre-glas::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(105deg,rgba(255,255,255,0) 38%,rgba(255,248,230,.22) 50%,rgba(255,255,255,0) 62%) no-repeat;background-size:260% 100%;background-position:120% 0;opacity:0;pointer-events:none}
+.entre-glas::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(16,32,46,.5) 0%,rgba(16,32,46,0) 20%,rgba(16,32,46,0) 40%,rgba(16,32,46,.62) 68%,rgba(16,32,46,.92) 100%),linear-gradient(90deg,rgba(16,32,46,.5) 0%,rgba(16,32,46,0) 58%)}
+.js .entre.klar .entre-glas{animation:oppna 1.9s cubic-bezier(.7,0,.2,1) both}
+.js .entre.klar .entre-glas::before{animation:skimmer 2.4s 1.5s ease-in-out both}
+.entre-ring{position:absolute;left:50%;top:46%;width:44vmin;height:44vmin;margin:-22vmin 0 0 -22vmin;border-radius:50%;border:1.5px solid rgba(217,164,65,.75);z-index:-1;opacity:0;pointer-events:none}
+.js .entre.klar .entre-ring{animation:ring 1.9s cubic-bezier(.7,0,.2,1) both}
+.entre-inne{padding-top:140px;padding-bottom:56px}
+/* Effekten väntar tills bilden är laddad, så att kulan aldrig öppnas mot en tom yta */
+.js .entre:not(.klar) .entre-glas{clip-path:circle(22vmin at 50% 46%)}
+.js .entre:not(.klar) .entre-inne>*{opacity:0;animation:none}
+.js .entre:not(.klar) .entre-ring{opacity:1}
+.entre-sigill{width:64px;height:64px;margin:0 0 20px;animation:stig 1.1s 1.25s cubic-bezier(.2,.7,.2,1) both}
+.entre h1{color:var(--vit);font-size:clamp(44px,7.4vw,112px);line-height:.98;letter-spacing:-.02em;margin:0 0 .3em;animation:stig 1.1s 1.35s cubic-bezier(.2,.7,.2,1) both}
+.entre h1 span,.entre-ingress span{display:block}
+.entre-ingress{font:400 clamp(17px,1.7vw,21px)/1.55 var(--sans);color:rgba(248,250,246,.92);max-width:36ch;margin:0 0 28px;animation:stig 1.1s 1.45s cubic-bezier(.2,.7,.2,1) both}
+.entre-ingress span{margin-top:8px;font:italic 400 1.12em/1.4 var(--serif);color:var(--vit)}
+.entre-knappar{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;margin:0;animation:stig 1.1s 1.55s cubic-bezier(.2,.7,.2,1) both}
+@keyframes oppna{from{clip-path:circle(22vmin at 50% 46%)}to{clip-path:circle(150vmax at 50% 46%)}}
+@keyframes ring{0%{opacity:1;transform:scale(1)}55%{opacity:.8}100%{opacity:0;transform:scale(5)}}
+@keyframes skimmer{0%{opacity:0;background-position:120% 0}15%{opacity:1}100%{opacity:0;background-position:-20% 0}}
+@keyframes andas{from{transform:scale(1.1)}to{transform:scale(1)}}
 @media (min-width:900px){
-  .scen-inne{grid-template-columns:1.5fr 1fr;align-items:end;padding-bottom:72px}
-  }
+  .entre-bild{object-position:42% 62%}
+  .entre-inne{padding-bottom:96px}
+  .entre-sigill{width:72px;height:72px}
+}
+/* Sidhuvudet ligger genomskinligt över entrén tills man skrollar förbi den */
+.huvud{transition:background .3s,box-shadow .3s}
+.huvud .marke{transition:opacity .3s}
+.huvud.pa-bild{background:transparent;backdrop-filter:none}
+.huvud.pa-bild .marke{opacity:0;pointer-events:none}
+.huvud.pa-bild .meny a{color:var(--vit)}
+.huvud.pa-bild .meny a:hover{background:rgba(248,250,246,.14)}
+.huvud.pa-bild .mobilmeny:not([open]) summary span,.huvud.pa-bild .mobilmeny:not([open]) summary span::before,.huvud.pa-bild .mobilmeny:not([open]) summary span::after{background:var(--vit)}
+.huvud.pa-bild:has(.mobilmeny[open]){background:var(--dimma)}
 
-/* Kartan: banan ovanifrån i dagens årstid, varje siffra öppnar hålet */
-.karta{background:#FBF2ED;padding:72px 0}
-.karta-grid{display:grid;gap:32px}
-.karta-text h2{font-size:clamp(34px,4.6vw,60px);line-height:1.02;max-width:14ch}
+/* Banan: hela banan ovanifrån i dagens årstid, varje siffra zoomar in på hålet */
+.bana{background:#FBF2ED;padding:64px 0 56px}
+.bana-grid{display:grid;gap:24px;grid-template-areas:"topp" "bild" "panel"}
+.bana-topp{grid-area:topp}
+.bana-bild{grid-area:bild}
+.bana-panel{grid-area:panel}
+.bana h2{font-size:clamp(36px,4.6vw,60px);line-height:1.02;letter-spacing:-.015em;max-width:13ch;margin-bottom:.35em}
+.bana .ingress{color:var(--djup);max-width:34ch}
+.bana-knappar{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;margin:24px 0 0}
+@keyframes stig{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:none}}
+@media (min-width:900px){
+  .bana{padding:120px 0 120px}
+  .bana-grid{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);grid-template-areas:"topp bild" "panel bild";grid-template-rows:auto 1fr;column-gap:72px;row-gap:40px;align-items:start}
+  .bana-panel{position:sticky;top:120px}
+}
 .karta-hal{min-height:150px}
 .karta-hal-tom{font:400 21px/1.5 var(--serif);color:var(--djup);max-width:30ch}
 .karta-kort{display:grid;grid-template-columns:96px 1fr;gap:18px;align-items:center;animation:in .35s ease-out}
@@ -337,6 +375,13 @@ address{font-style:normal;margin:0 0 1em}
 .sponsorruta-namn{font:500 24px/1.2 var(--serif);color:var(--natt)}
 .sponsorruta-ledig{background:rgba(255,255,255,.55)}
 .karta-bild{position:relative;align-self:start}
+/* Inzoomning: kartan glider in mot hålet man trycker på (bara transform, stängs av med reducerad rörelse) */
+.bana-bild{overflow:hidden;border-radius:var(--radie)}
+.karta-zoom{position:relative;transform-origin:var(--zx,50%) var(--zy,50%);transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+.karta-bild.zoomad .karta-zoom{transform:translate(var(--tx,0),var(--ty,0)) scale(var(--s,1))}
+.karta-ut{position:absolute;top:14px;right:14px;z-index:3;min-height:44px;padding:0 18px;border:0;border-radius:999px;background:var(--natt);color:var(--vit);font:600 15px/1 var(--sans);cursor:pointer;box-shadow:0 8px 20px rgba(16,32,46,.25);animation:in .35s ease-out}
+.karta-ut:hover{background:var(--djup)}
+.karta-ut:focus-visible{outline:3px solid var(--glod);outline-offset:3px}
 .karta-bild img{width:100%;mix-blend-mode:darken}
 .karta-lager{transition:opacity .7s ease}
 .karta-lager:not(.aktiv){position:absolute;inset:0;opacity:0}
@@ -345,11 +390,38 @@ address{font-style:normal;margin:0 0 1em}
 .karta-bild.runda .pin::after{animation:tand .9s ease-out backwards;animation-delay:calc(var(--n) * 90ms)}
 @keyframes tand{0%,100%{box-shadow:0 0 0 0 rgba(217,164,65,0)}35%{box-shadow:0 0 0 4px var(--glod),0 0 0 14px rgba(217,164,65,.3)}}
 .pin:hover::after,.pin.vald::after{box-shadow:0 0 0 4px var(--glod),0 0 0 12px rgba(217,164,65,.28)}
+
+/* Tre hål som avgör rundan */
+.signatur{padding:72px 0;background:var(--natt);color:var(--vit)}
+.signatur h2{color:var(--vit);font-size:clamp(34px,4.6vw,60px);line-height:1.02;max-width:14ch;margin-bottom:40px}
+.sig-lista{list-style:none;margin:0;padding:0;display:grid;gap:24px}
+.sig-kort{display:flex;flex-direction:column;height:100%;text-decoration:none;color:var(--vit);background:var(--djup);border-radius:var(--radie);overflow:hidden;transition:transform .25s}
+.sig-kort:hover{color:var(--vit);transform:translateY(-4px)}
+.sig-kort img{width:100%;aspect-ratio:3/2;object-fit:cover}
+.sig-text{padding:22px 24px 28px}
+.sig-nr{font:400 48px/1 var(--serif);color:var(--glod);margin:0 0 10px;display:flex;align-items:baseline;gap:14px}
+.sig-nr span{font:500 15px/1.3 var(--sans);color:var(--is)}
+.sig-text h3{color:var(--vit);font-size:26px;line-height:1.15;margin:0 0 10px}
+.sig-text p:last-child{color:rgba(248,250,246,.86);margin:0;max-width:44ch}
 @media (min-width:900px){
-  .karta{padding:120px 0}
-  .karta-grid{grid-template-columns:1fr 1.15fr;gap:72px;align-items:start}
-  .karta-text{position:sticky;top:120px}
+  .signatur{padding:120px 0}
+  .sig-lista{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
 }
+
+/* Alla arton hål i en rad som går att svepa */
+.alla{padding:72px 0;background:#FBF2ED}
+.alla-huvud{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:12px 32px;margin-bottom:28px}
+.alla-huvud h2{font-size:clamp(34px,4.6vw,60px);line-height:1.02;margin:0}
+.alla-rull{overflow-x:auto;scroll-snap-type:x mandatory;padding:4px var(--gutter) 20px;scroll-padding:0 var(--gutter)}
+.alla-rull .hk-lista{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(200px,62vw);grid-template-columns:none;gap:16px;width:max-content}
+.alla-rull .hk-lista li{scroll-snap-align:start}
+@media (min-width:700px){.alla-rull .hk-lista{grid-auto-columns:240px}}
+/* Hål för hål: hålbilderna växer fram i tur och ordning när raden kommer in i bild */
+.js .alla-rull[data-visa]{opacity:1;transform:none}
+.js .alla-rull .hk-bild img{opacity:0;transform:translateY(24px) scale(.82);transition:opacity .7s ease,transform .9s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--i,0) * 80ms)}
+.js .alla-rull.syns .hk-bild img{opacity:1;transform:none}
+@media (min-width:1240px){.alla-rull{padding-left:calc((100vw - var(--max)) / 2 + var(--gutter));scroll-padding-left:calc((100vw - var(--max)) / 2 + var(--gutter))}}
+@media (min-width:900px){.alla{padding:120px 0}}
 
 /* Naturen */
 .natur{padding:72px 0;background:var(--dimma)}
@@ -382,9 +454,4 @@ address{font-style:normal;margin:0 0 1em}
   *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
   .js [data-visa]{opacity:1;transform:none}
 }
-@media (max-width:899px){
-  .scen-inne{padding-top:96px}
-  }
-@media (max-width:899px){
-  .scen::after{background:linear-gradient(180deg,rgba(16,32,46,.6) 0%,rgba(16,32,46,0) 34%,rgba(16,32,46,0) 48%,rgba(16,32,46,.9) 100%)}
-}
+
