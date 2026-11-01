@@ -17,7 +17,7 @@ REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 SIGILL = f'{PF}/logo-fornyad/sigill/smaland'
 HALBILDER = os.environ.get('HALBILDER', f'{PF}/halbilder-stil-a')
 HALKORT = os.environ.get('HALKORT', f'{PF}/halkort-stil-a')
-VERSION = 'Version 1.4 · Oktober 2026'
+VERSION = 'Version 1.5 · November 2026'
 
 # Profilen "Glas och skog"
 # v1.1 (Eric 2026-10-27): den ljusa färgen är Sand i stället för den ljusblå Kristall.
@@ -50,9 +50,9 @@ def prep(out):
         s = re.sub(r'<rect x="-10" y="-10" width="220" height="220" fill="[^"]+"/>', '', s, count=1)
         open(f'{out}/logo/' + os.path.basename(f), 'w').write(s)
     # Målade hålbilder (repo) -> PNG med alfa, 1600 px hög
-    # Hålbilder i stil A (Eric 2026-10-31: A, tills den förfinade A-versionen finns) och hålkort (mörk layout 3)
+    # Hålbilder i förfinad stil A, perfekt foto (2026-11-01) och hålkort (mörk layout 3)
     for n in range(1, 19):
-        im = Image.open(f'{HALBILDER}/hal-{n:02d}-a5.webp'); im.thumbnail((1600, 1600))
+        im = Image.open(f'{HALBILDER}/hal-{n:02d}-a6.webp'); im.thumbnail((1600, 1600))
         im.save(f'{out}/img/hal-{n:02d}-malad.png', optimize=True)
     for n in (3, 5, 9, 11, 14, 17, 18):
         im = Image.open(f'{HALKORT}/hal-{n:02d}-layout3.png').convert('RGB'); im.thumbnail((1100, 1640))
