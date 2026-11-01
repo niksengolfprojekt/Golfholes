@@ -120,7 +120,26 @@ referens ("premium high-end 3D render, ultra crisp…") och/eller en skärpning 
 innan inpassningen. Det andra AI-passet tog bort vassen i dammen på hål 17, så kontrollera vegetation i vatten.
 Uppdateras när Eric valt.
 
-## Stil B · Tecknad bokstil (Eric 2026-10-30, gäller nu för Glasriket)
+## Stil A förfinad · perfekt foto (Eric 2026-11-01, gäller nu för Glasriket)
+
+Eric 2026-10-31: "version A men mer förfinat och putsat så det är ett riktigt foto men där banan ser perfekt ut".
+Prov på hål 1 och 14, sedan alla 18 (1/11: "Kör dessa, som 14"). Filer `halbilder/hal-NN-a6.webp`, hålkorten pekar dit.
+nano-banana-2-1 image2image, 3 bilder per hål, 9:16, 4K, 240 krediter per hål. Underlag: `typbilder/ai-underlag/hal-NN-underlag-lyft-mork.jpg`.
+Början: låst inramning + "Do not add, remove, widen or move anything." Ordagrant resten:
+
+> Only change the surface into a flawless, retouched, photorealistic golf course photograph seen straight from above, the hero image of a luxury golf resort: a perfectly manicured course in tournament condition at golden hour. Warm low late-afternoon sun from the upper right, crisp long cool-blue shadows exactly where the existing shadows are, immaculate vivid green fairway with lime-yellow sunlit highlights and clean, even, alternating light and dark mowing stripes only on the fairway, no worn, brown or patchy grass anywhere, a velvet-smooth brighter green with a crisp darker collar ring, even slightly darker rough, pristine bright white sand with a crisp lip shadow. Trees are Swedish Norway spruce and Scots pine seen from directly above: dense dark-green conical crowns with soft round tops and layered needle texture, NEVER star-shaped, NEVER palm-like, plus birches with small rounded warm golden-green crowns (not neon). Polished, clean, high contrast, sharp micro-detail, rich natural colour, real photograph quality, not painted, not washed out. The surroundings fall off into the dark navy background exactly as now. No text, no people, no flags, no cars. Do not add any path, tee, bunker or building that is not already there.
+
+Hål 17 får dessutom: "The two ponds keep exactly their shorelines and size, the round tree island and the reed bed in the lower pond stay exactly as they are", och vattenfrasen "deep clear blue-green water with a soft warm golden sky reflection and neat reed edges".
+
+Kedja per hål (alla steg bara färg, aldrig form):
+1. `ai_tillbaka_test <hålfil> a6 data/<klubb>/ai-a6/hNN-?.png` väljer bästa formpoäng (krav 0,7).
+2. `fairway_frisk --namn a6` tar bort bruna fläckar, `prick_flytt --namn a6` lägger 100/150-prickarna mitt i fairwayn.
+3. `liva_upp.py <hålfil> --namn a6 --styrka 2.0`: vibrance, S-kurva, ljusare mellantoner och skärpa (Eric: "liva upp bilden lite"). Kör aldrig två gånger på samma bild, effekten adderas.
+4. `farg_harmoni.py <hålfiler> --namn a6 --ref 14`: jämnar gräsets kulör och mättnad mot hål 14 på hål som AI:n gjort gulare eller blekare (bara spelytan ur hålfilen; skog och höstbjörkar rörs inte). Glasriket: hål 3, 6, 7, 8, 13, 18.
+
+Formpoäng Glasriket: 0,70 (17) till 0,93 (8). Hål 17 godkändes efter ögonkontroll (dammar, ö och vass på plats). Hål 1 har en bred fairway (15–30 m) förbi dammarna; klubben bekräftar.
+
+## Stil B · Tecknad bokstil (Eric 2026-10-30, ersatt 2026-11-01 av stil A förfinad)
 
 Alla 18 hål gjorda om i stil B. Samma kedja som stil A, men prompten byter ytan till en tecknad banguide
 (nano-banana-2-1 image2image, 3 bilder per hål, 9:16, 4K, 240 krediter per hål). Ordagrant slut på prompten:
