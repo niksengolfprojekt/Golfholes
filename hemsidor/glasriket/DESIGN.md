@@ -40,7 +40,7 @@ Registrerad i `hemsidor/designregister.yaml` (riktning `arstiderna`, toppbild `g
 6. **Hitta hit** med öppettider.
 
 ## Årstider
-- Vår april–maj, sommar juni–augusti, höst september–oktober, vinter november–mars (i `site.js`).
+- Vår april–maj, sommar juni–augusti, höst september–oktober; november–mars visas vårbilderna, aldrig vinter (Eric 2026-11-01, i `site.js`).
 - Byts av skriptet: kartan, hålbilderna på alla sidor och kartans ingress. Utan skript syns sommaren.
 - Granskning: lägg till `?arstid=var|sommar|host|vinter` i adressen; valet gäller resten av besöket.
 - Hålbilderna färgas om i koden (`arstid.py`): varje pixel behåller plats och ljushet, bara kulören byts efter
