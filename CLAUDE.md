@@ -18,7 +18,8 @@ Grafiska hålpresentationer och hålsponsorskyltar för svenska golfklubbar. Äg
 - Skylt 70 × 100 cm, tre plattor: rubrik ("[Sponsor]-hålet"), hålguide (byts aldrig), sponsorplatta med logga i en färg + QR-kod. Tillverkas av Ecosign.
 - Pilotklubb: Glasrikets GK, hål 3.
 
-- Stilmenyn på hemsidan (beslut 2026-10-22): klubben väljer stil innan vi gör deras hål bland sex AI-målade stilar: Akvarell, Sommarakvarell, Gravyr, Mjuk 3D, Arkitektskiss, Papperssnitt (prov: `klubbar/glasriket/typbilder/stilar/`). Bort: Blå gravyr, Platt grafisk, Screentryck, Foto höst, Vinterskymning och kodens fyra (Signatur, Klassisk, Arv, Nordisk). Inkopplat i koden 2026-10-23 (`stilprov`, `aiprompt`, `aiunderlag`, `aibild`, `halkort`, `webb` följer klubbens stil).
+- Hemsidan visar INTE längre sex stilar (Eric 2026-11-05): tacada.se säljer att hålen formas efter varje klubbs profil och bana (skog/park/kust, påhittade exempelklubbar i `img/profil-*.webp`). Stilarna nedan finns kvar som internt verktyg.
+- Stilmenyn (internt) (beslut 2026-10-22): klubben väljer stil innan vi gör deras hål bland sex AI-målade stilar: Akvarell, Sommarakvarell, Gravyr, Mjuk 3D, Arkitektskiss, Papperssnitt (prov: `klubbar/glasriket/typbilder/stilar/`). Bort: Blå gravyr, Platt grafisk, Screentryck, Foto höst, Vinterskymning och kodens fyra (Signatur, Klassisk, Arv, Nordisk). Inkopplat i koden 2026-10-23 (`stilprov`, `aiprompt`, `aiunderlag`, `aibild`, `halkort`, `webb` följer klubbens stil).
 - Hålbilder i målad stil: exakta masker från hålfilen + texturkit i `assets/texturer/<stil>/` (`golfholes/render/texture.py`). AI/skisser får bara leverera texturer, aldrig former.
 
 ## Miljö

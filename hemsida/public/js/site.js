@@ -46,7 +46,7 @@
   // Rubriker, kort och listor glider in när de kommer in i bild.
   if (!stilla && 'IntersectionObserver' in window) {
     document.documentElement.classList.add('js-rorelse');
-    var sel = '.sek .rubrikgrupp, .sek .del, .sek .vinster li, .sek .stilar li, .band > div, .sek .panel, .sek .referens, .sek .lank-pil';
+    var sel = '.sek .rubrikgrupp, .sek .del, .sek .vinster li, .sek .stilar li, .sek .klubbstilar li, .band > div, .sek .panel, .sek .referens, .sek .lank-pil';
     var iSikt = new IntersectionObserver(function (poster) {
       poster.forEach(function (p) { if (p.isIntersecting) { p.target.classList.add("syns"); iSikt.unobserve(p.target); } });
     }, { threshold: .12, rootMargin: '0px 0px -6% 0px' });
