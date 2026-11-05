@@ -28,3 +28,10 @@ python hemsida/bygg.py --forhandsvisning <mapp>   # kopia med relativa länkar, 
 
 ## Publicering
 Kontaktformuläret är förberett för Netlify Forms. Med en annan värd byts formulärets mottagare.
+
+## Startsidans bana är påhittad (Eric 2026-11-05)
+Banrundan, hålrullen, "Slag för slag" och skylten visar en påhittad bana, inte Glasriket eller någon annan riktig klubb. Banbilden och tee-utsikten är målade av AI, och terrängen räknas fram ur bilden:
+- `python hemsida/verktyg/fiktiv_bana.py <banbild.png>` skriver `img/banrunda/karta.webp`, `karta-reserv.webp` och `terrang.json`.
+- `python hemsida/verktyg/fiktiva_hal.py <banbild.png>` klipper ut hål 4, 7, 10 och 12 till `img/hal/`.
+Källbilden ligger i projektfilerna under `tacada/hemsida/fiktiv-bana/` (checkas inte in). Regeln om verklig geometri gäller riktiga klubbars hålfiler, inte den här demobanan.
+Exempelsponsorn är "Nordvik" (påhittad).

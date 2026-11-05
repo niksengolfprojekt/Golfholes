@@ -238,7 +238,7 @@ canvas.topo{position:absolute;inset:0;width:100%;height:100%;pointer-events:none
 .runda .bana{display:block}
 .runda .reserv{display:none;object-fit:contain;object-position:72% 50%}
 .runda.utan3d .reserv{display:block}.runda.utan3d .bana{display:none}
-.runda .tee{background:url(/img/banrunda/tee14.webp) center 60%/cover no-repeat;opacity:0;pointer-events:none}
+.runda .tee{background:url(/img/banrunda/tee.webp) center 60%/cover no-repeat;opacity:0;pointer-events:none}
 .runda .nalar{pointer-events:none}
 .runda .nal{position:absolute;left:0;top:0;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:#F7F4EE;color:#1E2A22;font:600 12px/26px var(--text);text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.28);opacity:0;transform:scale(.4);transition:transform .35s ease}
 .runda .nal.syns{transform:scale(1)}
@@ -271,7 +271,7 @@ canvas.topo{position:absolute;inset:0;width:100%;height:100%;pointer-events:none
   .runda .hud{top:76px}
   .runda .kalla{bottom:16px;right:190px;font-size:10px}
   .runda .nal{width:22px;height:22px;margin:-11px 0 0 -11px;font-size:11px;line-height:22px}
-  .runda .tee{background-image:url(/img/banrunda/tee14-900.webp)}
+  .runda .tee{background-image:url(/img/banrunda/tee-900.webp)}
 }
 
 /* Hålrullen: fyra hål, ett i taget, kameran glider mot greenen */
@@ -306,3 +306,92 @@ canvas.topo{position:absolute;inset:0;width:100%;height:100%;pointer-events:none
   .halrulle .prickar{top:30%}
 }
 @media (prefers-reduced-motion:reduce){.runda .kort,.runda .nal,.halrulle .hal{transition:none}}
+
+/* Slag för slag: bollbanan ritas över hål 7 medan man scrollar */
+.slag{position:relative;height:330vh;background:var(--natt);color:var(--elfenben)}
+.slag .scen{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:center;gap:clamp(24px,5vw,80px);padding:0 var(--sida);max-width:calc(var(--max) + 2*var(--sida));margin:0 auto}
+.slag .over{color:var(--brons)}
+.slag .lager{position:relative;min-height:300px;margin-top:18px}
+.slag .fas{position:absolute;inset:0 0 auto;opacity:0;visibility:hidden;transform:translateY(18px);transition:opacity .5s,transform .5s,visibility 0s .5s}
+.slag .fas.pa{opacity:1;visibility:visible;transform:none;transition:opacity .5s,transform .5s}
+.slag h2{font-size:clamp(30px,3.8vw,54px);letter-spacing:.05em;line-height:1.08;max-width:15ch}
+.slag em{font-style:normal;color:var(--brons)}
+.slag p{margin-top:18px;max-width:40ch;color:var(--pa-gront);font-size:clamp(16px,1.3vw,18px)}
+.slag .knapp{margin-top:26px}
+.slag .halbild{position:relative;height:88vh;height:88svh;aspect-ratio:404/1100;justify-self:center}
+.slag .halbild img,.slag .halbild svg{position:absolute;inset:0;width:100%;height:100%}
+.slag .halbild img{filter:drop-shadow(0 30px 50px rgba(0,0,0,.5))}
+.slag .spar{fill:none;stroke:#FFF6E0;stroke-width:4;stroke-linecap:round;filter:drop-shadow(0 0 6px rgba(255,214,140,.95)) drop-shadow(0 0 16px rgba(255,190,90,.6))}
+.slag .boll{fill:#fff;filter:drop-shadow(0 0 6px #fff)}
+.slag .landning{fill:none;stroke:#FFF6E0;stroke-width:2;opacity:0;transform-box:fill-box;transform-origin:center}
+.slag .flagga{opacity:0;transform-box:fill-box;transform-origin:50% 100%;transition:opacity .4s,transform .5s cubic-bezier(.3,1.6,.5,1)}
+.slag .flagga line{stroke:#F3EDE2;stroke-width:2.5}.slag .flagga path{fill:var(--brons)}.slag .flagga circle{fill:#101F2B;stroke:#F3EDE2;stroke-width:1.5}
+.slag .flagga.upp{opacity:1}
+.slag .avst{position:absolute;font-size:12px;font-weight:600;letter-spacing:.14em;color:var(--natt);background:var(--elfenben);padding:5px 9px;opacity:0;transform:translate(-50%,-50%) scale(.6);transition:opacity .35s,transform .35s;white-space:nowrap}
+.slag .avst.syns{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.slag .a1{left:22%;top:66%}.slag .a2{left:76%;top:36%}
+.slag .namnskylt{position:absolute;left:50%;bottom:4%;transform:translate(-50%,24px);opacity:0;transition:opacity .6s,transform .6s;background:var(--tallgron);color:var(--elfenben);border:1px solid rgba(183,149,94,.6);padding:12px 22px 14px;text-align:center;font-family:var(--rubrik);text-transform:uppercase;letter-spacing:.08em;font-size:clamp(17px,1.6vw,22px);white-space:nowrap;box-shadow:0 18px 40px rgba(0,0,0,.45)}
+.slag .namnskylt small{display:block;font-family:var(--text);font-size:10px;font-weight:600;letter-spacing:.2em;color:var(--brons);margin-bottom:4px}
+.slag .namnskylt.syns{opacity:1;transform:translate(-50%,0)}
+@media (max-width:760px){
+  .slag .scen{grid-template-columns:1fr;grid-template-rows:56% auto;gap:6px;padding-top:62px;align-items:start}
+  .slag .halbild{order:-1;height:100%}
+  .slag .lager{min-height:200px;margin-top:8px}
+  .slag h2{font-size:24px}
+  .slag p{margin-top:10px;font-size:15px}
+  .slag .knapp{margin-top:14px}
+}
+
+/* Skylten byggs: tre plattor landar på stolparna */
+.skyltbygge{position:relative;height:300vh;background:var(--sand)}
+.skyltbygge .scen{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:clamp(24px,5vw,80px);padding:0 var(--sida);max-width:calc(var(--max) + 2*var(--sida));margin:0 auto}
+.skyltbygge h2{font-size:clamp(28px,3.4vw,48px);letter-spacing:.05em;line-height:1.1;margin:14px 0 28px;color:var(--tallgron);max-width:14ch}
+.skyltbygge em{font-style:normal;color:var(--morkbrons)}
+.skyltbygge ol{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.skyltbygge li{display:grid;gap:2px;padding-left:18px;border-left:2px solid var(--linje);color:var(--dampad);transition:border-color .4s,color .4s,opacity .4s;opacity:.55}
+.skyltbygge li b{font-family:var(--rubrik);font-weight:400;font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:var(--tallgron)}
+.skyltbygge li.pa{border-color:var(--morkbrons);opacity:1;color:var(--kol)}
+.skyltbygge .skylt{--b:min(34vw,44vh);position:relative;width:var(--b);height:calc(var(--b)*1.43 + 14vh);justify-self:center;align-self:end;margin-bottom:0}
+.skyltbygge .platta{position:absolute;left:0;right:0;background:var(--tallgron);color:var(--elfenben);box-shadow:0 22px 40px rgba(16,31,43,.28);will-change:transform,opacity}
+.skyltbygge .p1{top:0;height:calc(var(--b)*.2);display:grid;place-content:center;text-align:center;font-family:var(--rubrik);text-transform:uppercase;letter-spacing:.08em;font-size:calc(var(--b)*.075)}
+.skyltbygge .p1 small{font-family:var(--text);font-size:calc(var(--b)*.03);font-weight:600;letter-spacing:.2em;color:var(--brons)}
+.skyltbygge .p2{top:calc(var(--b)*.21);height:calc(var(--b)*.86);display:grid;grid-template-columns:38% 1fr;gap:6%;padding:5% 7%;background:#F7F1E6;color:var(--kol)}
+.skyltbygge .p2 img{height:100%;width:auto;justify-self:center;object-fit:contain}
+.skyltbygge .p2 .data{display:grid;align-content:start;gap:4px}
+.skyltbygge .p2 b{font-family:var(--rubrik);font-weight:400;font-size:calc(var(--b)*.22);line-height:1;color:var(--tallgron)}
+.skyltbygge .p2 span{font-size:calc(var(--b)*.032);font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--morkbrons)}
+.skyltbygge .p2 .langder{display:flex;gap:8px;margin:6px 0}
+.skyltbygge .p2 .langder i{font-style:normal;font-size:calc(var(--b)*.04);font-weight:600;color:var(--kol);letter-spacing:0}
+.skyltbygge .p2 .langder i::before{content:"";display:inline-block;width:.6em;height:.6em;border-radius:50%;margin-right:4px;background:#C9C3B6;vertical-align:.05em}
+.skyltbygge .p2 .langder i:first-child::before{background:#E8E2D6;box-shadow:inset 0 0 0 1px #999}
+.skyltbygge .p2 .langder i:nth-child(2)::before{background:#E1C34A}
+.skyltbygge .p2 .langder i:nth-child(3)::before{background:#2F5FA7}
+.skyltbygge .p2 p{font-size:calc(var(--b)*.036);line-height:1.45;color:var(--dampad);margin-top:6px}
+.skyltbygge .p3{top:calc(var(--b)*1.08);height:calc(var(--b)*.35);display:flex;align-items:center;justify-content:space-between;padding:0 8%;background:var(--elfenben);color:var(--tallgron);border:1px solid var(--linje)}
+.skyltbygge .p3 b{font-family:var(--rubrik);font-weight:400;font-size:calc(var(--b)*.09);letter-spacing:.18em}
+.skyltbygge .kod{width:calc(var(--b)*.2);aspect-ratio:1;background:
+  linear-gradient(90deg,var(--tallgron) 30%,transparent 30% 40%,var(--tallgron) 40% 50%,transparent 50% 70%,var(--tallgron) 70%) 50% 50%/100% 20% no-repeat,
+  repeating-conic-gradient(var(--tallgron) 0 25%,transparent 0 50%) 0 0/25% 25%;outline:3px solid var(--tallgron);outline-offset:3px;opacity:.85}
+.skyltbygge .stolpar{position:absolute;left:12%;right:12%;top:calc(var(--b)*.6);bottom:0;display:flex;justify-content:space-between;z-index:-1}
+.skyltbygge .stolpar i{display:block;width:calc(var(--b)*.045);height:100%;background:linear-gradient(90deg,#1d2a24,#33433b 50%,#1d2a24)}
+@media (max-width:760px){
+  .skyltbygge .scen{grid-template-columns:1fr;grid-template-rows:auto 1fr;padding-top:70px;gap:10px;align-items:start}
+  .skyltbygge h2{font-size:24px;margin:6px 0 12px}
+  .skyltbygge ol{gap:6px}
+  .skyltbygge li{font-size:14px;line-height:1.4}
+  .skyltbygge li b{font-size:15px}
+  .skyltbygge .skylt{--b:min(56vw,30vh)}
+}
+
+/* hålkort i klubbpaketet (påhittat hål) */
+.del .minikort{display:grid;grid-template-columns:34% 1fr;gap:8%;padding:6% 8%;background:#F7F1E6;align-items:stretch}
+.del .minikort img{height:100%;min-height:0;width:100%;object-fit:contain}
+.del .minikort div{display:grid;gap:4px;align-content:center}
+.del .minikort b{font-family:var(--rubrik);font-weight:400;font-size:64px;line-height:1;color:var(--tallgron)}
+.del .minikort span{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--morkbrons)}
+.del .minikort p{font-size:13px;line-height:1.5;color:var(--dampad);margin-top:8px}
+
+/* Saker som glider in när de syns (läggs bara på när JavaScript och rörelse är tillåtet) */
+.js-rorelse .avsloj{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+.js-rorelse .avsloj.syns{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.slag .fas,.slag .flagga,.slag .avst,.slag .namnskylt,.skyltbygge li{transition:none}}
