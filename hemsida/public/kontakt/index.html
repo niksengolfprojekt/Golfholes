@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kontakt · TACADA</title>
-<meta name="description" content="Boka ett möte med TACADA om er golfbana, hålsponsring.">
+<meta name="description" content="Boka en visning med TACADA om er golfbana eller hålsponsring.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="canonical" href="https://tacada.se/kontakt/">
 <meta property="og:title" content="Kontakt · TACADA">
-<meta property="og:description" content="Boka ett möte med TACADA om er golfbana, hålsponsring.">
+<meta property="og:description" content="Boka en visning med TACADA om er golfbana eller hålsponsring.">
 <meta property="og:url" content="https://tacada.se/kontakt/">
 <meta property="og:image" content="https://tacada.se/img/start-morgon.webp">
 <meta property="og:locale" content="sv_SE">
@@ -31,39 +31,18 @@
 </header>
 <main id="innehall">
 <section class="sek">
-  <div class="inne tva">
+  <div class="inne">
     <div class="rubrikgrupp">
       <span class="over">Kontakt</span>
       <h1 style="font-size:clamp(32px,5vw,54px);color:var(--tallgron)">Boka en visning</h1>
-      <p class="ingress">Berätta kort om klubben eller företaget. Vi svarar inom två arbetsdagar.</p>
-      <dl class="kontaktuppgifter" style="margin-top:12px">
-        <div><dt>E-post</dt><dd><a href="mailto:fore@tacada.se">fore@tacada.se</a></dd></div>
-        <div><dt>Ort</dt><dd>Växjö</dd></div>
-      </dl>
+      <p class="ingress">Berätta kort om klubben eller företaget, så visar vi vad vi kan göra med just er bana. Vi svarar inom två arbetsdagar.</p>
     </div>
-    <form class="formular" name="kontakt" method="POST" action="/kontakt/tack/" data-netlify="true" netlify-honeypot="bot-falt">
-      <input type="hidden" name="form-name" value="kontakt">
-      <p class="visuellt-dold"><label>Fyll inte i detta fält <input name="bot-falt" tabindex="-1" autocomplete="off"></label></p>
-      <div class="rad">
-        <label for="namn">Namn<input id="namn" name="namn" autocomplete="name" required></label>
-        <label for="organisation">Klubb eller företag<input id="organisation" name="organisation" autocomplete="organization" required></label>
-      </div>
-      <div class="rad">
-        <label for="epost">E-post<input id="epost" name="epost" type="email" autocomplete="email" required></label>
-        <label for="telefon">Telefon (valfritt)<input id="telefon" name="telefon" type="tel" autocomplete="tel"></label>
-      </div>
-      <label for="arende">Det gäller
-        <select id="arende" name="arende">
-          <option>Vår golfbana</option>
-          <option>Hålsponsring</option>
-          <option>Profil, hemsida eller sociala medier</option>
-          <option>Annat</option>
-        </select>
-      </label>
-      <label for="meddelande">Meddelande<textarea id="meddelande" name="meddelande" placeholder="Till exempel antal hål, när ni vill komma igång och vem som är kontaktperson."></textarea></label>
-      <p class="liten">Vi använder uppgifterna bara för att svara dig. Läs mer i vår <a href="/integritet/">integritetspolicy</a>.</p>
-      <button class="knapp" type="submit">Skicka</button>
-    </form>
+    <div class="mejlkort">
+      <span class="over">Skriv till oss</span>
+      <a class="adress" href="mailto:fore@tacada.se?subject=Boka%20en%20visning">fore@tacada.se</a>
+      <a class="knapp" href="mailto:fore@tacada.se?subject=Boka%20en%20visning">Mejla och boka en visning</a>
+      <p class="liten">Skriv gärna hur många hål banan har och när ni vill komma igång.</p>
+    </div>
   </div>
 </section>
 
