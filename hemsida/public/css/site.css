@@ -223,3 +223,86 @@ canvas.topo{position:absolute;inset:0;width:100%;height:100%;pointer-events:none
 }
 
 .lucka{background:#F3D98B;color:#4A3A0A;padding:0 4px;font-family:var(--text);font-size:.85em;letter-spacing:0;text-transform:none}
+
+/* sidhuvud över ljus startbild */
+.huvud.pa-ljus{color:var(--tallgron)}
+
+/* fast bokningsknapp på alla sidor utom kontakt */
+.bokaknapp{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));z-index:20;background:var(--vinrod);color:var(--elfenben);text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:14px 22px;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.bokaknapp:hover{background:#6B2A3C}
+
+/* Banrundan: hela banan ovanifrån, ett halvt varv, ner på tee 14 */
+.runda{--papper:#FCF2EB;position:relative;height:290vh;background:var(--papper)}
+.runda .scen{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.runda .bana,.runda .reserv,.runda .tee,.runda .nalar,.runda .slojan,.runda .morkslojan{position:absolute;inset:0;width:100%;height:100%}
+.runda .bana{display:block}
+.runda .reserv{display:none;object-fit:contain;object-position:72% 50%}
+.runda.utan3d .reserv{display:block}.runda.utan3d .bana{display:none}
+.runda .tee{background:url(/img/banrunda/tee14.webp) center 60%/cover no-repeat;opacity:0;pointer-events:none}
+.runda .nalar{pointer-events:none}
+.runda .nal{position:absolute;left:0;top:0;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:#F7F4EE;color:#1E2A22;font:600 12px/26px var(--text);text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.28);opacity:0;transform:scale(.4);transition:transform .35s ease}
+.runda .nal.syns{transform:scale(1)}
+.runda .nal.fjorton{background:var(--brons);color:var(--natt)}
+.runda .slojan{pointer-events:none;transition:opacity .6s;background:linear-gradient(to right,rgba(252,242,235,.96) 0%,rgba(252,242,235,.82) 30%,rgba(252,242,235,0) 52%)}
+.runda .morkslojan{pointer-events:none;opacity:0;transition:opacity .6s;background:linear-gradient(to top,rgba(16,31,43,.82) 0%,rgba(16,31,43,.4) 34%,rgba(16,31,43,0) 60%)}
+.runda .kort{position:absolute;left:var(--sida);top:50%;transform:translateY(-50%);max-width:min(540px,40vw);opacity:0;visibility:hidden;margin-top:14px;transition:opacity .5s,margin .5s,visibility 0s .5s;color:var(--kol)}
+.runda .kort.pa{opacity:1;visibility:visible;margin-top:0;transition:opacity .5s,margin .5s}
+.runda .kort h1,.runda .kort h2{color:var(--tallgron);letter-spacing:.05em;line-height:1.08;margin:14px 0 18px}
+.runda .kort h1{font-size:clamp(34px,4.2vw,62px)}
+.runda .kort h2{font-size:clamp(30px,3.8vw,54px)}
+.runda .kort p{font-size:clamp(16px,1.4vw,19px);line-height:1.6;max-width:42ch}
+.runda .kort .knapp{margin-top:26px}
+.runda em,.halrulle em{font-style:normal;color:var(--morkbrons)}
+.runda .scrolla{display:block;margin-top:22px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--dampad)}
+.runda .kort.sista{top:auto;bottom:clamp(64px,11vh,120px);transform:none;max-width:640px}
+.runda .kort.sista h2,.runda .kort.sista p{color:var(--elfenben)}
+.runda .kort.sista .over{color:var(--brons)}
+.runda .hud{position:absolute;top:clamp(96px,14vh,130px);right:var(--sida);text-align:right;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--elfenben);opacity:0;line-height:1.7}
+.runda .hud b{display:block;font-family:var(--rubrik);font-weight:400;font-size:30px;letter-spacing:.06em}
+.runda .kalla{position:absolute;left:var(--sida);bottom:14px;font-size:11px;color:#6B6E66;transition:color .6s;margin:0}
+.runda.ute .kalla{color:#C9CFC7}
+.runda.ute .slojan{opacity:0}.runda.ute .morkslojan{opacity:1}
+@media (max-width:760px){
+  .runda .slojan{background:linear-gradient(to top,rgba(252,242,235,.98) 0%,rgba(252,242,235,.92) 34%,rgba(252,242,235,0) 50%)}
+  .runda .kort,.runda .kort.sista{top:auto;bottom:84px;transform:none;max-width:none;right:var(--sida)}
+  .runda .kort .knapp{margin-top:18px}
+  .runda .scrolla{display:none}
+  .runda .reserv{object-position:50% 12%;height:58%}
+  .runda .hud{top:76px}
+  .runda .kalla{bottom:16px;right:190px;font-size:10px}
+  .runda .nal{width:22px;height:22px;margin:-11px 0 0 -11px;font-size:11px;line-height:22px}
+  .runda .tee{background-image:url(/img/banrunda/tee14-900.webp)}
+}
+
+/* Hålrullen: fyra hål, ett i taget, kameran glider mot greenen */
+.halrulle{position:relative;height:420vh;background:var(--tallgron);color:var(--elfenben)}
+.halrulle .scen{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:clamp(24px,5vw,80px);padding:0 var(--sida);max-width:calc(var(--max) + 2*var(--sida));margin:0 auto}
+.halrulle .over{color:var(--brons)}
+.halrulle h2{font-size:clamp(28px,3.4vw,48px);letter-spacing:.05em;line-height:1.1;margin:14px 0 clamp(20px,4vh,40px);max-width:16ch}
+.halrulle em{color:var(--brons)}
+.halrulle .hal-lista{position:relative;min-height:220px}
+.halrulle .hal{position:absolute;inset:0 0 auto;opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}
+.halrulle .hal.pa{opacity:1;transform:none}
+.halrulle .hal b{display:block;font-family:var(--rubrik);font-weight:400;font-size:clamp(84px,11vw,150px);line-height:.9;color:transparent;-webkit-text-stroke:1px var(--brons)}
+.halrulle .hal span{display:block;margin:14px 0 10px;font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+.halrulle .hal i{font-style:normal;font-variant-numeric:tabular-nums}
+.halrulle .hal p{max-width:40ch;color:var(--pa-gront);font-size:clamp(16px,1.3vw,18px);line-height:1.6}
+.halrulle .lank-pil{color:var(--elfenben);margin-top:24px;display:inline-block}
+.halrulle .bilder{position:relative;height:86vh;height:86svh}
+.halrulle .bilder img{position:absolute;left:50%;top:0;height:100%;width:auto;max-width:none;transform-origin:50% 8%;translate:-50% 0;opacity:0;will-change:transform,opacity;filter:drop-shadow(0 28px 40px rgba(0,0,0,.35))}
+.halrulle .bilder img:first-child{opacity:1}
+.halrulle .prickar{position:absolute;right:var(--sida);top:50%;translate:0 -50%;list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.halrulle .prickar i{display:block;width:7px;height:7px;border-radius:50%;background:rgba(243,237,226,.3);transition:background .3s}
+.halrulle .prickar i.pa{background:var(--brons)}
+.halrulle .kalla{position:absolute;left:var(--sida);bottom:14px;margin:0;font-size:11px;color:#9AA79E}
+@media (max-width:760px){
+  .halrulle .scen{grid-template-columns:1fr;grid-template-rows:52% auto;align-items:start;gap:8px;padding-top:64px}
+  .halrulle .bilder{order:-1;height:100%}
+  .halrulle h2{font-size:24px;margin:8px 0 10px}
+  .halrulle .hal b{font-size:64px}
+  .halrulle .hal span{margin:8px 0 6px}
+  .halrulle .hal-lista{min-height:170px}
+  .halrulle .kalla,.halrulle .lank-pil{display:none}
+  .halrulle .prickar{top:30%}
+}
+@media (prefers-reduced-motion:reduce){.runda .kort,.runda .nal,.halrulle .hal{transition:none}}

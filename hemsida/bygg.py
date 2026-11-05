@@ -31,7 +31,6 @@ BOLAG = {
 MENY = [
     ("golfklubbar/", "Golfklubbar"),
     ("halsponsorer/", "Hålsponsorer"),
-    ("studio/", "Studio"),
     ("om/", "Om oss"),
     ("kontakt/", "Kontakt"),
 ]
@@ -70,6 +69,13 @@ def bygg_sida(meta, kropp, ordmarke):
         f'<li><a href="/{u}"{" aria-current=\"page\"" if sokvag == u else ""}>{n}</a></li>' for u, n in MENY
     )
     ljus = meta.get("huvud") == "ljus"
+    over = meta.get("huvud") == "over"
+    skript = ""
+    if meta.get("skript") == "start":
+        # Banrundan och hålrullen på startsidan. three.js laddas bara här.
+        skript = ('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>\n'
+                  '<script src="/js/start.js" defer></script>\n')
+    boka = "" if sokvag.startswith("kontakt/") else '<a class="bokaknapp" href="/kontakt/">Boka en visning</a>\n'
     robots = "" if LANSERAD else '<meta name="robots" content="noindex, nofollow">\n'
     url = DOMAN + "/" + sokvag
     sida = f"""<!doctype html>
@@ -95,7 +101,7 @@ def bygg_sida(meta, kropp, ordmarke):
 </head>
 <body>
 <a class="hoppa" href="#innehall">Till innehållet</a>
-<header class="huvud{" ljus" if ljus else ""}">
+<header class="huvud{" ljus" if ljus else ""}{" pa-ljus" if over else ""}">
   <div class="inne">
     <a class="ordmarke" href="/" aria-label="TACADA, till startsidan">{ordmarke}</a>
     <nav class="meny" aria-label="Huvudmeny"><ul>{meny}</ul></nav>
@@ -112,7 +118,7 @@ def bygg_sida(meta, kropp, ordmarke):
         <a class="ordmarke" href="/" aria-label="TACADA, till startsidan">{ordmarke}</a>
         <p>Vi skapar värde till varje hål.</p>
       </div>
-      <div><h2>Områden</h2><ul><li><a href="/golfklubbar/">Courses</a></li><li><a href="/halsponsorer/">Partners</a></li><li><a href="/studio/">Studio</a></li><li><a href="/editions/">Editions</a></li></ul></div>
+      <div><h2>Erbjudandet</h2><ul><li><a href="/golfklubbar/">För golfklubbar</a></li><li><a href="/halsponsorer/">För hålsponsorer</a></li></ul></div>
       <div><h2>Kontakt</h2><ul><li>{{{{epost}}}}</li><li>{{{{ort}}}}</li><li><a href="/kontakt/">Boka en visning</a></li></ul></div>
       <div><h2>TACADA</h2><ul><li><a href="/om/">Om oss</a></li><li><a href="/integritet/">Integritetspolicy</a></li></ul></div>
     </div>
@@ -122,8 +128,8 @@ def bygg_sida(meta, kropp, ordmarke):
     </div>
   </div>
 </footer>
-<script src="/js/site.js" defer></script>
-</body>
+{boka}<script src="/js/site.js" defer></script>
+{skript}</body>
 </html>
 """
     return ersatt(sida)
@@ -211,7 +217,11 @@ def forhandsvisning(mal):
         text = text.replace("url(/img/", f"url({rel}img/")
         html.write_text(text, encoding="utf-8")
     css = mal / "css" / "site.css"
-    css.write_text(css.read_text(encoding="utf-8").replace("url(/fonts/", "url(../fonts/"), encoding="utf-8")
+    css.write_text(css.read_text(encoding="utf-8").replace("url(/fonts/", "url(../fonts/").replace("url(/img/", "url(../img/"), encoding="utf-8")
+    # start.js körs bara på startsidan, som ligger i roten.
+    js = mal / "js" / "start.js"
+    if js.exists():
+        js.write_text(js.read_text(encoding="utf-8").replace("'/img/", "'img/"), encoding="utf-8")
     return mal
 
 

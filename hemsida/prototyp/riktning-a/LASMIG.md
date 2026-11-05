@@ -1,0 +1,1 @@
+Prototyp av startsidan, riktning A. hal14.json byggs med: python3 hemsida/verktyg/punktmoln.py <laz> <orto.jpg> <orto.jgw> hal14.bin 492070 6305560 492400 6306000 (kräver laspy + lazrs) och base64-packas till JSON. Datafilen checkas inte in.
