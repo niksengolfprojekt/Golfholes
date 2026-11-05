@@ -31,7 +31,6 @@ BOLAG = {
 MENY = [
     ("golfklubbar/", "Golfklubbar"),
     ("halsponsorer/", "Hålsponsorer"),
-    ("studio/", "Studio"),
     ("om/", "Om oss"),
     ("kontakt/", "Kontakt"),
 ]
@@ -119,7 +118,7 @@ def bygg_sida(meta, kropp, ordmarke):
         <a class="ordmarke" href="/" aria-label="TACADA, till startsidan">{ordmarke}</a>
         <p>Vi skapar värde till varje hål.</p>
       </div>
-      <div><h2>Områden</h2><ul><li><a href="/golfklubbar/">Courses</a></li><li><a href="/halsponsorer/">Partners</a></li><li><a href="/studio/">Studio</a></li><li><a href="/editions/">Editions</a></li></ul></div>
+      <div><h2>Erbjudandet</h2><ul><li><a href="/golfklubbar/">För golfklubbar</a></li><li><a href="/halsponsorer/">För hålsponsorer</a></li></ul></div>
       <div><h2>Kontakt</h2><ul><li>{{{{epost}}}}</li><li>{{{{ort}}}}</li><li><a href="/kontakt/">Boka en visning</a></li></ul></div>
       <div><h2>TACADA</h2><ul><li><a href="/om/">Om oss</a></li><li><a href="/integritet/">Integritetspolicy</a></li></ul></div>
     </div>
