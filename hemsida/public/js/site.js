@@ -20,8 +20,8 @@
         var x = cx + Math.cos(a) * rad * w * 1.25, y = cy + Math.sin(a) * rad * w * 0.8;
         if (a === 0) g.moveTo(x, y); else g.lineTo(x, y);
       }
-      g.strokeStyle = 'rgba(243,237,226,' + (0.15 * (1 - i / (n + 4))) + ')';
-      g.lineWidth = 0.9; g.stroke();
+      g.strokeStyle = 'rgba(243,237,226,' + (0.3 * (1 - i / (n + 4))) + ')';
+      g.lineWidth = 1.1; g.stroke();
     }
   }
   function allaKurvor() { document.querySelectorAll('canvas.topo').forEach(function (c) { ritaKurvor(c); }); }
@@ -34,12 +34,12 @@
         io.unobserve(p.target);
         var c = p.target, t0 = performance.now();
         (function steg(nu) {
-          var t = Math.min(1, (nu - t0) / 2200);
+          var t = Math.min(1, (nu - t0) / 3600);
           ritaKurvor(c, t);
           if (t < 1) requestAnimationFrame(steg);
         })(t0);
       });
-    }, { threshold: .15 });
+    }, { threshold: .35 });
     document.querySelectorAll('canvas.topo').forEach(function (c) { ritaKurvor(c, 0); io.observe(c); });
   } else allaKurvor();
 
