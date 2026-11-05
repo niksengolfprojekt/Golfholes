@@ -1,4 +1,4 @@
-// TACADA startsidan: banrundan (hela banan ovanifrån, ett halvt varv, ner på tee 14)
+// TACADA startsidan: banrundan (en påhittad bana ovanifrån, ett halvt varv, ner på tee på hål 7)
 // och hålrullen (fyra hål, ett i taget). Båda styrs av scroll.
 (function () {
   var stilla = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -35,9 +35,10 @@
     }
     if (!window.THREE || !window.WebGLRenderingContext) return reserv();
 
-    // Banbilden ligger på Lantmäteriets höjdmodell: 0,372 m per pixel, SWEREF 99 TM.
-    // Trädkronorna är höjda till sin uppmätta höjd ur Laserdata Skog.
-    var PINS = {1:[491711.0,6306516.8],2:[491588.3,6306140.3],3:[491538.8,6305904.5],4:[491735.1,6305612.3],5:[491755.2,6305433.5],6:[492000.4,6305517.4],7:[491820.7,6305799.4],8:[491955.1,6305757.7],9:[491827.9,6306003.0],10:[491888.4,6306368.7],11:[492047.3,6306044.3],12:[492126.9,6305610.2],13:[492180.1,6306122.8],14:[492311.8,6305911.1],15:[492092.0,6305560.4],16:[491783.1,6305799.4],17:[491733.3,6305972.3],18:[491733.3,6306104.6]};
+    // Påhittad bana (ingen riktig klubb). Terrängen och trädhöjderna är framräknade ur
+    // banbilden med hemsida/verktyg/fiktiv_bana.py. Koordinater i meter från banbildens nedre vänstra hörn.
+    var HAL = '7';
+    var PINS = {1:[485.6,1349.6],2:[859.1,1256.3],3:[762.0,901.4],4:[373.5,1047.1],5:[97.1,938.8],6:[649.9,804.3],7:[179.3,569.0],8:[407.1,785.6],9:[810.6,733.3],10:[425.8,341.1],11:[545.4,438.2],12:[833.0,169.3],13:[216.6,131.9],14:[257.7,591.4],15:[859.1,542.8],16:[709.7,669.8],17:[582.7,606.3],18:[224.1,766.9]};
     var renderer;
     try { renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true }); } catch (e) { return reserv(); }
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -70,13 +71,13 @@
         return h(x0, y0) * (1 - fx) * (1 - fy) + h(x0 + 1, y0) * fx * (1 - fy) + h(x0, y0 + 1) * (1 - fx) * fy + h(x0 + 1, y0 + 1) * fx * fy;
       }
       var nal = Object.keys(PINS).map(function (n) {
-        var el = document.createElement('div'); el.className = 'nal' + (n === '14' ? ' fjorton' : ''); el.textContent = n; nalar.appendChild(el);
+        var el = document.createElement('div'); el.className = 'nal' + (n === HAL ? ' fjorton' : ''); el.textContent = n; nalar.appendChild(el);
         var x = PINS[n][0] - cE, y = PINS[n][1] - cN;
         return { n: +n, el: el, p: new THREE.Vector3(x, y, mark(x, y) + 3) };
       });
 
-      // Tee 56 på hål 14 och siktet 150 m ut längs mittlinjen.
-      var tee56 = { x: 492313 - cE, y: 6305911 - cN }, sikte = { x: 492312.5 - cE, y: 6305761 - cN };
+      // Tee på hål 7 och siktet 150 m ut längs mittlinjen (hålet går rakt norrut).
+      var tee56 = { x: 192.0 - cE, y: 217.9 - cN }, sikte = { x: 183.0 - cE, y: 367.9 - cN };
       var teeZ = mark(tee56.x, tee56.y) + 1.6, sikteZ = mark(sikte.x, sikte.y);
       var start = { d: 2600, tx: 0, ty: 0 }, N = [], W = 1, H = 1;
 
@@ -90,11 +91,12 @@
         // Nyckelbilder: läge i scroll, vinkel runt banan, lutning, avstånd, siktpunkt.
         N = [
           { f: 0, th: 0, fi: 89, d: start.d, tx: start.tx, ty: start.ty },
-          { f: .3, th: 60, fi: 52, d: start.d * .78, tx: 0, ty: -40 },
-          { f: .6, th: 125, fi: 34, d: start.d * .5, tx: 140, ty: -120 },
-          { f: .82, th: 170, fi: 18, d: 330, tx: sikte.x, ty: sikte.y },
-          { f: .94, th: 180, fi: slutLut, d: 150, tx: sikte.x, ty: sikte.y },
-          { f: 1, th: 180, fi: slutLut, d: 150, tx: sikte.x, ty: sikte.y }
+          // Ett svep ut över sjön och tillbaka, inget helt varv. Hål 7 spelas norrut, så vi landar med vinkel 0.
+          { f: .3, th: -55, fi: 50, d: start.d * .78, tx: -40, ty: 120 },
+          { f: .6, th: -95, fi: 32, d: start.d * .5, tx: -120, ty: -220 },
+          { f: .82, th: -22, fi: 18, d: 330, tx: sikte.x, ty: sikte.y },
+          { f: .94, th: 0, fi: slutLut, d: 150, tx: sikte.x, ty: sikte.y },
+          { f: 1, th: 0, fi: slutLut, d: 150, tx: sikte.x, ty: sikte.y }
         ];
       }
       addEventListener('resize', storlek); storlek();
@@ -129,7 +131,7 @@
         nal.forEach(function (p, i) {
           v.copy(p.p).project(cam);
           var tand = stilla || tid > 500 + i * 90;
-          var syn = (p.n === 14 ? Math.max(0, 1 - Math.max(0, f - .82) / .06) : nalSyn) * (v.z < 1 ? 1 : 0) * (tand ? 1 : 0);
+          var syn = (p.n === +HAL ? Math.max(0, 1 - Math.max(0, f - .82) / .06) : nalSyn) * (v.z < 1 ? 1 : 0) * (tand ? 1 : 0);
           var sy = (1 - v.y) / 2 * H;
           if (W <= 760) syn *= Math.max(0, Math.min(1, (H * .52 - sy) / 40)); // Mobil: inga nummer över texten.
           p.el.style.opacity = syn; p.el.classList.toggle('syns', tand);
@@ -180,5 +182,60 @@
       }
     }
     addEventListener('scroll', uppdatera, { passive: true }); addEventListener('resize', uppdatera); uppdatera();
+  }
+  // ---------------- Slag för slag (hål 7) ----------------
+  var slag = document.getElementById('slag');
+  if (slag) {
+    var fas = [].slice.call(slag.querySelectorAll('.fas'));
+    var s1 = slag.querySelector('.s1'), s2 = slag.querySelector('.s2'), boll = slag.querySelector('.boll');
+    var l1 = slag.querySelector('.l1'), flagga = slag.querySelector('.flagga');
+    var a1 = slag.querySelector('.a1'), a2 = slag.querySelector('.a2'), skylt = slag.querySelector('.namnskylt');
+    var L1 = s1.getTotalLength(), L2 = s2.getTotalLength();
+    [[s1, L1], [s2, L2]].forEach(function (x) { x[0].style.strokeDasharray = x[1]; x[0].style.strokeDashoffset = x[1]; });
+    var klamp = function (v) { return Math.max(0, Math.min(1, v)); };
+    var ease = function (t) { return 1 - Math.pow(1 - t, 2.2); };
+    function ritaSlag() {
+      if (!synlig(slag)) return;
+      var f = framsteg(slag);
+      fas.forEach(function (k) { k.classList.toggle('pa', f >= +k.dataset.fran && f < +k.dataset.till); });
+      // Utslaget ritas mellan 4 och 30 %, inspelet mellan 40 och 64 %.
+      var t1 = stilla ? (f > .04 ? 1 : 0) : ease(klamp((f - .04) / .26));
+      var t2 = stilla ? (f > .4 ? 1 : 0) : ease(klamp((f - .4) / .24));
+      s1.style.strokeDashoffset = L1 * (1 - t1);
+      s2.style.strokeDashoffset = L2 * (1 - t2);
+      var pt = t2 > 0 ? s2.getPointAtLength(L2 * t2) : s1.getPointAtLength(L1 * t1);
+      boll.setAttribute('cx', pt.x); boll.setAttribute('cy', pt.y);
+      boll.setAttribute('r', 6 + 5 * Math.sin(Math.PI * (t2 > 0 ? t2 : t1))); // bollen "lyfter" mitt i flykten
+      l1.style.opacity = t1 >= 1 ? 1 - klamp((f - .3) / .1) * .6 : 0;
+      l1.setAttribute('r', 9 + 22 * klamp((f - .3) / .1));
+      a1.classList.toggle('syns', t1 >= 1);
+      a2.classList.toggle('syns', t2 >= 1);
+      flagga.classList.toggle('upp', f > .34);
+      skylt.classList.toggle('syns', f > .72);
+    }
+    addEventListener('scroll', ritaSlag, { passive: true }); addEventListener('resize', ritaSlag); ritaSlag();
+  }
+
+  // ---------------- Skylten byggs ----------------
+  var bygge = document.getElementById('skyltbygge');
+  if (bygge) {
+    var plattor = [].slice.call(bygge.querySelectorAll('.platta'));
+    var rader = [].slice.call(bygge.querySelectorAll('li'));
+    // Varje platta kommer från sitt håll och landar på stolparna.
+    var fran = [{ x: 0, y: -70, r: -8 }, { x: 60, y: 0, r: 6 }, { x: 0, y: 70, r: 4 }];
+    function bygg() {
+      if (!synlig(bygge)) return;
+      var f = framsteg(bygge);
+      plattor.forEach(function (pl, i) {
+        var t = Math.max(0, Math.min(1, (f - .06 - i * .27) / .2));
+        if (stilla) t = t > 0 ? 1 : 0;
+        var e = 1 - Math.pow(1 - t, 3), o = fran[i];
+        pl.style.opacity = Math.min(1, t * 2.5);
+        pl.style.transform = 'translate(' + (o.x * (1 - e)) + 'vw,' + (o.y * (1 - e)) + 'vh) rotate(' + (o.r * (1 - e)) + 'deg)';
+      });
+      var aktivRad = Math.max(0, Math.min(2, Math.floor((f - .06) / .27)));
+      rader.forEach(function (r, i) { r.classList.toggle('pa', i <= aktivRad); });
+    }
+    addEventListener('scroll', bygg, { passive: true }); addEventListener('resize', bygg); bygg();
   }
 })();
