@@ -194,13 +194,11 @@
     [[s1, L1], [s2, L2]].forEach(function (x) { x[0].style.strokeDasharray = x[1]; x[0].style.strokeDashoffset = x[1]; });
     var klamp = function (v) { return Math.max(0, Math.min(1, v)); };
     var ease = function (t) { return 1 - Math.pow(1 - t, 2.2); };
-    function ritaSlag() {
-      if (!synlig(slag)) return;
-      var f = framsteg(slag);
+    function ritaSlag(f) {
       fas.forEach(function (k) { k.classList.toggle('pa', f >= +k.dataset.fran && f < +k.dataset.till); });
       // Utslaget ritas mellan 4 och 30 %, inspelet mellan 40 och 64 %.
-      var t1 = stilla ? (f > .04 ? 1 : 0) : ease(klamp((f - .04) / .26));
-      var t2 = stilla ? (f > .4 ? 1 : 0) : ease(klamp((f - .4) / .24));
+      var t1 = ease(klamp((f - .04) / .26));
+      var t2 = ease(klamp((f - .4) / .24));
       s1.style.strokeDashoffset = L1 * (1 - t1);
       s2.style.strokeDashoffset = L2 * (1 - t2);
       var pt = t2 > 0 ? s2.getPointAtLength(L2 * t2) : s1.getPointAtLength(L1 * t1);
@@ -213,7 +211,25 @@
       flagga.classList.toggle('upp', f > .34);
       skylt.classList.toggle('syns', f > .72);
     }
-    addEventListener('scroll', ritaSlag, { passive: true }); addEventListener('resize', ritaSlag); ritaSlag();
+    // Eric 2026-11-05: spelas som en film när sektionen kommer i bild, scrollen styr inte.
+    var LANGD = 9000, igen = slag.querySelector('.igen'), spelar = false;
+    function spela() {
+      if (spelar) return;
+      spelar = true; igen.classList.remove('syns');
+      if (stilla) { ritaSlag(1); spelar = false; igen.classList.add('syns'); return; }
+      var t0 = performance.now();
+      (function ruta(nu) {
+        var f = Math.min(1, (nu - t0) / LANGD);
+        ritaSlag(f);
+        if (f < 1) requestAnimationFrame(ruta); else { spelar = false; igen.classList.add('syns'); }
+      })(t0);
+    }
+    ritaSlag(0);
+    igen.addEventListener('click', spela);
+    if ('IntersectionObserver' in window) {
+      var obs = new IntersectionObserver(function (p) { if (p[0].isIntersecting) { obs.disconnect(); spela(); } }, { threshold: .55 });
+      obs.observe(slag);
+    } else spela();
   }
 
   // ---------------- Skylten byggs ----------------
