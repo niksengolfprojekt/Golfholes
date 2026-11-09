@@ -15,7 +15,7 @@ DOMAN = "https://tacada.se"
 
 # --- Inställningar som ändras när beslut fattas ----------------------------------
 # Sajten är inte lanserad: alla sidor får noindex och robots.txt stänger ute sökmotorer.
-LANSERAD = False
+LANSERAD = True
 # Glasrikets styrelse beslutar 2026-12-08. Till dess nämns klubben inte på sajten,
 # och referenssidan byggs inte. Sätt True först när klubben godkänt texten skriftligt.
 REFERENS_GLASRIKET = False
