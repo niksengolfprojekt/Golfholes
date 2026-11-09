@@ -85,8 +85,8 @@
         W = steg.clientWidth; H = steg.clientHeight;
         renderer.setSize(W, H, false); cam.aspect = W / H; cam.updateProjectionMatrix();
         var tv = Math.tan(THREE.MathUtils.degToRad(cam.fov / 2));
-        if (W > 760) { var d = T.H * .53 / tv; start = { d: d, tx: -d * tv * cam.aspect * .32, ty: 0 }; }
-        else { var dm = T.H * 1.3 / tv, hv = dm * tv; start = { d: dm, tx: 0, ty: -(hv - T.H * .5 - hv * .12) }; } // Mobil: banan i övre halvan, texten under.
+        if (W > 760) { var d = T.H * .6 / tv; start = { d: d, tx: -d * tv * cam.aspect * .32, ty: d * tv * .08 }; } // Banan lite mindre och lägre, så menyn får fri yta ovanför.
+        else { var dm = T.H * 1.3 / tv, hv = dm * tv; start = { d: dm, tx: 0, ty: -(hv - T.H * .5 - hv * .19) }; } // Mobil: banan i övre halvan, texten under.
         var slutLut = THREE.MathUtils.radToDeg(Math.atan2(teeZ - sikteZ, 150));
         // Nyckelbilder: läge i scroll, vinkel runt banan, lutning, avstånd, siktpunkt.
         N = [
