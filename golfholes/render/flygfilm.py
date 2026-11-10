@@ -290,6 +290,11 @@ def _linjebana(hole: Hole, scen: Scen, tee, blick_m: float, fore_m: float = 20.0
     return s_tee, s_green, vid, H_pa
 
 
+# Standard för flygfilmer (Eric 2026-10-27): 15 m över marken, blick 110 m framåt (hål 9 v2).
+STANDARD_HOJD_M = 15.0
+STANDARD_BLICK_M = 110.0
+
+
 def kamerabana(hole: Hole, scen: Scen, fps: int = 24, sekunder: float = 12.0, hojd_m: float = 5.0,
                blick_m: float = 60.0, slut_s: float = 4.0, bredd: int = 1280, hojd_px: int = 720,
                fov_grader: float = 60.0) -> tuple[list[Kamera], dict]:
@@ -585,8 +590,8 @@ def ffmpeg_bin() -> str | None:
 
 
 def flygfilm(hole: Hole, data_dir: Path, ut_dir: Path, fps: int = 24, sekunder: float = 12.0,
-             bredd: int = 1280, hojd_px: int = 720, hojd_m: float = 5.0, blick_m: float = 60.0,
-             slut_s: float = 4.0, nyckelbilder: int = 6, processer: int | None = None,
+             bredd: int = 1280, hojd_px: int = 720, hojd_m: float = STANDARD_HOJD_M,
+             blick_m: float = STANDARD_BLICK_M, slut_s: float = 4.0, nyckelbilder: int = 6, processer: int | None = None,
              res: float = 0.25, ss: float = 1.5, forlopp: str = "rak", tee: str | None = None) -> dict:
     """Renderar hela flygningen. Returnerar filvägar och fakta om banan.
 
