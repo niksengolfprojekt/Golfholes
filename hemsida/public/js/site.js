@@ -58,6 +58,23 @@
   }
   var t; window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(allaKurvor, 150); });
 
+  // Årstidskortet: byt årstid med knapparna, rulla själv tills någon trycker.
+  document.querySelectorAll('[data-arstider]').forEach(function (ram) {
+    var bilder = ram.querySelectorAll('img'), knappar = ram.parentNode.querySelectorAll('.arstidsval button'), nu = 0, tid = null;
+    var visa = function (i) {
+      nu = i;
+      bilder.forEach(function (b, j) { b.classList.toggle('vald', j === i); });
+      knappar.forEach(function (k, j) { k.setAttribute('aria-pressed', j === i ? 'true' : 'false'); });
+    };
+    knappar.forEach(function (k, j) { k.addEventListener('click', function () { clearInterval(tid); tid = null; visa(j); }); });
+    if (!stilla && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (p) {
+        if (p[0].isIntersecting && tid === null && !ram.dataset.rord) { ram.dataset.rord = 1; tid = setInterval(function () { visa((nu + 1) % bilder.length); }, 2600); }
+      }, { threshold: .5 }).observe(ram);
+      knappar.forEach(function (k) { k.addEventListener('click', function () { ram.dataset.rord = 1; }); });
+    }
+  });
+
   var hal = document.getElementById('kalk-hal'), pris = document.getElementById('kalk-pris');
   if (hal && pris) {
     var kr = function (v) { return v.toLocaleString('sv-SE').replace(/ /g, ' ') + ' kr'; };
