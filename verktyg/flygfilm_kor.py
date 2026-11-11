@@ -15,5 +15,8 @@ if "--data" not in rest:
     rest += ["--data", str(fu.DATA)]
 if steg == "kontroll":
     sys.exit(fk.main(rest))
+if steg == "hd":
+    from golfholes.render import flygfilm_hd  # noqa: E402
+    sys.exit(flygfilm_hd.main(rest))
 from golfholes.__main__ import main  # noqa: E402
 sys.exit(main([steg, *rest]))
