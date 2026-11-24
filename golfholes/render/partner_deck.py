@@ -204,7 +204,7 @@ def a01_omslag(prog: Program, sp: Sponsor) -> str:
  <div class='ey'>Partnerprogram {prog.sasong}</div>
  <h1 class='xl'>Er plats på {e(prog.klubb.bana)}.</h1>
  <p class='lead' style='max-width:640px'>Arton hål genom skogen, en range, en Pay &amp; Play-bana och en klubb
- där samma människor ses vecka efter vecka. Här är sätten att bli en del av den.</p></div>
+ där både medlemmar och gäster spelar. Här är sätten att bygga ert varumärke hos dem.</p></div>
 <div class='src' style='left:{M}px;width:700px;bottom:48px'>Bilderna visar Fylleryd. {ATTRIBUTION}</div></div>"""
 
 
@@ -215,7 +215,7 @@ def a02_motesplats(prog: Program) -> str:
              ("12 tees", "på Pay &amp; Play-banan, där nya golfare börjar"),
              ("4,5 km", "från Växjö centrum"),
              ("April–oktober", "spelas banan, varje dag")]
-    rader = "".join(f"<div style='display:flex;align-items:baseline;gap:26px;padding:20px 0;border-top:1px solid rgba(16,32,46,.16)'>"
+    rader = "".join(f"<div style='display:flex;align-items:baseline;gap:26px;padding:16px 0;border-top:1px solid rgba(16,32,46,.16)'>"
                     f"<div style='font:400 44px/1 var(--serif);width:300px;flex:none;white-space:nowrap'>{a}</div>"
                     f"<div style='font:400 21px/1.4 var(--sans);color:#33454B'>{b}</div></div>" for a, b in fakta)
     return f"""<div class='pg'>
@@ -223,9 +223,10 @@ def a02_motesplats(prog: Program) -> str:
 {_hd(prog, 2, left=900)}
 <div class='abs' style='left:900px;right:{M}px;top:140px'>
  <div class='ey'>Klubben som mötesplats</div>
- <h1>Här ses samma människor varje vecka.</h1>
- <p class='lead' style='font-size:25px'>Morgonrundan före jobbet, tisdagsträningen med juniorerna, lördagens
- tävling. {e(prog.klubb.kortnamn)} är en plats man återvänder till, och det är därför ett namn här blir ihågkommet.</p>
+ <h1>Medlemmar och gäster ser ert namn.</h1>
+ <p class='lead' style='font-size:25px'>Medlemmarna kommer tillbaka vecka efter vecka: morgonrundan, juniorträningen,
+ lördagens tävling. Gästerna kommer från andra klubbar och tar med sig bilden av {e(prog.klubb.kortnamn)} hem.
+ Ett hål med ert namn bygger varumärket hos båda.</p>
  <div style='margin-top:36px'>{rader}</div></div>
 <div class='src' style='left:900px;right:{M}px;bottom:36px'>Ronderna är en uppskattning från klubbens egen statistik. {ATTRIBUTION}</div></div>"""
 
@@ -251,9 +252,9 @@ def a04_miljo(prog: Program) -> str:
 {_hd(prog, 4)}
 <div class='abs' style='left:{M}px;top:250px;width:860px'>
  <div class='ey'>Golfens miljö</div>
- <h1 class='xl'>Fyra timmar utan skärm.</h1>
- <p class='lead'>En runda golf är en av få platser där människor fortfarande pratar med varandra i timmar.
- Företagare, chefer, hantverkare och pensionärer i samma boll. Här byggs förtroende, en fairway i taget.</p>
+ <h1 class='xl'>Förtroende, en fairway i taget.</h1>
+ <p class='lead'>En runda golf är timmar i samma sällskap. Företagare, chefer, hantverkare och pensionärer
+ i samma boll, med tid att prata mellan slagen.</p>
  <p class='lead' style='margin-top:22px'>Den som syns här syns i ett sammanhang folk tycker om.</p></div>
 <div class='src' style='left:{M}px;bottom:40px'>Fylleryd. {ATTRIBUTION}</div></div>"""
 
