@@ -13,13 +13,13 @@ par: 4
 index: 4
 orto: data/glasriket/orto/o63050_4900_25_mr25.tif
 tees:
-- {name: '60', point: [491585.0, 6306240.0], length_m: 355}  # beräknad, syns inte på fotot
-- {name: 56/52, point: [491583.0, 6306202.0], length_m: 318}
-- {name: '49', point: [491580.0, 6306170.0], length_m: 284}
-- {name: '44', point: [491579.0, 6306137.0], length_m: 248}
+- {name: '60', point: [491588.0, 6306237.0], length_m: 355}  # beräknad, syns inte på fotot
+- {name: 56/52, point: [491587.0, 6306205.0], length_m: 318}
+- {name: '49', point: [491585.0, 6306170.0], length_m: 284}
+- {name: '44', point: [491585.0, 6306134.0], length_m: 248}
 centerline:
-- [491585.0, 6306240.0]
-- [491583.0, 6306202.0]
+- [491588.0, 6306237.0]
+- [491587.0, 6306205.0]
 - [491565.0, 6306080.0]
 - [491538.0, 6305990.0]
 - [491520.0, 6305940.0]

@@ -168,7 +168,7 @@ def _markerad(n: int, kalla: Path) -> Path:
             orto = data / Path(next(f["fil"] for f in logg["filer"] if f["katalog"] == "orto")).relative_to("data/glasriket")
             tmp = CACHE / f"hal-{n:02d}-tmp.png"
             CACHE.mkdir(exist_ok=True)
-            bild, _ = markera_halbild(Hole.from_yaml(halfil), orto, kalla, tmp)
+            bild, _ = markera_halbild(Hole.from_yaml(halfil), orto, kalla, tmp, halfil=halfil)
             if bild == tmp:
                 ut = tmp
             else:

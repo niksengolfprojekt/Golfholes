@@ -8,7 +8,7 @@ index: 15
 source: Ortofoto ©Lantmäteriet (o63050_4900_25_mr25.tif), utkast med trollstav (golfholes/utkast.py) från fröpunkter i klubbar/glasriket/utkast/hal-16.yaml. Granskas mot klubbens hålkarta.
 origin: [0.0, 0.0]
 centerline:
-- [491787.0, 6305794.0]
+- [491778.0, 6305794.0]
 - [491720.0, 6305845.0]
 - [491660.0, 6305870.0]
 - [491625.0, 6305910.0]
@@ -17,7 +17,7 @@ centerline:
 - [491620.0, 6306024.0]
 tees:
 - name: 52/56/60
-  point: [491787.0, 6305794.0]
+  point: [491778.0, 6305794.0]
   length_m: 297
 - name: 49/44
   point: [491748.0, 6305815.0]

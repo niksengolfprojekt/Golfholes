@@ -14,8 +14,8 @@ index: 12
 orto: data/glasriket/orto/o63050_4900_25_mr25.tif
 tees:
 - {name: 56/60, point: [491714.0, 6306508.0], length_m: 442}
-- {name: 52/49, point: [491665.0, 6306497.0], length_m: 394}
-- {name: '44', point: [491595.0, 6306452.0], length_m: 303}
+- {name: 52/49, point: [491671.0, 6306499.0], length_m: 394}
+- {name: '44', point: [491598.0, 6306449.0], length_m: 303}
 centerline:
 - [491714.0, 6306508.0]
 - [491665.0, 6306490.0]
