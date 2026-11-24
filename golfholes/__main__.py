@@ -25,6 +25,8 @@ Layout väljs i klubb.yaml med `layout: 1` (eller en lista, t.ex. [1, 4]):
   python -m golfholes sponsorrapport klubbar/<klubb> --sasong 2027 [--kalla mapp] → output/<klubb>/sponsorrapport/2027/
   python -m golfholes partnerexport  klubbar/<klubb>                  → output/<klubb>/partner/ (JSON per hål + zip)
   python -m golfholes paket klubbar/<klubb>                         → vad klubben köpt: vad som görs och inte görs
+  python -m golfholes nyklubb klubbar/<klubb> [--skapa "Namn"] [--kor] → hela flödet för en ny klubb: var den står,
+                                                                    vad som väntar på vem, kör gratis kodsteg
   python -m golfholes granskning klubbar/<klubb> [--hal 3,14]       → hemsida/public/granskning/<klubb>-<nyckel>/
                                                                     (klubbchefens granskningssida, svar via Netlify Forms)
   python -m golfholes flygfilm klubbar/<klubb>/hal-14.yaml [--data data/<klubb>] [--sek 12] [--forlopp oversikt]
@@ -381,6 +383,31 @@ def paket(club_dir: str) -> int:
     return 1 if fel else 0
 
 
+def nyklubb(club_dir: str, skapa: str | None, kor: bool) -> int:
+    from . import nyklubb as ny
+
+    mapp = Path(club_dir)
+    if skapa:
+        for f in ny.skapa(mapp, skapa, date.today().isoformat()):
+            print(f"Skapad: {f}")
+        print("Fyll i TODO i klubb.yaml (scorekort, paket) och kör kommandot igen utan --skapa.")
+    if kor:
+        steg, gjorda = ny.kor(mapp)
+        fel = [st.titel for st, rc in gjorda if rc != 0]
+        print(f"\n{len(gjorda)} kodsteg körda" + (f", {len(fel)} misslyckades: " + "; ".join(fel) if fel else "") + ".\n")
+    else:
+        fel = []
+        k0 = ny.las(mapp)
+        steg = ny.bedom(ny.plan(k0), k0)
+    k = ny.las(mapp)
+    text = ny.utskrift(k, steg)
+    print(text)
+    ut = ny.REPO / "output" / k.slug / "nyklubb-status.txt"
+    ut.parent.mkdir(parents=True, exist_ok=True)
+    ut.write_text(text + "\n", encoding="utf-8")
+    return 1 if fel else 0
+
+
 def granskning(club_dir: str, hal: str | None) -> int:
     from .granskning import bygg
 
@@ -506,6 +533,10 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("partnerexport", help="Sponsorer per hål som JSON + zip till digitala partnerkanaler"
                    ).add_argument("klubbmapp")
     sub.add_parser("paket", help="Vad klubben har köpt: vad som ska levereras och inte").add_argument("klubbmapp")
+    nk = sub.add_parser("nyklubb", help="Hela flödet för en ny klubb: status, vem det väntar på, kör gratis kodsteg")
+    nk.add_argument("klubbmapp")
+    nk.add_argument("--skapa", default=None, metavar="NAMN", help="skapa klubbmappen ur mallen (klubbens namn)")
+    nk.add_argument("--kor", action="store_true", help="kör alla gratis kodsteg som är redo (aldrig AI-krediter)")
     gr = sub.add_parser("granskning", help="Granskningssida för klubbchefen: frågor per hål, svar direkt i länken")
     gr.add_argument("klubbmapp")
     gr.add_argument("--hal", default=None, help="bara dessa hål, t.ex. 3,14 (standard: alla med hålfil)")
@@ -520,6 +551,8 @@ def main(argv: list[str] | None = None) -> int:
     a = p.parse_args(argv)
     if a.cmd == "paket":
         return paket(a.klubbmapp)
+    if a.cmd == "nyklubb":
+        return nyklubb(a.klubbmapp, a.skapa, a.kor)
     if a.cmd == "granskning":
         return granskning(a.klubbmapp, a.hal)
     if a.cmd == "partnerprogram":

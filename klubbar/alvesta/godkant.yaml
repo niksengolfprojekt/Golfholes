@@ -1,0 +1,8 @@
+# Godkännanden som koden inte kan se själv (python -m golfholes nyklubb klubbar/alvesta).
+# Skriv datum och vem, t.ex. "2026-11-12 Eric". Tomt = inte godkänt än.
+paket_bekraftat: "2026-10-25 Eric: referensklubb, hål 1 och 10 (se paket: avtal i klubb.yaml)"
+stil_vald:            # klubben har inte valt; stil A tills vidare
+kredittak:            # inget tak satt (testet kostade 480 krediter)
+testhal_ok:           # Eric: första hålet godkänt innan resten målas
+granskning_skickad:   # Eric: granskningslänken skickad till klubbchefen
+klubb_godkant_hal: [] # klubbchefen: godkända hål
